@@ -4,6 +4,11 @@ using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using System.Net;
+// Copyright 2025 Daniel Ian White
+
+// Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
+
 namespace NEA_protoype
 {
     internal class Program
@@ -22,27 +27,104 @@ namespace NEA_protoype
                     score += AdjacentWordsCount[i];
                 }
             }
-            
+
         }
         static void Main(string[] args)
         {
-            Emails();
-          
+            string EmailAddress = null;
+            string EmailAddressPassWord = null;
+            string EmailAddressMailServer = null;
+            bool Exit = false;
+            string[] Options = { "View emails", "Settings", "Exit" };
+            int menuOption = 0;
+            string input;
+            
+            while (!Exit)
+            {
+
+                for (int i = 0; i < Options.Length; i++)
+                {
+                    if (menuOption == i)
+                    {
+                        Console.WriteLine($" > {Options[i]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"   {Options[i]}");
+                    }
+                }
+                input = Console.ReadLine().ToUpper();
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = Options.Length - 1;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption >= Options.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                if (Options[menuOption] == "View emails")
+                {
+                    Emails(ref EmailAddress, ref EmailAddressPassWord, ref EmailAddressMailServer);
+                }
+                if (Options[menuOption] == "Setting")
+                {
+                    Console.WriteLine("No settings avilable");
+                }
+                if (Options[menuOption] == "Exit")
+                {
+                    Exit = true;
+                }
+            }
+
+        
+        /*
+        IPHostEntry host = Dns.GetHostEntry("ampretia.co.uk"); // found on microsoft website
+        
+            foreach (IPAddress address in host.AddressList)
+            {
+                Console.WriteLine( address.);
+            }
+*/
+
+
+
+
 
 
 
             Console.ReadLine();
         }
-        static void Emails()
+        static void Emails(ref string EmailAddress, ref string EmailPassword, ref string EmailAddressMailServer)
         {
-            //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
-            ListAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+            if (EmailAddress == null)
+            {
+                Console.Write("Please enter your email: ");
+                EmailAddress = Console.ReadLine();
+            }
+            if (EmailPassword == null)
+            {
+                Console.Write("Please enter your password: ");
+                EmailPassword = Console.ReadLine();
+            }
+
+
+
+                //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+                ListAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
 
         }
-        static void ReadAllEmails(string email,string password,string MailServer)
+        static void ReadAllEmails(string email, string password, string MailServer)
         {
             using (var client = new ImapClient())
-         {
+            {
                 client.Connect(MailServer, 993, true);
                 client.Authenticate(email, password);
                 var inbox = client.Inbox;
@@ -68,7 +150,7 @@ namespace NEA_protoype
                 inbox.Open(FolderAccess.ReadOnly);
                 for (int i = 0; i < inbox.Count; i++)
                 {
-                    var message = inbox.GetMessage(inbox.Count - i-1);
+                    var message = inbox.GetMessage(inbox.Count - i - 1);
                     Console.Write($"From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
                 }
             }
@@ -162,7 +244,7 @@ namespace NEA_protoype
                 }
                 for (int j = 0; j < IndexesToRemove.Count; j++)
                 {
-                    words[i].AdjacentWords.RemoveAt(IndexesToRemove[j]-j);
+                    words[i].AdjacentWords.RemoveAt(IndexesToRemove[j] - j);
                 }
                 IndexesToRemove = new List<int>();
                 CountedWords = new List<string>();
