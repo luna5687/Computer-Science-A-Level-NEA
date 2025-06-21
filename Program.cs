@@ -31,9 +31,9 @@ namespace NEA_protoype
         }
         static void Main(string[] args)
         {
-            string EmailAddress = null;
-            string EmailAddressPassWord = null;
-            string EmailAddressMailServer = null;
+            string EmailAddress = "bob@ampretia.co.uk";
+            string EmailAddressPassWord = "passw0rdWibble";
+            string EmailAddressMailServer = "mail.ampretia.co.uk";
             bool Exit = false;
             string[] Options = { "View emails", "Settings", "Exit" };
             int menuOption = 0;
@@ -70,10 +70,12 @@ namespace NEA_protoype
                         menuOption = 0;
                     }
                 }
-                if (Options[menuOption] == "View emails")
+                else if (input == "")
                 {
-                    Emails(ref EmailAddress, ref EmailAddressPassWord, ref EmailAddressMailServer);
-                }
+                    if (Options[menuOption] == "View emails")
+                    {
+                        Emails(ref EmailAddress, ref EmailAddressPassWord, ref EmailAddressMailServer);
+                    }
                 if (Options[menuOption] == "Setting")
                 {
                     Console.WriteLine("No settings avilable");
@@ -82,6 +84,8 @@ namespace NEA_protoype
                 {
                     Exit = true;
                 }
+                }
+                
             }
 
         
@@ -100,7 +104,7 @@ namespace NEA_protoype
 
 
 
-            Console.ReadLine();
+        
         }
         static void Emails(ref string EmailAddress, ref string EmailPassword, ref string EmailAddressMailServer)
         {
@@ -114,7 +118,9 @@ namespace NEA_protoype
                 Console.Write("Please enter your password: ");
                 EmailPassword = Console.ReadLine();
             }
+            
 
+            
 
 
                 //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
@@ -142,17 +148,71 @@ namespace NEA_protoype
         }
         static void ListAllEmails(string email, string password, string MailServer)
         {
+            bool Exit = false;
+            int menuOption = 0;
+            string input;
             using (ImapClient client = new ImapClient())
             {
                 client.Connect(MailServer, 993, true);
                 client.Authenticate(email, password);
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
-                for (int i = 0; i < inbox.Count; i++)
+
+                while (!Exit)
                 {
-                    var message = inbox.GetMessage(inbox.Count - i - 1);
-                    Console.Write($"From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
+                    Console.Clear();
+                    if (menuOption == 0)
+                    {
+                        Console.WriteLine(" > Back");
+                    }
+                    else
+                    {
+                        Console.WriteLine("   Back");
+                    }
+                    for (int i = 0; i < inbox.Count; i++)
+                    {
+                        var message = inbox.GetMessage(inbox.Count - i - 1);
+                        if (menuOption - 1 == i)
+                        {
+                            Console.Write($" > From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
+                        }
+                        else
+                        {
+                            Console.Write($"   From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
+                        }
+
+                    }
+                    input = Console.ReadLine().ToUpper();
+                    if (input == "W")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = inbox.Count;
+                        }
+                    }
+                    else if (input == "S")
+                    {
+                        menuOption++;
+                        if (menuOption > inbox.Count)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "")
+                    {
+                        if (menuOption == 0)
+                        {
+                            Exit = true;
+                        }
+                        else
+                        {  // Add feature to close open message
+                            var message = inbox.GetMessage(menuOption-1);
+                            Console.Write($"From: {message.From} \nSubject: {message.Subject}\nBody:\n{message.TextBody}");
+                        }
+                    }
                 }
+
             }
         }
         static void textRank(string input)
