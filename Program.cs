@@ -1,7 +1,14 @@
 ﻿using MailKit;
 using MailKit.Net.Imap;
+using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
+using System.Net;
+// Copyright 2025 Daniel Ian White
+
+// Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
+
 namespace NEA_protoype
 {
     internal class Program
@@ -10,62 +17,208 @@ namespace NEA_protoype
         {
             public string word;
             public int count;
-            public List<string> AdjacentWords;
-            public List<int> AdjacentWordsCount;
-
-            public void GetAdjacentWordCount()
+            public List<string> AdjacentWords = new List<string>();
+            public List<int> AdjacentWordsCount = new List<int>();
+            public int score;
+            public void CaculateScore()
             {
-                int length = AdjacentWords.Count;
-                string currentWord;
-                for (int i = 0; i < length; i++)
+                for (int i = 0; i < AdjacentWordsCount.Count; i++)
                 {
-                    currentWord = AdjacentWords[i]; 
-                    AdjacentWordsCount.Add(1);
-                    for (int j = 0; j < length; j++)
-                    {
-                        if (j != i)
-                        {
-                            if (AdjacentWords[j] == currentWord)
-                            {
-
-                                AdjacentWordsCount[i]++;
-                                AdjacentWords.RemoveAt(j);
-                            }
-                        }
-                    }
+                    score += AdjacentWordsCount[i];
                 }
             }
+
         }
         static void Main(string[] args)
         {
-            // Emails();
-            textRank();
+            string EmailAddress = "bob@ampretia.co.uk";
+            string EmailAddressPassWord = "passw0rdWibble";
+            string EmailAddressMailServer = "mail.ampretia.co.uk";
+            bool Exit = false;
+            string[] Options = { "View emails", "Settings", "Exit" };
+            int menuOption = 0;
+            string input;
+
+            while (!Exit)
+            {
+
+                for (int i = 0; i < Options.Length; i++)
+                {
+                    if (menuOption == i)
+                    {
+                        Console.WriteLine($" > {Options[i]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"   {Options[i]}");
+                    }
+                }
+                input = Console.ReadLine().ToUpper();
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = Options.Length - 1;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption >= Options.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "")
+                {
+                    if (Options[menuOption] == "View emails")
+                    {
+                        Emails(ref EmailAddress, ref EmailAddressPassWord, ref EmailAddressMailServer);
+                    }
+                    if (Options[menuOption] == "Setting")
+                    {
+                        Console.WriteLine("No settings avilable");
+                    }
+                    if (Options[menuOption] == "Exit")
+                    {
+                        Exit = true;
+                    }
+                }
+
+            }
+
+
+            /*
+            IPHostEntry host = Dns.GetHostEntry("ampretia.co.uk"); // found on microsoft website
+
+                foreach (IPAddress address in host.AddressList)
+                {
+                    Console.WriteLine( address.);
+                }
+    */
 
 
 
-            Console.ReadKey();
+
+
+
+
+
         }
-        static void Emails()
+        static void Emails(ref string EmailAddress, ref string EmailPassword, ref string EmailAddressMailServer)
         {
+            if (EmailAddress == null)
+            {
+                Console.Write("Please enter your email: ");
+                EmailAddress = Console.ReadLine();
+            }
+            if (EmailPassword == null)
+            {
+                Console.Write("Please enter your password: ");
+                EmailPassword = Console.ReadLine();
+            }
 
+
+
+
+
+            //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+            ListAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+
+        }
+        static void ReadAllEmails(string email, string password, string MailServer)
+        {
             using (var client = new ImapClient())
             {
-                client.Connect("mail.ampretia.co.uk", 993, true);
-                client.Authenticate("bob@ampretia.co.uk", "passw0rdWibble");
+                client.Connect(MailServer, 993, true);
+                client.Authenticate(email, password);
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
                 for (int i = 0; i < inbox.Count; i++)
                 {
                     var message = inbox.GetMessage(i);
                     Console.WriteLine("From: " + message.From);
-                    Console.WriteLine("Body: " + message.Body);
+                    Console.WriteLine("Body: " + message.TextBody);
+                    Console.WriteLine("Keywords: ");
+                    textRank(message.TextBody);
+                    Console.Write("\n-------------------------------------------------------------------------------------------------------\n");
                 }
             }
-
         }
-        static void textRank()
+        static void ListAllEmails(string email, string password, string MailServer)
         {
-            string teststring = "Hello\r\n\r\nThank you all for handing in your forms for Japan.\r\n\r\nI just wanted to let you know that I am letting people have till 19th June to hand in their forms.\r\nThen, if it is oversubscribed, then I will pick names randomly.\r\n\r\nI will let you know as soon as I can - probably on the 20th June.\r\n\r\nThank you \r\nIsabel";
+            bool Exit = false;
+            int menuOption = 0;
+            string input;
+            using (ImapClient client = new ImapClient())
+            {
+                client.Connect(MailServer, 993, true);
+                client.Authenticate(email, password);
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadOnly);
+
+                while (!Exit)
+                {
+                    Console.Clear();
+                    if (menuOption == 0)
+                    {
+                        Console.WriteLine(" > Back");
+                    }
+                    else
+                    {
+                        Console.WriteLine("   Back");
+                    }
+                    for (int i = 0; i < inbox.Count; i++)
+                    {
+                        var message = inbox.GetMessage(inbox.Count - i - 1);
+                        if (menuOption - 1 == i)
+                        {
+                            Console.Write($" > From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
+                        }
+                        else
+                        {
+                            Console.Write($"   From: {message.From}, Subject: {message.Subject}, Date recived: {message.Date}\n");
+                        }
+
+                    }
+                    input = Console.ReadLine().ToUpper();
+                    if (input == "W")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = inbox.Count;
+                        }
+                    }
+                    else if (input == "S")
+                    {
+                        menuOption++;
+                        if (menuOption > inbox.Count)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "")
+                    {
+                        if (menuOption == 0)
+                        {
+                            Exit = true;
+                        }
+                        else
+                        {  // Add feature to close open message
+                            var message = inbox.GetMessage(menuOption - 1);
+                            Console.Write($"From: {message.From} \nSubject: {message.Subject}\nBody:\n{message.TextBody}");
+                        }
+                    }
+                }
+
+            }
+        }
+        static void textRank(string input)
+        {
+            //string teststring = "Dear Students,\r\nThis week marks Men’s Health Week  and the EDI Team is proud to shine a spotlight on this important topic.\r\n\r\n\r\n\r\n💙 What is Men’s Health Week?\r\nMen’s Health Week is an annual campaign to raise awareness of the physical and mental health challenges faced by men and boys. This year’s focus is on early action and prevention, encouraging men to check in with their health, talk openly, and seek support when needed.\r\n\r\nFrom heart disease to mental health, men are statistically less likely to seek help. By opening up these conversations, we can break down stigma, promote healthy habits, and support each other to live longer, healthier lives.\r\n\r\n\r\n\r\n💬 Why It Matters\r\n1 in 8 men has a common mental health condition such as anxiety or depression\r\n\r\nMen are more likely to die from preventable conditions due to late diagnosis\r\n\r\nSuicide remains the biggest killer of men under 50 in the UK\r\n\r\nMen’s Health Week is not just for men—it’s for everyone. We all have a role to play in creating a culture where it’s okay to not be okay.\r\n\r\n\r\n\r\n\U0001f91d How You Can Get Involved\r\nCheck in with a mate – A simple “how are you?” can go a long way\r\n\r\nJoin the conversation – Look out for posters, info stands and discussion spaces this week\r\n\r\nEncourage healthy habits – Whether it’s walking together, eating well, or booking a check-up\r\n\r\nBe kind, be open – Mental and physical health affect us all differently. Let’s support without judgement.\r\n\r\n\r\nIf you’re struggling, you are not alone. Support is available:\r\n\r\nCollege Wellbeing Services\r\n\r\nSPA\r\n\r\nTeachers/Tutors\r\n\r\nSamaritans – 116 123 (24/7, free)\r\n\r\nShout - If you'd like a free, confidential and anonymous conversation about how you're feeling, you can also text SHOUT to 85258 to speak to a trained volunteer \r\n\r\n\r\nTogether, we can build a more open, caring and healthy community. Let’s support our friends, challenge stigma, and look after ourselves too.";
+            string teststring = input;
             teststring = teststring.Replace("\r\n", " ");
             teststring = teststring.Replace(".", " .");
             string[] words = teststring.Split(' ');
@@ -111,9 +264,51 @@ namespace NEA_protoype
                     ToAdd = null;
                 }
             }
+            CountAdjacents(ref WordCount);
             int[,] Matrix = new int[WordCount.Count, WordCount.Count];
+            for (int i = 0; i < WordCount.Count; i++)
+            {
+                WordCount[i].CaculateScore();
+            }
+            for (int i = 0; i < WordCount.Count; i++)
+            {
+                Console.Write(WordCount[i].word + " " + WordCount[i].score);
+                /*
+                for (int j =0; j<WordCount[i].AdjacentWords.Count;j++)
+                {
+                    Console.Write(" "+ WordCount[i].AdjacentWords[j]+" " + WordCount[i].AdjacentWordsCount[j]+",");
+                }
+                */
+                Console.Write("\n");
+            }
 
-
+        }
+        static void CountAdjacents(ref List<wordCount> words)
+        {
+            List<string> CountedWords = new List<string>();
+            List<int> IndexesToRemove = new List<int>();
+            for (int i = 0; i < words.Count; i++)
+            {
+                for (int j = 0; j < words[i].AdjacentWords.Count; j++)
+                {
+                    if (CountedWords.Contains(words[i].AdjacentWords[j]))
+                    {
+                        words[i].AdjacentWordsCount[CountedWords.IndexOf(words[i].AdjacentWords[j])]++;
+                        IndexesToRemove.Add(j);
+                    }
+                    else
+                    {
+                        words[i].AdjacentWordsCount.Add(1);
+                        CountedWords.Add(words[i].AdjacentWords[j]);
+                    }
+                }
+                for (int j = 0; j < IndexesToRemove.Count; j++)
+                {
+                    words[i].AdjacentWords.RemoveAt(IndexesToRemove[j] - j);
+                }
+                IndexesToRemove = new List<int>();
+                CountedWords = new List<string>();
+            }
         }
     }
 }
