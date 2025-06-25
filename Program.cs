@@ -38,7 +38,7 @@ namespace NEA_protoype
             string[] Options = { "View emails", "Settings", "Exit" };
             int menuOption = 0;
             string input;
-            
+
             while (!Exit)
             {
 
@@ -76,27 +76,27 @@ namespace NEA_protoype
                     {
                         Emails(ref EmailAddress, ref EmailAddressPassWord, ref EmailAddressMailServer);
                     }
-                if (Options[menuOption] == "Setting")
-                {
-                    Console.WriteLine("No settings avilable");
+                    if (Options[menuOption] == "Setting")
+                    {
+                        Console.WriteLine("No settings avilable");
+                    }
+                    if (Options[menuOption] == "Exit")
+                    {
+                        Exit = true;
+                    }
                 }
-                if (Options[menuOption] == "Exit")
-                {
-                    Exit = true;
-                }
-                }
-                
+
             }
 
-        
-        /*
-        IPHostEntry host = Dns.GetHostEntry("ampretia.co.uk"); // found on microsoft website
-        
-            foreach (IPAddress address in host.AddressList)
-            {
-                Console.WriteLine( address.);
-            }
-*/
+
+            /*
+            IPHostEntry host = Dns.GetHostEntry("ampretia.co.uk"); // found on microsoft website
+
+                foreach (IPAddress address in host.AddressList)
+                {
+                    Console.WriteLine( address.);
+                }
+    */
 
 
 
@@ -104,7 +104,7 @@ namespace NEA_protoype
 
 
 
-        
+
         }
         static void Emails(ref string EmailAddress, ref string EmailPassword, ref string EmailAddressMailServer)
         {
@@ -118,13 +118,13 @@ namespace NEA_protoype
                 Console.Write("Please enter your password: ");
                 EmailPassword = Console.ReadLine();
             }
-            
-
-            
 
 
-                //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
-                ListAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+
+
+
+            //ReadAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+            ListAllEmails("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
 
         }
         static void ReadAllEmails(string email, string password, string MailServer)
@@ -207,8 +207,10 @@ namespace NEA_protoype
                         }
                         else
                         {  // Add feature to close open message
-                            var message = inbox.GetMessage(menuOption-1);
+                            var message = inbox.GetMessage((inbox.Count) - menuOption);
                             Console.Write($"From: {message.From} \nSubject: {message.Subject}\nBody:\n{message.TextBody}");
+                            textRank(message.TextBody);
+                            Console.ReadLine();
                         }
                     }
                 }
