@@ -207,11 +207,12 @@ namespace NEA_protoype
                         }
                         else
                         {  // Add feature to close open message
-
+                            Console.Clear() ;
                             var message = inbox.GetMessage((inbox.Count) - menuOption);
                             Console.Write($"From: {message.From} \nSubject: {message.Subject}\nBody:\n{message.TextBody}");
                             textRank(message.TextBody);
                             Console.ReadLine();
+                            Console.Clear();
                         }
                     }
                 }
