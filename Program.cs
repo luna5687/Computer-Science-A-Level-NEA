@@ -85,7 +85,7 @@ namespace NEA_protoype
                         Exit = true;
                     }
                 }
-
+                Console.Clear();
             }
 
 
