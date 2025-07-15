@@ -22,6 +22,7 @@ namespace Computer_Science_A_Level_NEA
                 Console.ReadLine();
                 HasConsole = false;
             }
+            Console.Clear();
         }
         static public string GetConsoleInput()
         {
@@ -34,5 +35,6 @@ namespace Computer_Science_A_Level_NEA
                 return Console.ReadLine();
             }
         }
+        
     }
 }
