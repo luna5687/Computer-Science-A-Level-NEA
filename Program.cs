@@ -11,12 +11,31 @@ using System.Net;
 
 namespace NEA_protoype
 {
+    static class ConsoleInteraction
+    {
+        static private bool HasConsole;
+        static private void CheckConsoleExistance() 
+        {
+            try
+            {
+                
+                Console.ReadKey();
+                Console.WriteLine("Has Console");
+                HasConsole = true;
+            }
+            catch
+            {
+                Console.ReadLine();
+                Console.WriteLine("Doesn't have console");
+                HasConsole = false;
+            }
+        }
     internal class Program
     {
 
         static void Main(string[] args)
         {
-
+            ConsoleInteraction.CheckConsoleExistance();
 
 
 
