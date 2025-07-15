@@ -14,11 +14,11 @@ namespace NEA_protoype
     static class ConsoleInteraction
     {
         static private bool HasConsole;
-        static private void CheckConsoleExistance() 
+        static public void CheckConsoleExistance()
         {
             try
             {
-                
+
                 Console.ReadKey();
                 Console.WriteLine("Has Console");
                 HasConsole = true;
@@ -30,6 +30,18 @@ namespace NEA_protoype
                 HasConsole = false;
             }
         }
+        static public string GetConsoleInput()
+        {
+            if (HasConsole)
+            {
+                return Console.ReadKey().KeyChar.ToString();
+            }
+            else
+            {
+                return Console.ReadLine();
+            }
+        }
+    }
     internal class Program
     {
 
@@ -37,7 +49,7 @@ namespace NEA_protoype
         {
             ConsoleInteraction.CheckConsoleExistance();
 
-
+            ConsoleInteraction.GetConsoleInput();
 
 
         }
