@@ -12,10 +12,8 @@ namespace NEA_protoype
 
         static void Main(string[] args)
         {
-            ConsoleInteraction.CheckConsoleExistance();
-            ImapServer Server = new ImapServer("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
-
-            File.Delete("Email_Archive.db");
+            File.Delete("Email_Archive.db"); // REMOVE THIS LATER WHEN ALL TABLE CREATION IS DONE
+           
             if (!File.Exists("Email_Archive.db"))
             {
                 SQLiteConnection.CreateFile("Email_Archive.db");
@@ -25,17 +23,42 @@ namespace NEA_protoype
                                   "EmailAddress varchar PRIMARY KEY," +
                                   "Password varchar," +
                                   "Mailserver varchar," +
-                                  "Account varchar)",connection).ExecuteNonQuery();
+                                  "Account varchar)", connection).ExecuteNonQuery();
                 new SQLiteCommand("CREATE TABLE Emails(" +
                                   "EmailID int PRIMARY KEY," +
                                   "Sender varchar," +
                                   "Recipient varchar," +
                                   "Subject varchar," +
                                   "TextBody varchar," +
-                                  "Keywords)",connection ).ExecuteNonQuery();
+                                  "Keywords)", connection).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE Tags(" +
+                                  "TagID int PRIMARY KEY," +
+                                  "TagName varchar)", connection).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE AssignedTags(" +
+                                  "TagID int," +
+                                  "EmailID int)",connection).ExecuteNonQuery();
+                new SQLiteCommand("CREATE TABLE Accounts(" +
+                                  "AccountName varchar PRIMARY KEY," +
+                                  "Password varchar)",connection ).ExecuteNonQuery();
+                new SQLiteCommand("INSERT INTO Tags(tagID,TagName)" +
+                                  "VALUES " +
+                                  "(1,'Metting')," +
+                                  "(2,'Accounting')," +
+                                  "(3,'Important')", connection).ExecuteNonQuery();
+
+
+      
             }
-            
+            ConsoleInteraction.CheckConsoleExistance();
            
+            ImapServer Server = new ImapServer("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+           
+
+
+
+
+
+            Console.ReadLine();
 
         }
 
