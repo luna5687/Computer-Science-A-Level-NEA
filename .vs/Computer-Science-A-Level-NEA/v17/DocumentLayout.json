@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "E:\\Github.com\\Computer-Science-A-Level-NEA\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\consoleinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:consoleinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\consoleinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:consoleinteraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\computer-science-a-level-nea.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -26,37 +26,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Computer-Science-A-Level-NEA",
+              "Title": "Computer-Science-A-Level-NEA.csproj",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Computer-Science-A-Level-NEA.csproj",
               "RelativeDocumentMoniker": "Computer-Science-A-Level-NEA.csproj",
               "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Computer-Science-A-Level-NEA.csproj",
               "RelativeToolTip": "Computer-Science-A-Level-NEA.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-07-15T12:50:41.076Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-15T12:50:41.076Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "ConsoleInteraction.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\ConsoleInteraction.cs",
               "RelativeDocumentMoniker": "ConsoleInteraction.cs",
               "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\ConsoleInteraction.cs",
               "RelativeToolTip": "ConsoleInteraction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAswCMAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-15T12:50:56.242Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ImapServer.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\ImapServer.cs",
               "RelativeDocumentMoniker": "ImapServer.cs",
@@ -69,13 +68,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs*",
-              "RelativeToolTip": "Program.cs*",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABwAAABIAAAAAAAAAA==",
+              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAgwEEAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-18T20:41:52.177Z",
               "EditorCaption": ""

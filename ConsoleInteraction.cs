@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-// Copyright 2025 Daniel Ian White
+﻿// Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
     internal class ConsoleInteraction
@@ -35,6 +30,16 @@ namespace Computer_Science_A_Level_NEA
                 return Console.ReadLine();
             }
         }
-        
+        static public string GetConsoleInput(bool hiddenCoursor)
+        {
+            if (HasConsole)
+            {
+                return Console.ReadKey(hiddenCoursor).KeyChar.ToString();
+            }
+            else
+            {
+                return Console.ReadLine();
+            }
+            }
+        }
     }
-}

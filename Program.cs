@@ -33,7 +33,62 @@ namespace NEA_protoype
             List<string> Accounts = new List<string>();
            while (DR.Read())
             {
-                Console.WriteLine(DR["AccountName"]);
+                Accounts.Add(DR["AccountName"].ToString());
+            }
+           bool exit = false;
+            int menuOption = 0;
+            while (!exit)
+            {
+                if (menuOption == Accounts.Count)
+                {
+                    for (int i = 0; i < Accounts.Count;i++)
+                    {
+                        Console.Write("   " + Accounts[i]+"\n");
+                    }
+                    Console.Write(" > Exit");
+                }
+                else
+                {
+                    for (int i = 0;i < Accounts.Count;i++)
+                    {
+                        if (i == menuOption)
+                        {
+                            Console.Write(" > " + Accounts[i] + "\n");
+                        }
+                        else
+                        {
+                            Console.Write("   " + Accounts[i] + "\n");
+                        }
+                    }
+                    Console.Write("   Exit");
+                }
+                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
+              
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = Accounts.Count;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption > Accounts.Count)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r")
+                {
+                     if (menuOption  == Accounts.Count)
+                    {
+                        exit = true;
+                    }
+                }
+                Console.CursorTop = 0;
+                Console.CursorLeft = 0;
             }
             // to finish accounts menu 
             // call email menu
