@@ -23,7 +23,15 @@ namespace NEA_protoype
                 Console.Write("Enter Account Username: ");
                 string accountname = Console.ReadLine();
                 Console.Write("Enter Account Password (Please note it is not hidden): ");
+                
                 string accountPassword = Console.ReadLine();
+                while (accountPassword == "")
+                {
+                    Console.WriteLine("invalid password");
+                    Console.Write("Enter Account Password (Please note it is not hidden): ");
+
+                    accountPassword = Console.ReadLine();
+                }
                 new SQLiteCommand("INSERT INTO Accounts(AccountName,Password)" +
                                   "VALUES " +
                                   $"('{accountname}','{accountPassword}');",connection).ExecuteNonQuery();
@@ -86,16 +94,82 @@ namespace NEA_protoype
                     {
                         exit = true;
                     }
+                    else
+                    {
+                        Console.Clear();
+                        Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel\n" +
+                            $"");
+                        string EnteredPassword = Console.ReadLine();
+                        bool passwordConfined = false;
+                        DR = new SQLiteCommand($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'", connection).ExecuteReader();
+                        DR.Read();
+                        while (EnteredPassword != "" && !passwordConfined)
+                        {
+                            if (EnteredPassword == DR["Password"])
+                            {
+                                passwordConfined = true;
+                                EmailMenu(Accounts[menuOption]);
+                            }
+                            else
+                            {
+                                Console.CursorTop = 0;
+                                Console.CursorLeft = 0;
+                                Console.WriteLine("Password invalid                              ");
+                               
+                                Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel                                                         \n                                                  ");
+                                Console.CursorLeft = 0;
+                                EnteredPassword = Console.ReadLine();
+                            }
+                        }
+                        Console.Clear();
+                    } 
+                        
                 }
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
             }
-            // to finish accounts menu 
-            // call email menu
+           
             
             
             connection.Close();
             
+        }
+        static void CreateNewEmail(SQLiteConnection connection,SQLiteDataReader DR,string AccountName)
+        {
+
+            DR.Close();
+            Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
+            Console.ReadLine();
+            Console.Clear();
+            Console.Write("Enter Emailaddress: ");
+            string EmailAddress = Console.ReadLine();
+            Console.Write("Enter the email's mail server: ");
+            string MailServer = Console.ReadLine();
+            Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
+            // TODO - validate password 
+            string EmailPassword = Console.ReadLine();
+            new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
+                              "VALUES " +
+                              $"('{EmailAddress}','{EmailPassword}','{MailServer}','{AccountName}');", connection).ExecuteNonQuery();
+            DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
+            Console.Clear();
+        }
+        static void EmailMenu(string accountName)
+        {
+            SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
+            connection.Open();
+            SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
+            if (DR.StepCount == 0)
+            {
+                CreateNewEmail(connection, DR, accountName);
+            }
+            List<string> EmaliAddreses = new List<string>();
+            while (DR.Read())
+            {
+                EmaliAddreses.Add(DR["EmailAddress"].ToString());
+            }
+            // display email
+            // work on text rank on email and automate archive
         }
         static void Main(string[] args)
         {
