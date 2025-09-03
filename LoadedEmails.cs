@@ -20,6 +20,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public void EmailMenu()
         {
+            Console.Clear();
             bool exit = false;
             int menuOption = 0;
             while (!exit)
@@ -74,6 +75,7 @@ namespace Computer_Science_A_Level_NEA
                     else
                     {
                         // display emails
+                        emails[menuOption].DisplayEmail();
                         Console.Clear();
                     }
 

@@ -22,12 +22,13 @@ namespace Computer_Science_A_Level_NEA
             client = new ImapClient();
             client.Connect(MailServer, 993, true);
             client.Authenticate(emailAddress, Password);
+           
         }
         public List<Email> GetAllEmails()
         {
             List<Email> list = new List<Email>();
             var inbox = client.Inbox;
-          
+            inbox.Open(FolderAccess.ReadOnly);
             for (int i = 0; i < inbox.Count; i++)
             {
                 var message = inbox.GetMessage(i);

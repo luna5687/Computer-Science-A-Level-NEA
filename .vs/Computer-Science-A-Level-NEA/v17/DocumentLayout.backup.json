@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "E:\\Github.com\\Computer-Science-A-Level-NEA\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\email.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:email.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\loadedemails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:loadedemails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:imapserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC989DDD-D8B5-A027-61B5-A5486BB722D7}|Computer-Science-A-Level-NEA.csproj|e:\\github.com\\computer-science-a-level-nea\\computer-science-a-level-nea.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -34,17 +34,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Email.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Email.cs",
               "RelativeDocumentMoniker": "Email.cs",
-              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Email.cs",
-              "RelativeToolTip": "Email.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAjAAAAAAAAAA==",
+              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Email.cs*",
+              "RelativeToolTip": "Email.cs*",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwDAAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T09:26:21.887Z",
               "EditorCaption": ""
@@ -64,13 +64,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs*",
-              "RelativeToolTip": "Program.cs*",
-              "ViewState": "AgIAAIUAAAAAAAAAAAAgwBsAAAAtAAAAAAAAAA==",
+              "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAANQAAAAAAAAAAAAwwOMAAAB5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-18T20:41:52.177Z",
               "EditorCaption": ""
@@ -94,7 +94,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
@@ -104,20 +104,20 @@
               "RelativeDocumentMoniker": "LoadedEmails.cs",
               "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\LoadedEmails.cs",
               "RelativeToolTip": "LoadedEmails.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB4AAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T09:31:42.97Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "ImapServer.cs",
               "DocumentMoniker": "E:\\Github.com\\Computer-Science-A-Level-NEA\\ImapServer.cs",
               "RelativeDocumentMoniker": "ImapServer.cs",
               "ToolTip": "E:\\Github.com\\Computer-Science-A-Level-NEA\\ImapServer.cs",
               "RelativeToolTip": "ImapServer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-15T12:41:24.297Z",
               "EditorCaption": ""

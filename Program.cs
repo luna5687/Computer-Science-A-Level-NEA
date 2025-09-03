@@ -223,7 +223,9 @@ namespace NEA_protoype
                     }
                     else
                     {
-                       
+                        DR = new SQLiteCommand($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'",connection).ExecuteReader();
+                        DR.Read();
+                        EmailMenu(DR["EmailAddress"].ToString(), DR["Password"].ToString(), DR["Mailserver"].ToString());
                         Console.Clear();
                     }
 

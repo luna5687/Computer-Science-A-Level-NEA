@@ -31,29 +31,31 @@
             else
             {
                 output = Sender + " " + Recipient + " " + Subject + " " + " ";
-                for (int i = 0; i < Tags.Count; i++)
-                {
-                    output += " " + Tags[i];
-                }
+                
             }
             return output;
         }
         public void DisplayEmail()
         {
+            Console.Clear();
             string Tags = "";
-            for (int i = 0; i < this.Tags.Count(); i++)
-            {
-                Tags += this.Tags[i] + " ";
+            if (this.Tags != null)
+            { 
+                for (int i = 0; i < this.Tags.Count(); i++)
+                {
+                    Tags += this.Tags[i] + " ";
+                }
             }
             string keywords = "";
-            for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
+            //for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
             Console.Clear();
 
-            Console.WriteLine("Back");
+            Console.WriteLine("> Back");
             Console.WriteLine($"From: {Sender} To: {Recipient}\n" +
                               $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
                               $"{Body}");
             ConsoleInteraction.GetConsoleInput();
+            Console.Clear();
         }
     }
 }
