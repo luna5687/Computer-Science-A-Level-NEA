@@ -16,6 +16,8 @@
             this.Recipient = Recipient;
             this.Subject = Subject;
             this.Body = Body;
+
+            CreateKeywords();
         }
         public string GetEmailShort()
         {
@@ -56,6 +58,28 @@
                               $"{Body}");
             ConsoleInteraction.GetConsoleInput();
             Console.Clear();
+        }
+        private void CreateKeywords()
+        {
+            if (IsArchived)
+            { }
+            else
+            {
+                string[] WordsInBody = Body.Split(' ');
+                List<string> FilteredWords = new List<string>();
+                string[] WordsToFilter = { "the", " ","\n","\r","\n\r","is","and","a"};
+                foreach (string word in WordsInBody)
+                {
+                    if (!(WordsToFilter.Contains(word.ToLower())))
+                    { FilteredWords.Add(word.Replace('\n',' ').Replace('\r', ' ')); }
+                }
+                List<int> WordIndex = new List<int>();
+                for (int i = 0;i < FilteredWords.Count;i++)
+                {
+                    WordIndex.Add(i);
+                }
+
+            }
         }
     }
 }
