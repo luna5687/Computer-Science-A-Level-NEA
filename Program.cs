@@ -103,12 +103,13 @@ namespace NEA_protoype
                         bool passwordConfined = false;
                         DR = new SQLiteCommand($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'", connection).ExecuteReader();
                         DR.Read();
+                        
                         while (EnteredPassword != "" && !passwordConfined)
                         {
-                            if (EnteredPassword == DR["Password"])
+                            if (EnteredPassword == DR["Password"].ToString())
                             {
                                 passwordConfined = true;
-                                EmailMenu(Accounts[menuOption]);
+                                EmailAddressesMenu(Accounts[menuOption]);
                             }
                             else
                             {
@@ -134,7 +135,7 @@ namespace NEA_protoype
             connection.Close();
             
         }
-        static void CreateNewEmail(SQLiteConnection connection,SQLiteDataReader DR,string AccountName)
+        static void CreateNewEmail(ref SQLiteConnection connection,ref SQLiteDataReader DR,string AccountName)
         {
 
             DR.Close();
@@ -148,28 +149,96 @@ namespace NEA_protoype
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
             // TODO - validate password 
             string EmailPassword = Console.ReadLine();
+            
             new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                               "VALUES " +
-                              $"('{EmailAddress}','{EmailPassword}','{MailServer}','{AccountName}');", connection).ExecuteNonQuery();
+                              $"('{EmailAddress}','{EmailPassword}','{MailServer}','{AccountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
             DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
             Console.Clear();
         }
-        static void EmailMenu(string accountName)
+        static void EmailAddressesMenu(string accountName)
         {
             SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
             connection.Open();
             SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
             if (DR.StepCount == 0)
             {
-                CreateNewEmail(connection, DR, accountName);
+                CreateNewEmail(ref connection,ref DR, accountName);
             }
             List<string> EmaliAddreses = new List<string>();
             while (DR.Read())
             {
                 EmaliAddreses.Add(DR["EmailAddress"].ToString());
             }
+            bool exit = false;
+            int menuOption = 0;
+            while (!exit)
+            {
+                if (menuOption == EmaliAddreses.Count)
+                {
+                    for (int i = 0; i < EmaliAddreses.Count; i++)
+                    {
+                        Console.Write("   " + EmaliAddreses[i] + "\n");
+                    }
+                    Console.Write(" > Exit");
+                }
+                else
+                {
+                    for (int i = 0; i < EmaliAddreses.Count; i++)
+                    {
+                        if (i == menuOption)
+                        {
+                            Console.Write(" > " + EmaliAddreses[i] + "\n");
+                        }
+                        else
+                        {
+                            Console.Write("   " + EmaliAddreses[i] + "\n");
+                        }
+                    }
+                    Console.Write("   Exit");
+                }
+                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
+
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = EmaliAddreses.Count;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption > EmaliAddreses.Count)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r")
+                {
+                    if (menuOption == EmaliAddreses.Count)
+                    {
+                        exit = true;
+                    }
+                    else
+                    {
+                       
+                        Console.Clear();
+                    }
+
+                }
+                Console.CursorTop = 0;
+                Console.CursorLeft = 0;
+            }
             // display email
             // work on text rank on email and automate archive
+        }
+        static void EmailMenu(string EmailAddress,string EmailPassword,string Mailserver)
+        {
+            ImapServer imapServer = new ImapServer(EmailAddress,EmailPassword, Mailserver);
+            LoadedEmails emalis = new LoadedEmails(imapServer);
+            emalis.EmailMenu();
         }
         static void Main(string[] args)
         {
@@ -211,7 +280,7 @@ namespace NEA_protoype
             }
             ConsoleInteraction.CheckConsoleExistance();
             AccountsMenu();
-            ImapServer Server = new ImapServer("bob@ampretia.co.uk", "passw0rdWibble", "mail.ampretia.co.uk");
+      
             
 
 
