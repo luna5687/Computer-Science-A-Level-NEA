@@ -1,4 +1,7 @@
-﻿namespace Computer_Science_A_Level_NEA
+﻿using System.Data;
+using System.Runtime.CompilerServices;
+
+namespace Computer_Science_A_Level_NEA
 {
     public class Email
     {
@@ -61,30 +64,38 @@
         }
         private void CreateKeywords()
         {
+            char[] Body = this.Body.ToCharArray();
+            List<string> FilteredWords = new List<string>();
+            string[] WordsToFilter = { "the", "\n", "\r", "is", "and", "a" };
+            string Temp = "";
+            string text = "";
             if (IsArchived)
-            { }
+            { /* retreve keywords from archive */ }
             else
             {
-                string[] WordsInBody = Body.Split(' ');
-                
-                List<string> FilteredWords = new List<string>();
-                string[] WordsToFilter = { "the", " ","\n","\r","\n\r","is","and","a"};
-                foreach (string word in WordsInBody)
+               foreach (string word in WordsToFilter)
                 {
-                    if (!(WordsToFilter.Contains(word.ToLower())))
+                    for (int i = 0;i < Body.Length-word.Length;i++)
                     {
-                        if (word.Replace('\n', ' ').Replace('\r', ' ').Contains(' '))
+                        Temp += "";
+                        for (int j = 0;j < word.Length;j++)
                         {
-
+                            Temp += Body[i + j];
                         }
-                       // FilteredWords.Add(word.Replace('\n',' ').Replace('\r', ' ')); 
+                        if (Temp == word)
+                        {
+                            for (int k = 0; k < word.Length; k++)
+                            {
+                                Body[i + k] = ' ';
+                            }
+                        }
                     }
                 }
-                List<int> WordIndex = new List<int>();
-                for (int i = 0;i < FilteredWords.Count;i++)
-                {
-                    WordIndex.Add(i);
-                }
+                foreach (char character in Body)
+                { text += character; }
+
+                
+                // keywords - 
 
             }
         }

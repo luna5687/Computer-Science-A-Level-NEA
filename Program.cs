@@ -34,7 +34,7 @@ namespace NEA_protoype
                 }
                 new SQLiteCommand("INSERT INTO Accounts(AccountName,Password)" +
                                   "VALUES " +
-                                  $"('{accountname}','{accountPassword}');",connection).ExecuteNonQuery();
+                                  $"('{accountname}','{Encryption.Encrypt(accountPassword)}');",connection).ExecuteNonQuery();
                 DR = new SQLiteCommand("SELECT AccountName FROM Accounts", connection).ExecuteReader();
                 Console.Clear();
             }
@@ -106,7 +106,7 @@ namespace NEA_protoype
                         
                         while (EnteredPassword != "" && !passwordConfined)
                         {
-                            if (EnteredPassword == DR["Password"].ToString())
+                            if (EnteredPassword == Encryption.Decrypt(DR["Password"].ToString()))
                             {
                                 passwordConfined = true;
                                 EmailAddressesMenu(Accounts[menuOption]);
@@ -137,25 +137,7 @@ namespace NEA_protoype
         }
         static void CreateNewEmail(string AccountName)
         {
-            SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
-            connection.Open();
-           
-            Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
-            Console.ReadLine();
-            Console.Clear();
-            Console.Write("Enter Emailaddress: ");
-            string EmailAddress = Console.ReadLine();
-            Console.Write("Enter the email's mail server: ");
-            string MailServer = Console.ReadLine();
-            Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-            // TODO - validate password 
-            string EmailPassword = Console.ReadLine();
             
-            new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
-                              "VALUES " +
-                              $"('{EmailAddress}','{EmailPassword}','{MailServer}','{AccountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
-           
-            Console.Clear();
         }
         static void EmailAddressesMenu(string accountName)
         {
@@ -164,10 +146,26 @@ namespace NEA_protoype
             SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
             if (DR.StepCount == 0)
             {
-                connection.Close();
-                CreateNewEmail(accountName);
                 
-                connection.Open();
+
+                Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
+                Console.ReadLine();
+                Console.Clear();
+                Console.Write("Enter Emailaddress: ");
+                string EmailAddress = Console.ReadLine();
+                Console.Write("Enter the email's mail server: ");
+                string MailServer = Console.ReadLine();
+                Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
+                // TODO - validate password 
+                string EmailPassword = Console.ReadLine();
+
+                new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
+                                  "VALUES " +
+                                  $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
+
+                Console.Clear();
+
+             
             }
             List<string> EmaliAddreses = new List<string>();
             while (DR.Read())
@@ -229,7 +227,7 @@ namespace NEA_protoype
                     {
                         DR = new SQLiteCommand($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'",connection).ExecuteReader();
                         DR.Read();
-                        EmailMenu(DR["EmailAddress"].ToString(), DR["Password"].ToString(), DR["Mailserver"].ToString());
+                        EmailMenu(DR["EmailAddress"].ToString(), Encryption.Decrypt(DR["Password"].ToString()), DR["Mailserver"].ToString());
                         Console.Clear();
                     }
 
@@ -237,6 +235,7 @@ namespace NEA_protoype
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
             }
+            connection.Close();
             // display email
             // work on text rank on email and automate archive
         }
