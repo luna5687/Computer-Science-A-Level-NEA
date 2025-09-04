@@ -71,7 +71,7 @@ namespace NEA_protoype
                     Console.Write("   Exit");
                 }
                 string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
-              
+               
                 if (input == "W")
                 {
                     menuOption--;
@@ -88,7 +88,7 @@ namespace NEA_protoype
                         menuOption = 0;
                     }
                 }
-                else if (input == "\r")
+                else if (input == "\r"||input=="")
                 {
                      if (menuOption  == Accounts.Count)
                     {
@@ -135,10 +135,11 @@ namespace NEA_protoype
             connection.Close();
             
         }
-        static void CreateNewEmail(ref SQLiteConnection connection,ref SQLiteDataReader DR,string AccountName)
+        static void CreateNewEmail(string AccountName)
         {
-
-            DR.Close();
+            SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
+            connection.Open();
+           
             Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
             Console.ReadLine();
             Console.Clear();
@@ -153,7 +154,7 @@ namespace NEA_protoype
             new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                               "VALUES " +
                               $"('{EmailAddress}','{EmailPassword}','{MailServer}','{AccountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
-            DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
+           
             Console.Clear();
         }
         static void EmailAddressesMenu(string accountName)
@@ -163,7 +164,10 @@ namespace NEA_protoype
             SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
             if (DR.StepCount == 0)
             {
-                CreateNewEmail(ref connection,ref DR, accountName);
+                connection.Close();
+                CreateNewEmail(accountName);
+                
+                connection.Open();
             }
             List<string> EmaliAddreses = new List<string>();
             while (DR.Read())
@@ -215,7 +219,7 @@ namespace NEA_protoype
                         menuOption = 0;
                     }
                 }
-                else if (input == "\r")
+                else if (input == "\r"||input=="")
                 {
                     if (menuOption == EmaliAddreses.Count)
                     {

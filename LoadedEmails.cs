@@ -66,7 +66,7 @@ namespace Computer_Science_A_Level_NEA
                         menuOption = 0;
                     }
                 }
-                else if (input == "\r")
+                else if (input == "\r"||input=="")
                 {
                     if (menuOption == emails.Count)
                     {
