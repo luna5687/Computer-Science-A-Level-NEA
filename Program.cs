@@ -146,7 +146,7 @@ namespace NEA_protoype
             SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
             if (DR.StepCount == 0)
             {
-                
+                DR.Close();
 
                 Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
                 Console.ReadLine();
@@ -162,7 +162,7 @@ namespace NEA_protoype
                 new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                                   "VALUES " +
                                   $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
-
+                DR = new SQLiteCommand("SELECT AccountName FROM Accounts", connection).ExecuteReader();
                 Console.Clear();
 
              
