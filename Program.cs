@@ -423,7 +423,7 @@ namespace NEA_protoype
             
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
             List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { "the", "\n", "\r", "is", "and", "a" };
+            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a " };
             string Temp = "";
             string text = "";
              
@@ -431,12 +431,12 @@ namespace NEA_protoype
                 {
                     for (int i = 0; i < Body.Length - word.Length; i++)
                     {
-                        Temp += "";
+                        Temp = "";
                         for (int j = 0; j < word.Length; j++)
                         {
                             Temp += Body[i + j];
                         }
-                        if (Temp == word)
+                        if (Temp.ToLower() == word )
                         {
                             for (int k = 0; k < word.Length; k++)
                             {
