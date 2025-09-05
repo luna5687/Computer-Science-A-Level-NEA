@@ -22,7 +22,6 @@ namespace Computer_Science_A_Level_NEA
             client = new ImapClient();
             client.Connect(MailServer, 993, true);
             client.Authenticate(emailAddress, Password);
-           
         }
         public List<Email> GetAllEmails()
         {

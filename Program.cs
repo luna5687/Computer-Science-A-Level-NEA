@@ -108,6 +108,7 @@ namespace NEA_protoype
                         {
                             if (EnteredPassword == Encryption.Decrypt(DR["Password"].ToString()))
                             {
+                                DR.Close();
                                 passwordConfined = true;
                                 EmailAddressesMenu(Accounts[menuOption]);
                             }
@@ -162,7 +163,7 @@ namespace NEA_protoype
                 new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                                   "VALUES " +
                                   $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery(); // has issue with database being 'locked'
-                DR = new SQLiteCommand("SELECT AccountName FROM Accounts", connection).ExecuteReader();
+                DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
                 Console.Clear();
 
              
