@@ -22,6 +22,24 @@ namespace NEA_protoype
             edges.Add(ConnectedNode);
             edgeWeights.Add(edgeweight);
         }
-
+        public void IncreaseEdgeWeight(string edge,int increaseBY)
+        {
+            edgeWeights[GetIndexOfEdge(edge)] += increaseBY;
+        }
+        public string GetWord()
+        {
+               return word;
+        }
+        public int GetIndexOfEdge(string edge) 
+        {
+            for (int i = 0; i < edges.Count; i++)
+            {
+                if (edges[i].GetWord() == edge)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 }
