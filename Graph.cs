@@ -16,6 +16,8 @@ namespace NEA_protoype
         public Node(string word)
         {
             this.word = word;
+            edges = new List<Node>();
+            edgeWeights = new List<int>();
         }
         public void AddEdge(Node ConnectedNode, int edgeweight)
         {
@@ -40,6 +42,18 @@ namespace NEA_protoype
                 }
             }
             return -1;
+        }
+        public int GetEdgeAmount()
+        {
+            return edges.Count;
+        }
+        public string GetEdge(int index)
+        {
+            return edges[index].GetWord();
+        }
+        public int GetEdgeWeight(int index)
+        {
+            return edgeWeights[index];
         }
     }
     public class Graph

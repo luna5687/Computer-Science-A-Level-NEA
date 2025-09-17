@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using System.Data.SQLite;
 // Copyright 2025 Daniel Ian White
 
 // Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
@@ -12,13 +11,13 @@ namespace NEA_protoype
         static void AccountsMenu(ref SQLDataBase DataBase)
         {
             List<string[]> temp;
-            
+
 
             List<string> Accounts = new List<string>();
             temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             if (temp == null)
             {
-                 Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
+                Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
                 Console.ReadLine();
                 Console.Clear();
                 Console.Write("Enter Account Username: ");
@@ -39,10 +38,10 @@ namespace NEA_protoype
                 temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             }
 
-             Accounts = new List<string>();
+            Accounts = new List<string>();
             foreach (string[] s in temp)
             {
-                 Accounts.Add(s[0].ToString());
+                Accounts.Add(s[0].ToString());
             }
             temp = null;
 
@@ -413,7 +412,7 @@ namespace NEA_protoype
                                      "(2,'Important')"};
             SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
-           // AccountsMenu(ref DataBase);
+            // AccountsMenu(ref DataBase);
 
 
 
@@ -421,7 +420,7 @@ namespace NEA_protoype
 
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
             List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a " };
+            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a ", " to " };
             string Temp = "";
             string text = "";
 
@@ -482,74 +481,87 @@ namespace NEA_protoype
 
                 }
             }
-            foreach (string word in FilteredWords)
+
+            Graph graph = CreateGraph(FilteredWords);
+
+            double total = 0;
+            foreach (Node node in graph.nodes)
             {
-                Console.Write(word + " ");
-                if (word.Contains('.'))
+                Console.Write(node.GetWord() + ": ");
+                total = 0;
+                for (int i = 0; i < node.GetEdgeAmount(); i++)
                 {
-                    Console.Write("\n");
+                    Console.Write(node.GetEdge(i) + ",");
+                    total += node.GetEdgeWeight(i);
                 }
+                total = total / ((double)node.GetEdgeAmount());
+                Console.WriteLine(" Score: " + total);
             }
-       
+            Console.ReadLine();
+
+        }
+        static Graph CreateGraph(List<string> input)
+        {
             Graph graph = new Graph();
             bool InGraph = false;
-
-            // start on incorperating graph
-            for (int i = 0; i < FilteredWords.Count; i++)
+            for (int i = 0; i < input.Count; i++)
             {
-
+                InGraph = false;
                 foreach (Node n in graph.nodes)
                 {
-                    if (FilteredWords[i] == n.GetWord())
+                    if (input[i].ToLower() == n.GetWord().ToLower())
                     {
                         InGraph = true;
                     }
                 }
                 if (!InGraph)
                 {
-                    graph.AddNode(FilteredWords[i]);
+                    graph.AddNode(input[i].ToLower());
                 }
                 if (i != 0)
                 {
-                    if (graph.GetNodeIndex(FilteredWords[i - 1]) == -1)
+                    if (!input[i - 1].ToLower().Contains('.'))
                     {
-                        graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(new Node(FilteredWords[i - 1]), 1);
-                    }
-                    else
-                    {
-                        if (graph.nodes[graph.GetNodeIndex(FilteredWords[i])].GetIndexOfEdge(FilteredWords[i - 1]) == -1)
+                        if (graph.GetNodeIndex(input[i - 1].ToLower()) == -1)
                         {
-                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(graph.nodes[graph.GetNodeIndex(FilteredWords[i - 1])], 1);
+                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i - 1].ToLower()), 1);
                         }
                         else
                         {
-                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].IncreaseEdgeWeight(FilteredWords[i - 1], 1);
+                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i - 1].ToLower()) == -1)
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i - 1].ToLower())], 1);
+                            }
+                            else
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i - 1].ToLower(), 1);
+                            }
                         }
                     }
                 }
-                if (i != FilteredWords.Count-1)
+                if (i != input.Count - 1)
                 {
-                    if (graph.GetNodeIndex(FilteredWords[i + 1]) == -1)
-                    {
-                        graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(new Node(FilteredWords[i + 1]), 1);
-                    }
-                    else
-                    {
-                        if (graph.nodes[graph.GetNodeIndex(FilteredWords[i])].GetIndexOfEdge(FilteredWords[i + 1]) == -1)
+                    
+                        if (graph.GetNodeIndex(input[i + 1].ToLower()) == -1)
                         {
-                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(graph.nodes[graph.GetNodeIndex(FilteredWords[i + 1])], 1);
+                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i + 1].ToLower()), 1);
                         }
                         else
                         {
-                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].IncreaseEdgeWeight(FilteredWords[i + 1], 1);
+                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i + 1].ToLower()) == -1)
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i + 1].ToLower())], 1);
+                            }
+                            else
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i + 1].ToLower(), 1);
+                            }
                         }
-                    }
+                    
                 }
             }
-            Console.ReadLine();
-
+            return graph;
         }
-
 
     }
 
