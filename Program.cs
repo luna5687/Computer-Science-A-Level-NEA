@@ -413,7 +413,7 @@ namespace NEA_protoype
                                      "(2,'Important')"};
             SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
-            AccountsMenu(ref DataBase);
+           // AccountsMenu(ref DataBase);
 
 
 
@@ -490,10 +490,62 @@ namespace NEA_protoype
                     Console.Write("\n");
                 }
             }
-            List<Graph> nodes = new List<Graph>();
+       
+            Graph graph = new Graph();
+            bool InGraph = false;
 
             // start on incorperating graph
-            
+            for (int i = 0; i < FilteredWords.Count; i++)
+            {
+
+                foreach (Node n in graph.nodes)
+                {
+                    if (FilteredWords[i] == n.GetWord())
+                    {
+                        InGraph = true;
+                    }
+                }
+                if (!InGraph)
+                {
+                    graph.AddNode(FilteredWords[i]);
+                }
+                if (i != 0)
+                {
+                    if (graph.GetNodeIndex(FilteredWords[i - 1]) == -1)
+                    {
+                        graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(new Node(FilteredWords[i - 1]), 1);
+                    }
+                    else
+                    {
+                        if (graph.nodes[graph.GetNodeIndex(FilteredWords[i])].GetIndexOfEdge(FilteredWords[i - 1]) == -1)
+                        {
+                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(graph.nodes[graph.GetNodeIndex(FilteredWords[i - 1])], 1);
+                        }
+                        else
+                        {
+                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].IncreaseEdgeWeight(FilteredWords[i - 1], 1);
+                        }
+                    }
+                }
+                if (i != FilteredWords.Count-1)
+                {
+                    if (graph.GetNodeIndex(FilteredWords[i + 1]) == -1)
+                    {
+                        graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(new Node(FilteredWords[i + 1]), 1);
+                    }
+                    else
+                    {
+                        if (graph.nodes[graph.GetNodeIndex(FilteredWords[i])].GetIndexOfEdge(FilteredWords[i + 1]) == -1)
+                        {
+                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].AddEdge(graph.nodes[graph.GetNodeIndex(FilteredWords[i + 1])], 1);
+                        }
+                        else
+                        {
+                            graph.nodes[graph.GetNodeIndex(FilteredWords[i])].IncreaseEdgeWeight(FilteredWords[i + 1], 1);
+                        }
+                    }
+                }
+            }
             Console.ReadLine();
 
         }
