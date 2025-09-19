@@ -7,30 +7,32 @@ using System.Data.SQLite;
 
 namespace NEA_protoype
 {
-    public class Graph
+    public class Node
     {
         private string word;
-        private List<Graph> edges;
+        private List<Node> edges;
         private List<int> edgeWeights;
 
-        public Graph(string word)
+        public Node(string word)
         {
             this.word = word;
+            edges = new List<Node>();
+            edgeWeights = new List<int>();
         }
-        public void AddEdge(Graph ConnectedNode, int edgeweight)
+        public void AddEdge(Node ConnectedNode, int edgeweight)
         {
             edges.Add(ConnectedNode);
             edgeWeights.Add(edgeweight);
         }
-        public void IncreaseEdgeWeight(string edge,int increaseBY)
+        public void IncreaseEdgeWeight(string edge, int increaseBY)
         {
             edgeWeights[GetIndexOfEdge(edge)] += increaseBY;
         }
         public string GetWord()
         {
-               return word;
+            return word;
         }
-        public int GetIndexOfEdge(string edge) 
+        public int GetIndexOfEdge(string edge)
         {
             for (int i = 0; i < edges.Count; i++)
             {
@@ -40,6 +42,41 @@ namespace NEA_protoype
                 }
             }
             return -1;
+        }
+        public int GetEdgeAmount()
+        {
+            return edges.Count;
+        }
+        public string GetEdge(int index)
+        {
+            return edges[index].GetWord();
+        }
+        public int GetEdgeWeight(int index)
+        {
+            return edgeWeights[index];
+        }
+    }
+    public class Graph
+    {
+        public List<Node> nodes;
+        public Graph()
+        {
+            nodes = new List<Node>();
+        }
+        public void AddNode(string word)
+        {
+            nodes.Add(new Node(word));
+        }
+        public int GetNodeIndex(string ToFind)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (ToFind == nodes[i].GetWord())
+                {
+                    return i;
+                }
+            }
+            return -1; 
         }
     }
 }

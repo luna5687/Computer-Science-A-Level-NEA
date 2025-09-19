@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using System.Data.SQLite;
 // Copyright 2025 Daniel Ian White
 
 // Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
@@ -9,14 +8,15 @@ namespace NEA_protoype
 
     internal class Program
     {
-        static void AccountsMenu()
+        static void AccountsMenu(ref SQLDataBase DataBase)
         {
-            SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
-            connection.Open();
-            SQLiteDataReader DR = new SQLiteCommand("SELECT AccountName FROM Accounts", connection).ExecuteReader();
-            if (DR.StepCount == 0)
+            List<string[]> temp;
+
+
+            List<string> Accounts = new List<string>();
+            temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+            if (temp == null)
             {
-                DR.Close();
                 Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
                 Console.ReadLine();
                 Console.Clear();
@@ -32,17 +32,29 @@ namespace NEA_protoype
 
                     accountPassword = Console.ReadLine();
                 }
-                new SQLiteCommand("INSERT INTO Accounts(AccountName,Password)" +
+                DataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
                                   "VALUES " +
-                                  $"('{accountname}','{Encryption.Encrypt(accountPassword)}');", connection).ExecuteNonQuery();
-                DR = new SQLiteCommand("SELECT AccountName FROM Accounts", connection).ExecuteReader();
-                Console.Clear();
+                                  $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
+                temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             }
-            List<string> Accounts = new List<string>();
-            while (DR.Read())
+
+            Accounts = new List<string>();
+            foreach (string[] s in temp)
             {
-                Accounts.Add(DR["AccountName"].ToString());
+                Accounts.Add(s[0].ToString());
             }
+            temp = null;
+
+
+
+
+
+
+
+
+
+
+
             bool exit = false;
             int menuOption = 0;
             while (!exit)
@@ -101,16 +113,14 @@ namespace NEA_protoype
                             $"");
                         string EnteredPassword = Console.ReadLine();
                         bool passwordConfined = false;
-                        DR = new SQLiteCommand($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'", connection).ExecuteReader();
-                        DR.Read();
-
+                        temp = DataBase.ExecuteQuery($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'");
                         while (EnteredPassword != "" && !passwordConfined)
                         {
-                            if (EnteredPassword == Encryption.Decrypt(DR["Password"].ToString()))
+                            if (EnteredPassword == Encryption.Decrypt(temp[0][0]))
                             {
-                                DR.Close();
+
                                 passwordConfined = true;
-                                EmailAddressesMenu(Accounts[menuOption]);
+                                EmailAddressesMenu(Accounts[menuOption], ref DataBase);
                             }
                             else
                             {
@@ -130,42 +140,28 @@ namespace NEA_protoype
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
             }
-            connection.Close();
+
         }
 
-        static void EmailAddressesMenu(string accountName)
+        static void EmailAddressesMenu(string accountName, ref SQLDataBase DataBase)
         {
-            SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
-            connection.Open();
-            SQLiteDataReader DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
-            if (DR.StepCount == 0)
+            List<string[]> temp;
+            temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
+            if (temp == null)
             {
-                DR.Close();
-
                 Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
                 Console.ReadLine();
                 Console.Clear();
-                Console.Write("Enter Emailaddress: ");
-                string EmailAddress = Console.ReadLine();
-                Console.Write("Enter the email's mail server: ");
-                string MailServer = Console.ReadLine();
-                Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-                // TODO - validate password 
-                string EmailPassword = Console.ReadLine();
-
-                new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
-                                  "VALUES " +
-                                  $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery();
-                DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
-                Console.Clear();
-
-
+                CreateEmail(ref DataBase, accountName);
+                temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
             }
+
             List<string> EmaliAddreses = new List<string>();
-            while (DR.Read())
+            foreach (string[] s in temp)
             {
-                EmaliAddreses.Add(DR["EmailAddress"].ToString());
+                EmaliAddreses.Add(s[0].ToString());
             }
+            temp = null;
             bool exit = false;
             int menuOption = 0;
             Console.Clear();
@@ -231,42 +227,29 @@ namespace NEA_protoype
                     }
                     else if (menuOption == EmaliAddreses.Count)
                     {
-                        DR.Close();
-                        EmailManagement(EmaliAddreses, connection, accountName);
-                        DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
-                        if (DR.StepCount == 0)
+                        temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
+                        if (temp == null)
                         {
-                            DR.Close();
-
                             Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
                             Console.ReadLine();
                             Console.Clear();
-                            Console.Write("Enter Emailaddress: ");
-                            string EmailAddress = Console.ReadLine();
-                            Console.Write("Enter the email's mail server: ");
-                            string MailServer = Console.ReadLine();
-                            Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-                            // TODO - validate password 
-                            string EmailPassword = Console.ReadLine();
-                            new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
-                                              "VALUES " +
-                                              $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery();
-                            DR = new SQLiteCommand("SELECT EmailAddress FROM Users", connection).ExecuteReader();
-                            Console.Clear();
-
-
+                            CreateEmail(ref DataBase, accountName);
+                            temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
                         }
+
                         EmaliAddreses = new List<string>();
-                        while (DR.Read())
+                        foreach (string[] s in temp)
                         {
-                            EmaliAddreses.Add(DR["EmailAddress"].ToString());
+                            EmaliAddreses.Add(s[0].ToString());
                         }
+                        temp = null;
                     }
                     else
                     {
-                        DR = new SQLiteCommand($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'", connection).ExecuteReader();
-                        DR.Read();
-                        EmailMenu(DR["EmailAddress"].ToString(), Encryption.Decrypt(DR["Password"].ToString()), DR["Mailserver"].ToString());
+
+                        temp = DataBase.ExecuteQuery($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'");
+                        EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2]);
+                        temp = null;
                         Console.Clear();
                     }
 
@@ -274,9 +257,24 @@ namespace NEA_protoype
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
             }
-            connection.Close();
+
 
             // work on text rank on email and automate archive
+        }
+        static void CreateEmail(ref SQLDataBase DataBase, string accountName)
+        {
+            Console.Write("Enter Emailaddress: ");
+            string EmailAddress = Console.ReadLine();
+            Console.Write("Enter the email's mail server: ");
+            string MailServer = Console.ReadLine();
+            Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
+            // TODO - validate password 
+            string EmailPassword = Console.ReadLine();
+
+            DataBase.ExecuteNonQuery("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
+                              "VALUES " +
+                              $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
+            Console.Clear();
         }
         static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver)
         {
@@ -284,7 +282,7 @@ namespace NEA_protoype
             LoadedEmails emalis = new LoadedEmails(imapServer);
             emalis.EmailMenu();
         }
-        static void EmailManagement(List<string> EmaliAddreses, SQLiteConnection connection, string accountName)
+        static void EmailManagement(List<string> EmaliAddreses, ref SQLDataBase DataBase, string accountName)
         {
             Console.Clear();
             bool exit = false;
@@ -330,12 +328,12 @@ namespace NEA_protoype
                 {
                     if (menuOption == 0)
                     {
-                        DeleteEmails(EmaliAddreses, connection);
+                        DeleteEmails(EmaliAddreses, ref DataBase);
                         exit = true;
                     }
                     else if (menuOption == 1)
                     {
-                        AddEmail(EmaliAddreses, connection, accountName);
+                        AddEmail(EmaliAddreses, ref DataBase, accountName);
                     }
                     else
                     {
@@ -346,15 +344,15 @@ namespace NEA_protoype
                 Console.CursorLeft = 0;
             }
         }
-        static void DeleteEmails(List<string> EmailAddresses, SQLiteConnection connection)
+        static void DeleteEmails(List<string> EmailAddresses, ref SQLDataBase DataBase)
         {
             foreach (string EmailAddress in EmailAddresses)
             {
-                new SQLiteCommand($"DELETE FROM Users WHERE EmailAddress == '{EmailAddress}'", connection).ExecuteNonQuery();
-                new SQLiteCommand($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'", connection).ExecuteNonQuery();
+                DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddress}'");
+                DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
             }
         }
-        static void AddEmail(List<string> EmailAddresses, SQLiteConnection connection, string accountName)
+        static void AddEmail(List<string> EmailAddresses, ref SQLDataBase DataBase, string accountName)
         {
             Console.Clear();
             Console.Clear();
@@ -371,58 +369,58 @@ namespace NEA_protoype
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
             // TODO - validate password 
             string EmailPassword = Console.ReadLine();
-
-            new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
+            DataBase.ExecuteNonQuery("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                               "VALUES " +
-                              $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery();
+                              $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
+
 
             Console.Clear();
         }
         static void Main(string[] args)
         {
-            if (!File.Exists("Email_Archive.db"))
-            {
-                SQLiteConnection.CreateFile("Email_Archive.db");
-                SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
-                connection.Open();
-                new SQLiteCommand("CREATE TABLE Users (" +
-                                  "EmailAddress varchar PRIMARY KEY," +
-                                  "Password varchar," +
-                                  "Mailserver varchar," +
-                                  "Account varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Emails(" +
-                                  "EmailID int PRIMARY KEY," +
-                                  "Sender varchar," +
-                                  "Recipient varchar," +
-                                  "Subject varchar," +
-                                  "TextBody varchar," +
-                                  "Keywords varchar," +
-                                  "EmailAddress varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Tags(" +
-                                  "TagID int PRIMARY KEY," +
-                                  "TagName varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE AssignedTags(" +
-                                  "TagID int," +
-                                  "EmailID int)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Accounts(" +
-                                  "AccountName varchar PRIMARY KEY," +
-                                  "Password varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("INSERT INTO Tags(tagID,TagName)" +
-                                  "VALUES " +
-                                  "(0,'Metting')," +
-                                  "(1,'Accounting')," +
-                                  "(2,'Important')", connection).ExecuteNonQuery();
+            string[] InitalTable = {"CREATE TABLE Users (" +
+                                    "EmailAddress varchar PRIMARY KEY," +
+                                     "Password varchar," +
+                                     "Mailserver varchar," +
+                                     "Account varchar)",
 
-                connection.Close();
-            }
+                                     "CREATE TABLE Emails(" +
+                                     "EmailID int PRIMARY KEY," +
+                                     "Sender varchar," +
+                                     "Recipient varchar," +
+                                      "Subject varchar," +
+                                     "TextBody varchar," +
+                                      "Keywords varchar," +
+                                     "EmailAddress varchar)",
+
+                                     "CREATE TABLE Tags(" +
+                                     "TagID int PRIMARY KEY," +
+                                     "TagName varchar)",
+
+                                     "CREATE TABLE AssignedTags(" +
+                                     "TagID int," +
+                                     "EmailID int)",
+
+                                     "CREATE TABLE Accounts(" +
+                                     "AccountName varchar PRIMARY KEY," +
+                                     "Password varchar)",
+
+                                     "INSERT INTO Tags(tagID,TagName)" +
+                                     "VALUES " +
+                                     "(0,'Metting')," +
+                                     "(1,'Accounting')," +
+                                     "(2,'Important')"};
+            SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
-            //AccountsMenu();
+            // AccountsMenu(ref DataBase);
+
+
 
             // testing text rank delete after finishing 
 
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
             List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a " };
+            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a ", " to " };
             string Temp = "";
             string text = "";
 
@@ -464,13 +462,13 @@ namespace NEA_protoype
                         TempArray = word.Split('.');
                         foreach (string temp in TempArray)
                         {
-                            if (temp != "" && temp == TempArray[TempArray.Length-1])
+                            if (temp != "" && temp == TempArray[TempArray.Length - 1])
                             {
                                 FilteredWords.Add(temp);
                             }
                             else if (temp != "")
                             {
-                                FilteredWords.Add(temp+".");
+                                FilteredWords.Add(temp + ".");
                             }
 
 
@@ -480,25 +478,90 @@ namespace NEA_protoype
                     {
                         FilteredWords.Add(word);
                     }
-                    
+
                 }
             }
-            foreach (string word in FilteredWords)
+
+            Graph graph = CreateGraph(FilteredWords);
+
+            double total = 0;
+            foreach (Node node in graph.nodes)
             {
-                Console.Write(word+" ");
-                if (word.Contains('.'))
+                Console.Write(node.GetWord() + ": ");
+                total = 0;
+                for (int i = 0; i < node.GetEdgeAmount(); i++)
                 {
-                    Console.Write("\n");
+                    Console.Write(node.GetEdge(i) + ",");
+                    total += node.GetEdgeWeight(i);
                 }
+                total = total / ((double)node.GetEdgeAmount());
+                Console.WriteLine(" Score: " + total);
             }
-            List<Graph> nodes = new List<Graph>();
-
-            // start on incorperating graph
-
             Console.ReadLine();
 
         }
-
+        static Graph CreateGraph(List<string> input)
+        {
+            Graph graph = new Graph();
+            bool InGraph = false;
+            for (int i = 0; i < input.Count; i++)
+            {
+                InGraph = false;
+                foreach (Node n in graph.nodes)
+                {
+                    if (input[i].ToLower() == n.GetWord().ToLower())
+                    {
+                        InGraph = true;
+                    }
+                }
+                if (!InGraph)
+                {
+                    graph.AddNode(input[i].ToLower());
+                }
+                if (i != 0)
+                {
+                    if (!input[i - 1].ToLower().Contains('.'))
+                    {
+                        if (graph.GetNodeIndex(input[i - 1].ToLower()) == -1)
+                        {
+                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i - 1].ToLower()), 1);
+                        }
+                        else
+                        {
+                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i - 1].ToLower()) == -1)
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i - 1].ToLower())], 1);
+                            }
+                            else
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i - 1].ToLower(), 1);
+                            }
+                        }
+                    }
+                }
+                if (i != input.Count - 1)
+                {
+                    
+                        if (graph.GetNodeIndex(input[i + 1].ToLower()) == -1)
+                        {
+                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i + 1].ToLower()), 1);
+                        }
+                        else
+                        {
+                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i + 1].ToLower()) == -1)
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i + 1].ToLower())], 1);
+                            }
+                            else
+                            {
+                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i + 1].ToLower(), 1);
+                            }
+                        }
+                    
+                }
+            }
+            return graph;
+        }
 
     }
 
