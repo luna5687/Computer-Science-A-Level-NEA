@@ -493,7 +493,7 @@ namespace NEA_protoype
                  
                 }
                 node.CaculateScore();
-                Console.WriteLine(" Score: " + node.GetScore());
+                Console.WriteLine("Score: " + node.GetScore());
             }
             Console.ReadLine();
 
