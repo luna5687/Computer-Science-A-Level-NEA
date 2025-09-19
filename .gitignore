@@ -54,3 +54,4 @@ TestResult.xml
 nunit-*.xml
 *.vsidx
 Email_Archive.db
+.vs
