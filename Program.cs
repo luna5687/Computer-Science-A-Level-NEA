@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using MimeKit;
 using System.Data.SQLite;
 // Copyright 2025 Daniel Ian White
 
@@ -133,7 +132,7 @@ namespace NEA_protoype
             }
             connection.Close();
         }
-      
+
         static void EmailAddressesMenu(string accountName)
         {
             SQLiteConnection connection = new SQLiteConnection("Data Source=Email_Archive.db;Version=3;New=True;Compress=True;");
@@ -276,7 +275,7 @@ namespace NEA_protoype
                 Console.CursorLeft = 0;
             }
             connection.Close();
-        
+
             // work on text rank on email and automate archive
         }
         static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver)
@@ -376,7 +375,7 @@ namespace NEA_protoype
             new SQLiteCommand("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
                               "VALUES " +
                               $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');", connection).ExecuteNonQuery();
-            
+
             Console.Clear();
         }
         static void Main(string[] args)
@@ -420,36 +419,83 @@ namespace NEA_protoype
             //AccountsMenu();
 
             // testing text rank delete after finishing 
-            
+
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
             List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { "the", "\n", "\r", "is", "and", "a" };
+            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a " };
             string Temp = "";
             string text = "";
-             
-                foreach (string word in WordsToFilter)
+
+            foreach (string word in WordsToFilter)
+            {
+                for (int i = 0; i < Body.Length - word.Length; i++)
                 {
-                    for (int i = 0; i < Body.Length - word.Length; i++)
+                    Temp = "";
+                    for (int j = 0; j < word.Length; j++)
                     {
-                        Temp += "";
-                        for (int j = 0; j < word.Length; j++)
+                        Temp += Body[i + j];
+                    }
+                    if (Temp.ToLower() == "\r" || Temp.ToLower() == "\n")
+                    {
+                        for (int k = 0; k < word.Length; k++)
                         {
-                            Temp += Body[i + j];
+                            Body[i + k] = '.';
                         }
-                        if (Temp == word)
+                    }
+                    else if (Temp.ToLower() == word)
+                    {
+                        for (int k = 0; k < word.Length; k++)
                         {
-                            for (int k = 0; k < word.Length; k++)
-                            {
-                                Body[i + k] = ' ';
-                            }
+                            Body[i + k] = ' ';
                         }
                     }
                 }
-                foreach (char character in Body)
-                { text += character; }
-                Console.WriteLine(text);
-               
-                Console.ReadLine();
+            }
+            foreach (char character in Body)
+            { text += character; }
+            string[] words = text.Split(' ');
+            string[] TempArray;
+            foreach (string word in words)
+            {
+                if (word != "")
+                {
+                    if (word.Contains('.') && word[word.Length - 1] != '.')
+                    {
+                        TempArray = word.Split('.');
+                        foreach (string temp in TempArray)
+                        {
+                            if (temp != "" && temp == TempArray[TempArray.Length-1])
+                            {
+                                FilteredWords.Add(temp);
+                            }
+                            else if (temp != "")
+                            {
+                                FilteredWords.Add(temp+".");
+                            }
+
+
+                        }
+                    }
+                    else
+                    {
+                        FilteredWords.Add(word);
+                    }
+                    
+                }
+            }
+            foreach (string word in FilteredWords)
+            {
+                Console.Write(word+" ");
+                if (word.Contains('.'))
+                {
+                    Console.Write("\n");
+                }
+            }
+            List<Graph> nodes = new List<Graph>();
+
+            // start on incorperating graph
+
+            Console.ReadLine();
 
         }
 
