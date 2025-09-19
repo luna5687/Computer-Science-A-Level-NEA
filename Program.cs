@@ -486,13 +486,44 @@ namespace NEA_protoype
 
             foreach (Node node in graph.nodes)
             {
-               
+                node.CaculateScore();
+            }
+
+            Node HighestScore1 = graph.nodes[0];
+            Node HighestScore2 = graph.nodes[0];
+            Node HighestScore3 = graph.nodes[0];
+
+            for (int i = 0; i < graph.nodes.Count; i++)
+            {
+                if (HighestScore1.GetScore() < graph.nodes[i].GetScore())
+                {
+                    HighestScore3 = HighestScore2;
+                    HighestScore2 = HighestScore1;
+                    HighestScore1 = graph.nodes[i];
+                }
+                else if (HighestScore2.GetScore() < graph.nodes[i].GetScore())
+                {
+                    HighestScore3 = HighestScore2;
+                    HighestScore2 = graph.nodes[i];
+                }
+                else if (HighestScore3.GetScore() < graph.nodes[i].GetScore())
+                {
+                    
+                    HighestScore3 = graph.nodes[i];
+                }
+            }
+            Console.WriteLine($"1st: {HighestScore1.GetWord()} , {HighestScore1.GetScore()}");
+            Console.WriteLine($"2nd: {HighestScore2.GetWord()} , {HighestScore2.GetScore()}");
+            Console.WriteLine($"3rd: {HighestScore3.GetWord()} , {HighestScore3.GetScore()}");
+            foreach (Node node in graph.nodes)
+            {
+
                 for (int i = 0; i < node.GetEdgeAmount(); i++)
                 {
                     Console.Write(node.GetEdge(i) + ",");
-                 
+
                 }
-                node.CaculateScore();
+
                 Console.WriteLine("Score: " + node.GetScore());
             }
             Console.ReadLine();
