@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Data.SQLite;
+
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace Computer_Science_A_Level_NEA
     {
         private ImapClient client;
         
-        static private SQLiteConnection connection = new SQLiteConnection("Data Source = Email_Archive.db; Version=3;New=True;Compress=True;");
+        
         public ImapServer(string emailAddress,string Password,string MailServer)
         {
             client = new ImapClient();
