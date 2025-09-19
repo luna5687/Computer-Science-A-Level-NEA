@@ -484,18 +484,16 @@ namespace NEA_protoype
 
             Graph graph = CreateGraph(FilteredWords);
 
-            double total = 0;
             foreach (Node node in graph.nodes)
             {
-                Console.Write(node.GetWord() + ": ");
-                total = 0;
+               
                 for (int i = 0; i < node.GetEdgeAmount(); i++)
                 {
                     Console.Write(node.GetEdge(i) + ",");
-                    total += node.GetEdgeWeight(i);
+                 
                 }
-                total = total / ((double)node.GetEdgeAmount());
-                Console.WriteLine(" Score: " + total);
+                node.CaculateScore();
+                Console.WriteLine(" Score: " + node.GetScore());
             }
             Console.ReadLine();
 

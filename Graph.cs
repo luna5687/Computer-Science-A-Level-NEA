@@ -1,6 +1,3 @@
-using Computer_Science_A_Level_NEA;
-using MimeKit;
-using System.Data.SQLite;
 // Copyright 2025 Daniel Ian White
 
 // Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
@@ -12,7 +9,7 @@ namespace NEA_protoype
         private string word;
         private List<Node> edges;
         private List<int> edgeWeights;
-
+        private double Score = 0;
         public Node(string word)
         {
             this.word = word;
@@ -55,6 +52,22 @@ namespace NEA_protoype
         {
             return edgeWeights[index];
         }
+        public void CaculateScore()
+        {
+            double total = 0;
+            for (int i = 0; i < this.GetEdgeAmount(); i++)
+            {
+
+                total += this.GetEdgeWeight(i);
+            }
+            total = total / ((double)this.GetEdgeAmount());
+
+            Score = total;
+        }
+        public int GetScore()
+        {
+            return (int)Score;
+        }
     }
     public class Graph
     {
@@ -76,7 +89,7 @@ namespace NEA_protoype
                     return i;
                 }
             }
-            return -1; 
+            return -1;
         }
     }
 }
