@@ -10,6 +10,7 @@ namespace NEA_protoype
         private List<Node> edges;
         private List<int> edgeWeights;
         private double Score = 0;
+        private string WordType;
         public Node(string word)
         {
             this.word = word;
@@ -67,6 +68,10 @@ namespace NEA_protoype
         public int GetScore()
         {
             return (int)Score;
+        }
+        public string DecideWordType(string word)
+        {
+            return "";
         }
     }
     public class Graph

@@ -411,7 +411,7 @@ namespace NEA_protoype
                                      "(0,'Metting')," +
                                      "(1,'Accounting')," +
                                      "(2,'Important')"};
-            SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
+            //SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
             // AccountsMenu(ref DataBase);
 
