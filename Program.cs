@@ -415,8 +415,8 @@ namespace NEA_protoype
             ConsoleInteraction.CheckConsoleExistance();
             // AccountsMenu(ref DataBase);
 
-
-
+            POStagging("Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.");
+            ConsoleInteraction.GetConsoleInput();
             // testing text rank delete after finishing 
 
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
@@ -531,6 +531,62 @@ namespace NEA_protoype
             }
             Console.ReadLine();
 
+        }
+        static void POStagging(string input) // tessting POS
+        {
+            string[] WordsToFilter = {  "\n", "\r" };
+            char[] Body = input.ToCharArray();
+            string Temp = "";
+            string text = "";
+
+            foreach (string word in WordsToFilter)
+            {
+                for (int i = 0; i < Body.Length - word.Length; i++)
+                {
+                    Temp = "";
+                    for (int j = 0; j < word.Length; j++)
+                    {
+                        Temp += Body[i + j];
+                    }
+                    if (Temp.ToLower() == "\r" || Temp.ToLower() == "\n")
+                    {
+                        for (int k = 0; k < word.Length; k++)
+                        {
+                            Body[i + k] = '.';
+                        }
+                    }
+                }
+            }
+            foreach (char character in Body)
+            { text += character; }
+            string[] words = text.Split('.');
+            foreach (string word in words)
+            {
+                Console.WriteLine(word);
+            }
+            List<List<string>> SplitSentences= new List<List<string>>();
+            List<string> TempList = new List<string>();
+            foreach (string word in words)
+            {
+                if (!(word == ""))
+                {
+                    foreach (string word2 in word.Split(' '))
+                    {
+                        TempList.Add(word2);
+                    }
+                    SplitSentences.Add(TempList);
+                    TempList = new List<string>();
+                }
+            }
+            Console.WriteLine();
+            foreach(List<string> strings in SplitSentences)
+            {
+                foreach(string word in strings)
+                {
+                    Console.Write(word+" ");
+                }
+                Console.WriteLine();
+            }
         }
         static Graph CreateGraph(List<string> input)
         {
