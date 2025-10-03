@@ -1,4 +1,5 @@
 ﻿using Computer_Science_A_Level_NEA;
+using System.Net.Mail;
 // Copyright 2025 Daniel Ian White
 
 
@@ -228,22 +229,7 @@ namespace NEA_protoype
                     }
                     else if (menuOption == EmaliAddreses.Count)
                     {
-                        temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-                        if (temp == null)
-                        {
-                            Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
-                            Console.ReadLine();
-                            Console.Clear();
-                            CreateEmail(ref DataBase, accountName);
-                            temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-                        }
-
-                        EmaliAddreses = new List<string>();
-                        foreach (string[] s in temp)
-                        {
-                            EmaliAddreses.Add(s[0].ToString());
-                        }
-                        temp = null;
+                        EmailManagement(EmaliAddreses, ref DataBase, accountName);
                     }
                     else
                     {
@@ -351,6 +337,74 @@ namespace NEA_protoype
             {
                 DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddress}'");
                 DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
+            }
+            bool exit = false;
+            int menuOption = 0;
+            Console.Clear();
+            while (!exit)
+            {
+                if (menuOption == EmailAddresses.Count)
+                {
+                    for (int i = 0; i < EmailAddresses.Count; i++)
+                    {
+                        Console.Write("   " + EmailAddresses[i] + "\n");
+                    }
+                    
+                    Console.Write(" > Exit");
+                }
+               
+                else
+                {
+                    for (int i = 0; i < EmailAddresses.Count; i++)
+                    {
+                        if (i == menuOption)
+                        {
+                            Console.Write(" > " + EmailAddresses[i] + "\n");
+                        }
+                        else
+                        {
+                            Console.Write("   " + EmailAddresses[i] + "\n");
+                        }
+                    }
+                    
+                    Console.Write("   Exit");
+                }
+                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
+
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = EmailAddresses.Count;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption > EmailAddresses.Count)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    
+                     if (menuOption == EmailAddresses.Count)
+                    {
+                        exit = true;
+                    }
+                    else
+                    {
+                        
+                        DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
+
+                        Console.Clear();
+                    }
+
+                }
+                Console.CursorTop = 0;
+                Console.CursorLeft = 0;
             }
         }
         static void AddEmail(List<string> EmailAddresses, ref SQLDataBase DataBase, string accountName)
