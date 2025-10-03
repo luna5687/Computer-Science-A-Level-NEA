@@ -12,9 +12,10 @@ namespace Computer_Science_A_Level_NEA
             
             if (!File.Exists("Email_Archive.db"))
             {
+                SQLiteConnection.CreateFile("Email_Archive.db");
                 connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");
                 connection.Open();
-                SQLiteConnection.CreateFile("Email_Archive.db");
+                
                 foreach (string s in IntalTables)
                 {
                     this.ExecuteNonQuery(s);
@@ -22,7 +23,7 @@ namespace Computer_Science_A_Level_NEA
             }
             else
             {
-                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");
+                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");  // could not find dependanceys
                 connection.Open();
             }
         }

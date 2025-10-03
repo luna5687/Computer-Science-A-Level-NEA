@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Runtime.CompilerServices;
+﻿using NEA_protoype;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -36,7 +35,7 @@ namespace Computer_Science_A_Level_NEA
             else
             {
                 output = Sender + " " + Recipient + " " + Subject + " " + " ";
-                
+
             }
             return output;
         }
@@ -45,7 +44,7 @@ namespace Computer_Science_A_Level_NEA
             Console.Clear();
             string Tags = "";
             if (this.Tags != null)
-            { 
+            {
                 for (int i = 0; i < this.Tags.Count(); i++)
                 {
                     Tags += this.Tags[i] + " ";
@@ -64,39 +63,134 @@ namespace Computer_Science_A_Level_NEA
         }
         private void CreateKeywords()
         {
-            char[] Body = this.Body.ToCharArray();
-            List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { "the", "\n", "\r", "is", "and", "a" };
-            string Temp = "";
-            string text = "";
-            if (IsArchived)
-            { /* retreve keywords from archive */ }
-            else
+            List<List<POSTagging.word>> POSTagged
+            = POSTagging.POStagging(Body);
+            //ConsoleInteraction.GetConsoleInput();
+            Graph graph = CreateGraph(POSTagged);
+
+            foreach (Node node in graph.nodes)
             {
-               foreach (string word in WordsToFilter)
+                node.CaculateScore();
+            }
+
+            Node HighestScore1 = graph.nodes[0];
+            Node HighestScore2 = graph.nodes[0];
+            Node HighestScore3 = graph.nodes[0];
+
+            for (int i = 0; i < graph.nodes.Count; i++)
+            {
+                if (HighestScore1.GetScore() < graph.nodes[i].GetScore())
                 {
-                    for (int i = 0;i < Body.Length-word.Length;i++)
+                    HighestScore3 = HighestScore2;
+                    HighestScore2 = HighestScore1;
+                    HighestScore1 = graph.nodes[i];
+                }
+                else if (HighestScore2.GetScore() < graph.nodes[i].GetScore())
+                {
+                    HighestScore3 = HighestScore2;
+                    HighestScore2 = graph.nodes[i];
+                }
+                else if (HighestScore3.GetScore() < graph.nodes[i].GetScore())
+                {
+
+                    HighestScore3 = graph.nodes[i];
+                }
+            }
+            Console.WriteLine($"1st: {HighestScore1.GetWord()} , {HighestScore1.GetScore()}");
+            Console.WriteLine($"2nd: {HighestScore2.GetWord()} , {HighestScore2.GetScore()}");
+            Console.WriteLine($"3rd: {HighestScore3.GetWord()} , {HighestScore3.GetScore()}");
+
+
+            foreach (Node node in graph.nodes)
+            {
+                Console.Write($"{node.GetWord()}: ");
+                for (int i = 0; i < node.GetEdgeAmount(); i++)
+                {
+                    Console.Write(node.GetEdge(i) + ",");
+
+                }
+
+                Console.WriteLine("Score: " + node.GetScore());
+            }
+            Console.ReadLine();
+
+
+
+
+
+
+        }
+        static Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
+        {
+            List<POSTagging.word> words = new List<POSTagging.word>();
+            for (int i = 0; i < input.Count; i++)
+            {
+                for (int j = 0; j < input[i].Count; j++)
+                {
+                    words.Add(input[i][j]);
+                }
+            }
+
+
+            Graph graph = new Graph();
+            bool InGraph = false;
+            for (int i = 0; i < words.Count; i++)
+            {
+                InGraph = false;
+                foreach (Node n in graph.nodes)
+                {
+                    if (words[i].value.ToLower() == n.GetWord().ToLower())
                     {
-                        Temp += "";
-                        for (int j = 0;j < word.Length;j++)
+                        InGraph = true;
+                    }
+                }
+                if (!InGraph)
+                {
+                    graph.AddNode(words[i]);
+                }
+                if (i != 0)
+                {
+                    if (!words[i - 1].value.ToLower().Contains('.'))
+                    {
+                        if (graph.GetNodeIndex(words[i - 1].value.ToLower()) == -1)
                         {
-                            Temp += Body[i + j];
+                            graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(new Node(words[i - 1]), 1);
                         }
-                        if (Temp == word)
+                        else
                         {
-                            for (int k = 0; k < word.Length; k++)
+                            if (graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].GetIndexOfEdge(words[i - 1].value.ToLower()) == -1)
                             {
-                                Body[i + k] = ' ';
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(words[i - 1].value.ToLower())], 1);
+                            }
+                            else
+                            {
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].IncreaseEdgeWeight(words[i - 1].value.ToLower(), 1);
                             }
                         }
                     }
                 }
-                foreach (char character in Body)
-                { text += character; }
+                if (i != words.Count - 1)
+                {
 
-                
-                
+                    if (graph.GetNodeIndex(words[i + 1].value.ToLower()) == -1)
+                    {
+                        graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(new Node(words[i + 1]), 1);
+                    }
+                    else
+                    {
+                        if (graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].GetIndexOfEdge(words[i + 1].value.ToLower()) == -1)
+                        {
+                            graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(words[i + 1].value.ToLower())], 1);
+                        }
+                        else
+                        {
+                            graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].IncreaseEdgeWeight(words[i + 1].value.ToLower(), 1);
+                        }
+                    }
+
+                }
             }
+            return graph;
         }
     }
 }
