@@ -2,16 +2,19 @@
 
 // Bobs email: bob@ampretia.co.uk password: passw0rdWibble Mailserver: mail.ampretia.co.uk
 
+using Computer_Science_A_Level_NEA;
+
 namespace NEA_protoype
 {
     public class Node
     {
-        private string word;
+        
         private List<Node> edges;
         private List<int> edgeWeights;
         private double Score = 0;
-        private string WordType;
-        public Node(string word)
+        
+        private POSTagging.word word;
+        public Node(POSTagging.word word)
         {
             this.word = word;
             edges = new List<Node>();
@@ -28,7 +31,7 @@ namespace NEA_protoype
         }
         public string GetWord()
         {
-            return word;
+            return word.value;
         }
         public int GetIndexOfEdge(string edge)
         {
@@ -62,7 +65,10 @@ namespace NEA_protoype
                 total += this.GetEdgeWeight(i);
             }
             total = total / ((double)this.GetEdgeAmount());
-
+            if (word.wordType != "N")
+            {
+                total = 0;
+            }
             Score = total;
         }
         public int GetScore()
@@ -81,7 +87,7 @@ namespace NEA_protoype
         {
             nodes = new List<Node>();
         }
-        public void AddNode(string word)
+        public void AddNode(POSTagging.word word)
         {
             nodes.Add(new Node(word));
         }

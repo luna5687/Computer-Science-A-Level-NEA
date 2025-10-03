@@ -414,14 +414,14 @@ namespace NEA_protoype
             //SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
             // AccountsMenu(ref DataBase);
-
-            POSTagging.POStagging("Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.");
-            ConsoleInteraction.GetConsoleInput();
+            List<List<POSTagging.word>> POSTagged
+             = POSTagging.POStagging("Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.");
+            //ConsoleInteraction.GetConsoleInput();
             Console.Clear();
-            POSTagging.POStagging("\r\nDear student,\r\n \r\nWelcome to the first edition of our College newsletter for the new academic year. This newsletter serves as a vital communication tool to keep you informed about important developments, events, and achievements throughout the year.\r\n\r\nAs you navigate the term, please remember that a wide range of resources is available to support your academic and personal well-being. Our dedicated Student Progress Advisers, Student Services, Careers Team, Learning Support, and Health and Wellbeing teams are always ready to assist you.\r\n\r\nPlease click the button below to read the newsletter. ");
+           // POSTagging.POStagging("\r\nDear student,\r\n \r\nWelcome to the first edition of our College newsletter for the new academic year. This newsletter serves as a vital communication tool to keep you informed about important developments, events, and achievements throughout the year.\r\n\r\nAs you navigate the term, please remember that a wide range of resources is available to support your academic and personal well-being. Our dedicated Student Progress Advisers, Student Services, Careers Team, Learning Support, and Health and Wellbeing teams are always ready to assist you.\r\n\r\nPlease click the button below to read the newsletter. ");
             ConsoleInteraction.GetConsoleInput();
             // testing text rank delete after finishing 
-
+            /*
             char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
             List<string> FilteredWords = new List<string>();
             string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a ", " to " };
@@ -485,8 +485,8 @@ namespace NEA_protoype
 
                 }
             }
-
-            Graph graph = CreateGraph(FilteredWords);
+            */
+            Graph graph = CreateGraph(POSTagged);
 
             foreach (Node node in graph.nodes)
             {
@@ -537,61 +537,71 @@ namespace NEA_protoype
         }
 
         
-        static Graph CreateGraph(List<string> input)
+        static Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
         {
+            List<POSTagging.word> words = new List<POSTagging.word>();
+            for (int i = 0; i < input.Count;i++)
+            {
+                for (int j = 0; j < input[i].Count;j++)
+                {
+                    words.Add(input[i][j]);
+                }
+            }
+
+
             Graph graph = new Graph();
             bool InGraph = false;
-            for (int i = 0; i < input.Count; i++)
+            for (int i = 0; i < words.Count; i++)
             {
                 InGraph = false;
                 foreach (Node n in graph.nodes)
                 {
-                    if (input[i].ToLower() == n.GetWord().ToLower())
+                    if (words[i].value.ToLower() == n.GetWord().ToLower())
                     {
                         InGraph = true;
                     }
                 }
                 if (!InGraph)
                 {
-                    graph.AddNode(input[i].ToLower());
+                    graph.AddNode(words[i]);
                 }
                 if (i != 0)
                 {
-                    if (!input[i - 1].ToLower().Contains('.'))
+                    if (!words[i - 1].value.ToLower().Contains('.'))
                     {
-                        if (graph.GetNodeIndex(input[i - 1].ToLower()) == -1)
+                        if (graph.GetNodeIndex(words[i - 1].value.ToLower()) == -1)
                         {
-                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i - 1].ToLower()), 1);
+                            graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(new Node(words[i - 1]), 1);
                         }
                         else
                         {
-                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i - 1].ToLower()) == -1)
+                            if (graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].GetIndexOfEdge(words[i - 1].value.ToLower()) == -1)
                             {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i - 1].ToLower())], 1);
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(words[i - 1].value.ToLower())], 1);
                             }
                             else
                             {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i - 1].ToLower(), 1);
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].IncreaseEdgeWeight(words[i - 1].value.ToLower(), 1);
                             }
                         }
                     }
                 }
-                if (i != input.Count - 1)
+                if (i != words.Count - 1)
                 {
                     
-                        if (graph.GetNodeIndex(input[i + 1].ToLower()) == -1)
+                        if (graph.GetNodeIndex(words[i + 1].value.ToLower()) == -1)
                         {
-                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i + 1].ToLower()), 1);
+                            graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(new Node(words[i + 1]), 1);
                         }
                         else
                         {
-                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i + 1].ToLower()) == -1)
+                            if (graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].GetIndexOfEdge(words[i + 1].value.ToLower()) == -1)
                             {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i + 1].ToLower())], 1);
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(words[i + 1].value.ToLower())], 1);
                             }
                             else
                             {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i + 1].ToLower(), 1);
+                                graph.nodes[graph.GetNodeIndex(words[i].value.ToLower())].IncreaseEdgeWeight(words[i + 1].value.ToLower(), 1);
                             }
                         }
                     
