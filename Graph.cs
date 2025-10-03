@@ -64,7 +64,7 @@ namespace NEA_protoype
 
                 total += this.GetEdgeWeight(i);
             }
-            total = total / ((double)this.GetEdgeAmount());
+            total = total * ((double)this.GetEdgeAmount());
             if (word.wordType != "N")
             {
                 total = 0;
