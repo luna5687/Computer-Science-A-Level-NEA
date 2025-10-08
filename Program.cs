@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using System.Net.Mail;
 // Copyright 2025 Daniel Ian White
 
 
@@ -349,10 +348,10 @@ namespace NEA_protoype
                     {
                         Console.Write("   " + EmailAddresses[i] + "\n");
                     }
-                    
+
                     Console.Write(" > Exit");
                 }
-               
+
                 else
                 {
                     for (int i = 0; i < EmailAddresses.Count; i++)
@@ -366,7 +365,7 @@ namespace NEA_protoype
                             Console.Write("   " + EmailAddresses[i] + "\n");
                         }
                     }
-                    
+
                     Console.Write("   Exit");
                 }
                 string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
@@ -389,15 +388,15 @@ namespace NEA_protoype
                 }
                 else if (input == "\r" || input == "")
                 {
-                    
-                     if (menuOption == EmailAddresses.Count)
+
+                    if (menuOption == EmailAddresses.Count)
                     {
                         exit = true;
                     }
                     else
                     {
-                        
-                        DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
+
+                        DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddresses}'");
 
                         Console.Clear();
                     }
@@ -470,8 +469,8 @@ namespace NEA_protoype
             AccountsMenu(ref DataBase);
 
 
-            
-           
+
+
 
 
 

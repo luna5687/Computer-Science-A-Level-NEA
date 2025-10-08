@@ -8,11 +8,11 @@ namespace NEA_protoype
 {
     public class Node
     {
-        
+
         private List<Node> edges;
         private List<int> edgeWeights;
         private double Score = 0;
-        
+
         private POSTagging.word word;
         public Node(POSTagging.word word)
         {

@@ -70,7 +70,7 @@
                 {
                     if (input[j] == ToRemove[i])
                     {
-                        input = input.Remove(j,1); // has a bug with two remove characters
+                        input = input.Remove(j, 1); // has a bug with two remove characters
                     }
                 }
             }
