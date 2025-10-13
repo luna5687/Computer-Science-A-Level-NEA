@@ -54,4 +54,7 @@ TestResult.xml
 nunit-*.xml
 *.vsidx
 Email_Archive.db
+.vs\Computer-Science-A-Level_NEA
 .vs
+.vs/Computer-Science-A-Level_NEA
+/.vs/Computer-Science-A-Level-NEA/v17/.futdcache.v2
