@@ -1,6 +1,3 @@
-using Computer_Science_A_Level_NEA;
-using System.Data.Common;
-using System.Data.SQLite;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -9,13 +6,13 @@ namespace Computer_Science_A_Level_NEA
         private SQLiteConnection connection;
         public SQLDataBase(string name, string[] IntalTables)
         {
-            
+
             if (!File.Exists("Email_Archive.db"))
             {
                 SQLiteConnection.CreateFile("Email_Archive.db");
                 connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");
                 connection.Open();
-                
+
                 foreach (string s in IntalTables)
                 {
                     this.ExecuteNonQuery(s);
@@ -43,15 +40,15 @@ namespace Computer_Science_A_Level_NEA
                 return null;
             }
             while (DR.Read())
+            {
+
+                for (int i = 0; i < DR.VisibleFieldCount; i++)
                 {
-
-                    for (int i = 0; i < DR.VisibleFieldCount; i++)
-                    {
-                        Record[i] = DR.GetValue(i).ToString();
-                    }
-                    Data.Add(Record);
-
+                    Record[i] = DR.GetValue(i).ToString();
                 }
+                Data.Add(Record);
+
+            }
             DR.Close();
             return Data;
         }

@@ -228,22 +228,7 @@ namespace NEA_protoype
                     }
                     else if (menuOption == EmaliAddreses.Count)
                     {
-                        temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-                        if (temp == null)
-                        {
-                            Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
-                            Console.ReadLine();
-                            Console.Clear();
-                            CreateEmail(ref DataBase, accountName);
-                            temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-                        }
-
-                        EmaliAddreses = new List<string>();
-                        foreach (string[] s in temp)
-                        {
-                            EmaliAddreses.Add(s[0].ToString());
-                        }
-                        temp = null;
+                        EmailManagement(EmaliAddreses, ref DataBase, accountName);
                     }
                     else
                     {
@@ -352,6 +337,74 @@ namespace NEA_protoype
                 DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddress}'");
                 DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
             }
+            bool exit = false;
+            int menuOption = 0;
+            Console.Clear();
+            while (!exit)
+            {
+                if (menuOption == EmailAddresses.Count)
+                {
+                    for (int i = 0; i < EmailAddresses.Count; i++)
+                    {
+                        Console.Write("   " + EmailAddresses[i] + "\n");
+                    }
+
+                    Console.Write(" > Exit");
+                }
+
+                else
+                {
+                    for (int i = 0; i < EmailAddresses.Count; i++)
+                    {
+                        if (i == menuOption)
+                        {
+                            Console.Write(" > " + EmailAddresses[i] + "\n");
+                        }
+                        else
+                        {
+                            Console.Write("   " + EmailAddresses[i] + "\n");
+                        }
+                    }
+
+                    Console.Write("   Exit");
+                }
+                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
+
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = EmailAddresses.Count;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption > EmailAddresses.Count)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+
+                    if (menuOption == EmailAddresses.Count)
+                    {
+                        exit = true;
+                    }
+                    else
+                    {
+
+                        DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddresses}'");
+
+                        Console.Clear();
+                    }
+
+                }
+                Console.CursorTop = 0;
+                Console.CursorLeft = 0;
+            }
         }
         static void AddEmail(List<string> EmailAddresses, ref SQLDataBase DataBase, string accountName)
         {
@@ -411,193 +464,16 @@ namespace NEA_protoype
                                      "(0,'Metting')," +
                                      "(1,'Accounting')," +
                                      "(2,'Important')"};
-            //SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
+            SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
-            // AccountsMenu(ref DataBase);
-
-            POSTagging.POStagging("Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.");
-            ConsoleInteraction.GetConsoleInput();
-            Console.Clear();
-            POSTagging.POStagging("\r\nDear student,\r\n \r\nWelcome to the first edition of our College newsletter for the new academic year. This newsletter serves as a vital communication tool to keep you informed about important developments, events, and achievements throughout the year.\r\n\r\nAs you navigate the term, please remember that a wide range of resources is available to support your academic and personal well-being. Our dedicated Student Progress Advisers, Student Services, Careers Team, Learning Support, and Health and Wellbeing teams are always ready to assist you.\r\n\r\nPlease click the button below to read the newsletter. ");
-            ConsoleInteraction.GetConsoleInput();
-            // testing text rank delete after finishing 
-
-            char[] Body = "Dear All\r\n\r\nTrip to Leonardo event\r\nTuesday 16th September\r\n\r\nWe (CANSAT teams) have been invited to attend a special event at Leonard Southampton to celebrate their new space technology. \r\n\r\nMore details below on the technology.\r\nDate: 16th September \r\nI will take you there and back in minibus.\r\n\r\nWill involve some talks and a tour and lunch\r\n\r\nWe have been given 12 tickets. So it is first come first serves.\r\n\r\nIf you would like to come on this trip then please email ME (not Leonardo!) letting me know that you want to come and any dietary requirements AS SOON AS POSSIBLE. \r\nThey want to know by 1st August ideally, but just let me know as soon as you can.\r\n\r\nALSO Leonardo have asked us to not tell anyone about this event till afterwards!!\r\nAny questions let me know.".ToCharArray();
-            List<string> FilteredWords = new List<string>();
-            string[] WordsToFilter = { " the ", "\n", "\r", " is ", " and ", " a ", " to " };
-            string Temp = "";
-            string text = "";
-
-            foreach (string word in WordsToFilter)
-            {
-                for (int i = 0; i < Body.Length - word.Length; i++)
-                {
-                    Temp = "";
-                    for (int j = 0; j < word.Length; j++)
-                    {
-                        Temp += Body[i + j];
-                    }
-                    if (Temp.ToLower() == "\r" || Temp.ToLower() == "\n")
-                    {
-                        for (int k = 0; k < word.Length; k++)
-                        {
-                            Body[i + k] = '.';
-                        }
-                    }
-                    else if (Temp.ToLower() == word)
-                    {
-                        for (int k = 0; k < word.Length; k++)
-                        {
-                            Body[i + k] = ' ';
-                        }
-                    }
-                }
-            }
-            foreach (char character in Body)
-            { text += character; }
-            string[] words = text.Split(' ');
-            string[] TempArray;
-            foreach (string word in words)
-            {
-                if (word != "")
-                {
-                    if (word.Contains('.') && word[word.Length - 1] != '.')
-                    {
-                        TempArray = word.Split('.');
-                        foreach (string temp in TempArray)
-                        {
-                            if (temp != "" && temp == TempArray[TempArray.Length - 1])
-                            {
-                                FilteredWords.Add(temp);
-                            }
-                            else if (temp != "")
-                            {
-                                FilteredWords.Add(temp + ".");
-                            }
+            AccountsMenu(ref DataBase);
 
 
-                        }
-                    }
-                    else
-                    {
-                        FilteredWords.Add(word);
-                    }
-
-                }
-            }
-
-            Graph graph = CreateGraph(FilteredWords);
-
-            foreach (Node node in graph.nodes)
-            {
-                node.CaculateScore();
-            }
-
-            Node HighestScore1 = graph.nodes[0];
-            Node HighestScore2 = graph.nodes[0];
-            Node HighestScore3 = graph.nodes[0];
-
-            for (int i = 0; i < graph.nodes.Count; i++)
-            {
-                if (HighestScore1.GetScore() < graph.nodes[i].GetScore())
-                {
-                    HighestScore3 = HighestScore2;
-                    HighestScore2 = HighestScore1;
-                    HighestScore1 = graph.nodes[i];
-                }
-                else if (HighestScore2.GetScore() < graph.nodes[i].GetScore())
-                {
-                    HighestScore3 = HighestScore2;
-                    HighestScore2 = graph.nodes[i];
-                }
-                else if (HighestScore3.GetScore() < graph.nodes[i].GetScore())
-                {
-
-                    HighestScore3 = graph.nodes[i];
-                }
-            }
-            Console.WriteLine($"1st: {HighestScore1.GetWord()} , {HighestScore1.GetScore()}");
-            Console.WriteLine($"2nd: {HighestScore2.GetWord()} , {HighestScore2.GetScore()}");
-            Console.WriteLine($"3rd: {HighestScore3.GetWord()} , {HighestScore3.GetScore()}");
 
 
-            foreach (Node node in graph.nodes)
-            {
-                Console.Write($"{node.GetWord()}: ");
-                for (int i = 0; i < node.GetEdgeAmount(); i++)
-                {
-                    Console.Write(node.GetEdge(i) + ",");
-                 
-                }
-                
-                Console.WriteLine("Score: " + node.GetScore());
-            }
-            Console.ReadLine();
 
-        }
 
-        
-        static Graph CreateGraph(List<string> input)
-        {
-            Graph graph = new Graph();
-            bool InGraph = false;
-            for (int i = 0; i < input.Count; i++)
-            {
-                InGraph = false;
-                foreach (Node n in graph.nodes)
-                {
-                    if (input[i].ToLower() == n.GetWord().ToLower())
-                    {
-                        InGraph = true;
-                    }
-                }
-                if (!InGraph)
-                {
-                    graph.AddNode(input[i].ToLower());
-                }
-                if (i != 0)
-                {
-                    if (!input[i - 1].ToLower().Contains('.'))
-                    {
-                        if (graph.GetNodeIndex(input[i - 1].ToLower()) == -1)
-                        {
-                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i - 1].ToLower()), 1);
-                        }
-                        else
-                        {
-                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i - 1].ToLower()) == -1)
-                            {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i - 1].ToLower())], 1);
-                            }
-                            else
-                            {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i - 1].ToLower(), 1);
-                            }
-                        }
-                    }
-                }
-                if (i != input.Count - 1)
-                {
-                    
-                        if (graph.GetNodeIndex(input[i + 1].ToLower()) == -1)
-                        {
-                            graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(new Node(input[i + 1].ToLower()), 1);
-                        }
-                        else
-                        {
-                            if (graph.nodes[graph.GetNodeIndex(input[i].ToLower())].GetIndexOfEdge(input[i + 1].ToLower()) == -1)
-                            {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].AddEdge(graph.nodes[graph.GetNodeIndex(input[i + 1].ToLower())], 1);
-                            }
-                            else
-                            {
-                                graph.nodes[graph.GetNodeIndex(input[i].ToLower())].IncreaseEdgeWeight(input[i + 1].ToLower(), 1);
-                            }
-                        }
-                    
-                }
-            }
-            return graph;
+
         }
 
     }

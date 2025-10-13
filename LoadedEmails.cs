@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-// Copyright 2025 Daniel Ian White
+﻿// Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
-    
+
     public class LoadedEmails
     {
         private List<Email> emails;
@@ -66,7 +61,7 @@ namespace Computer_Science_A_Level_NEA
                         menuOption = 0;
                     }
                 }
-                else if (input == "\r"||input=="")
+                else if (input == "\r" || input == "")
                 {
                     if (menuOption == emails.Count)
                     {
