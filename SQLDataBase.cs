@@ -1,4 +1,5 @@
 // Copyright 2025 Daniel Ian White
+using System.Data.SQLite;
 namespace Computer_Science_A_Level_NEA
 {
     public class SQLDataBase
