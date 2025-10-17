@@ -44,7 +44,7 @@ namespace Computer_Science_A_Level_NEA
             }
             while (DR.Read())
             {
-
+                Record = new string[DR.VisibleFieldCount];
                 for (int i = 0; i < DR.VisibleFieldCount; i++)
                 {
                     Record[i] = DR.GetValue(i).ToString();

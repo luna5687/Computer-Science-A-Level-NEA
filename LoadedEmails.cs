@@ -20,29 +20,7 @@ namespace Computer_Science_A_Level_NEA
             int menuOption = 0;
             while (!exit)
             {
-                if (menuOption == emails.Count)
-                {
-                    for (int i = 0; i < emails.Count; i++)
-                    {
-                        Console.Write("   " + emails[i].GetEmailShort() + "\n");
-                    }
-                    Console.Write(" > Exit");
-                }
-                else
-                {
-                    for (int i = 0; i < emails.Count; i++)
-                    {
-                        if (i == menuOption)
-                        {
-                            Console.Write(" > " + emails[i].GetEmailShort() + "\n");
-                        }
-                        else
-                        {
-                            Console.Write("   " + emails[i].GetEmailShort() + "\n");
-                        }
-                    }
-                    Console.Write("   Exit");
-                }
+                DisplayEmails(menuOption);
                 string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
 
                 if (input == "W")
@@ -78,6 +56,34 @@ namespace Computer_Science_A_Level_NEA
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
             }
+        }
+        private void DisplayEmails(int menuOption)
+        {
+            // when displaying emails add headings 
+            Console.WriteLine("Sender    | Recipient     | Subject");
+                if (menuOption == emails.Count)
+                {
+                    for (int i = 0; i < emails.Count; i++)
+                    {
+                        Console.Write("   " + emails[i].GetEmailShort() + "\n");
+                    }
+                    Console.Write(" > Exit");
+                }
+                else
+                {
+                    for (int i = 0; i < emails.Count; i++)
+                    {
+                        if (i == menuOption)
+                        {
+                            Console.Write(" > " + emails[i].GetEmailShort() + "\n");
+                        }
+                        else
+                        {
+                            Console.Write("   " + emails[i].GetEmailShort() + "\n");
+                        }
+                    }
+                    Console.Write("   Exit");
+                }
         }
     }
 }

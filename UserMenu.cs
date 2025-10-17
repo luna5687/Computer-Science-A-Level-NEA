@@ -9,26 +9,11 @@ namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
     {
-        public  static void EmailAddressesMenu(string accountName, ref SQLDataBase DataBase)
+        public static void EmailAddressesMenu(string accountName, ref SQLDataBase DataBase)
         {
-            List<string[]> temp;
-            temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-            if (temp == null)
-            {
-                Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
-                Console.ReadLine();
-                Console.Clear();
-                CreateEmail(ref DataBase, accountName);
-                temp = DataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
-            }
-
-            List<string> EmaliAddreses = new List<string>();
-            foreach (string[] s in temp)
-            {
-                EmaliAddreses.Add(s[0].ToString());
-            }
-            temp = null;
+            List<string> EmaliAddreses = GetEmailAddresses(DataBase, accountName);
             bool exit = false;
+            List<string[]> temp;
             int menuOption = 0;
             Console.Clear();
             while (!exit)
@@ -112,10 +97,41 @@ namespace Computer_Science_A_Level_NEA
 
             // work on text rank on email and automate archive
         }
+        static List<string> GetEmailAddresses(SQLDataBase DataBase,string accountName)
+        {
+            List<string[]> temp;
+            temp = DataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
+            if (temp == null)
+            {
+                Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
+                Console.ReadLine();
+                Console.Clear();
+                CreateEmail(ref DataBase, accountName);
+                temp = DataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
+            }
+
+            List<string> EmaliAddreses = new List<string>();
+            foreach (string[] s in temp)
+            {
+                EmaliAddreses.Add(s[0].ToString());
+            }
+            return EmaliAddreses;
+        }
         static void CreateEmail(ref SQLDataBase DataBase, string accountName)
         {
+            
+
+
+
             Console.Write("Enter Emailaddress: ");
             string EmailAddress = Console.ReadLine();
+
+            List<string> EmaliAddreses=GetEmailAddresses(DataBase, accountName);
+            while (EmaliAddreses.Contains(EmailAddress))
+            {
+                Console.Write("Email entered already exists\nPlease enter a diffrent email: ");
+                EmailAddress = Console.ReadLine();
+            }
             Console.Write("Enter the email's mail server: ");
             string MailServer = Console.ReadLine();
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
@@ -179,8 +195,8 @@ namespace Computer_Science_A_Level_NEA
                 {
                     if (menuOption == 0)
                     {
-                        DeleteEmails(EmaliAddreses, ref DataBase);
-                        exit = true;
+                        DeleteEmails(EmaliAddreses, ref DataBase,accountName);
+                        
                     }
                     else if (menuOption == 1)
                     {
@@ -195,7 +211,7 @@ namespace Computer_Science_A_Level_NEA
                 Console.CursorLeft = 0;
             }
         }
-        static void DeleteEmails(List<string> EmailAddresses, ref SQLDataBase DataBase)
+        static void DeleteEmails(List<string> EmailAddresses, ref SQLDataBase DataBase,string accountName)
         {
             bool exit = false;
             int menuOption = 0;
@@ -257,35 +273,21 @@ namespace Computer_Science_A_Level_NEA
                     {
 
                         DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddresses[menuOption]}'");
-
                         Console.Clear();
                     }
 
                 }
                 Console.CursorTop = 0;
                 Console.CursorLeft = 0;
+                EmailAddresses = GetEmailAddresses(DataBase, accountName);
             }
         }
         static void AddEmail(List<string> EmailAddresses, ref SQLDataBase DataBase, string accountName)
         {
             Console.Clear();
             Console.Clear();
-            Console.Write("Enter Emailaddress: ");
-            string EmailAddress = Console.ReadLine();
-            if (EmailAddresses.Contains(EmailAddress))
-            {
-                Console.WriteLine("Email address already exists");
-                Console.Write("Enter Emailaddress: ");
-                EmailAddress = Console.ReadLine();
-            }
-            Console.Write("Enter the email's mail server: ");
-            string MailServer = Console.ReadLine();
-            Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-            // TODO - validate password 
-            string EmailPassword = Console.ReadLine();
-            DataBase.ExecuteNonQuery("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
-                              "VALUES " +
-                              $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
+            
+            CreateEmail(ref DataBase, accountName);
 
 
             Console.Clear();

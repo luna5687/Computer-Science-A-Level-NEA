@@ -63,37 +63,40 @@ namespace Computer_Science_A_Level_NEA
         }
         private void CreateKeywords()
         {
-            List<List<POSTagging.word>> POSTagged
-            = POSTagging.POStagging(Body);
-            //ConsoleInteraction.GetConsoleInput();
-            Graph graph = CreateGraph(POSTagged);
-
-            foreach (Node node in graph.nodes)
+            if (Body != null)
             {
-                node.CaculateScore();
-            }
+                List<List<POSTagging.word>> POSTagged
+                = POSTagging.POStagging(Body);
+                //ConsoleInteraction.GetConsoleInput();
+                Graph graph = CreateGraph(POSTagged);
 
-            Node HighestScore1 = graph.nodes[0];
-            Node HighestScore2 = graph.nodes[0];
-            Node HighestScore3 = graph.nodes[0];
-
-            for (int i = 0; i < graph.nodes.Count; i++)
-            {
-                if (HighestScore1.GetScore() < graph.nodes[i].GetScore())
+                foreach (Node node in graph.nodes)
                 {
-                    HighestScore3 = HighestScore2;
-                    HighestScore2 = HighestScore1;
-                    HighestScore1 = graph.nodes[i];
+                    node.CaculateScore();
                 }
-                else if (HighestScore2.GetScore() < graph.nodes[i].GetScore())
-                {
-                    HighestScore3 = HighestScore2;
-                    HighestScore2 = graph.nodes[i];
-                }
-                else if (HighestScore3.GetScore() < graph.nodes[i].GetScore())
-                {
 
-                    HighestScore3 = graph.nodes[i];
+                Node HighestScore1 = graph.nodes[0];
+                Node HighestScore2 = graph.nodes[0];
+                Node HighestScore3 = graph.nodes[0];
+
+                for (int i = 0; i < graph.nodes.Count; i++)
+                {
+                    if (HighestScore1.GetScore() < graph.nodes[i].GetScore())
+                    {
+                        HighestScore3 = HighestScore2;
+                        HighestScore2 = HighestScore1;
+                        HighestScore1 = graph.nodes[i];
+                    }
+                    else if (HighestScore2.GetScore() < graph.nodes[i].GetScore())
+                    {
+                        HighestScore3 = HighestScore2;
+                        HighestScore2 = graph.nodes[i];
+                    }
+                    else if (HighestScore3.GetScore() < graph.nodes[i].GetScore())
+                    {
+
+                        HighestScore3 = graph.nodes[i];
+                    }
                 }
             }
         }
