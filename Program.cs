@@ -332,11 +332,6 @@ namespace NEA_protoype
         }
         static void DeleteEmails(List<string> EmailAddresses, ref SQLDataBase DataBase)
         {
-            foreach (string EmailAddress in EmailAddresses)
-            {
-                DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddress}'");
-                DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddress}'");
-            }
             bool exit = false;
             int menuOption = 0;
             Console.Clear();
@@ -396,7 +391,7 @@ namespace NEA_protoype
                     else
                     {
 
-                        DataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailAddress == '{EmailAddresses}'");
+                        DataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddresses[menuOption]}'");
 
                         Console.Clear();
                     }
