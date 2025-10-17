@@ -1,4 +1,7 @@
 // Copyright 2025 Daniel Ian White
+using Computer_Science_A_Level_NEA;
+using System.Data.SqlTypes;
+using System.Data.SQLite;
 namespace Computer_Science_A_Level_NEA
 {
     public class SQLDataBase
@@ -20,7 +23,7 @@ namespace Computer_Science_A_Level_NEA
             }
             else
             {
-                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");  // could not find dependanceys
+                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");  
                 connection.Open();
             }
         }

@@ -1,4 +1,8 @@
 ﻿// Copyright 2025 Daniel Ian White
+
+using MailKit.Net.Imap;
+using MailKit;
+using MimeKit;
 namespace Computer_Science_A_Level_NEA
 {
     public class ImapServer
