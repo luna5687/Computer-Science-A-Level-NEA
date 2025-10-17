@@ -96,29 +96,6 @@ namespace Computer_Science_A_Level_NEA
                     HighestScore3 = graph.nodes[i];
                 }
             }
-            Console.WriteLine($"1st: {HighestScore1.GetWord()} , {HighestScore1.GetScore()}");
-            Console.WriteLine($"2nd: {HighestScore2.GetWord()} , {HighestScore2.GetScore()}");
-            Console.WriteLine($"3rd: {HighestScore3.GetWord()} , {HighestScore3.GetScore()}");
-
-
-            foreach (Node node in graph.nodes)
-            {
-                Console.Write($"{node.GetWord()}: ");
-                for (int i = 0; i < node.GetEdgeAmount(); i++)
-                {
-                    Console.Write(node.GetEdge(i) + ",");
-
-                }
-
-                Console.WriteLine("Score: " + node.GetScore());
-            }
-            Console.ReadLine();
-
-
-
-
-
-
         }
         static Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
         {
