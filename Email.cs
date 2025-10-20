@@ -1,4 +1,6 @@
 ﻿using NEA_protoype;
+using Org.BouncyCastle.Crypto;
+using System.Data.Entity;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -18,15 +20,27 @@ namespace Computer_Science_A_Level_NEA
             this.Recipient = Recipient;
             this.Subject = Subject;
             this.Body = Body;
-
+            EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; // need to check if it is in database 
             CreateKeywords();
         }
-        public string GetEmailShort()
+        public int GetRecipientLength()
+        {
+            return Recipient.Length;
+        }
+        public int GetSenderLength()
+        {
+            return Sender.Length;
+        }
+        public int GetSubjectLength()
+        {
+            return Subject.Length;
+        }
+        public string GetEmailShort(int[] Buffers)
         {
             string output;
             if (IsArchived)
             {
-                output = Sender + " " + Recipient + " " + Subject + " " + "A";
+                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0]-Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1]-Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2]-Subject.Length)+ "|" + "A";
                 for (int i = 0; i < Tags.Count; i++)
                 {
                     output += " " + Tags[i];
@@ -34,7 +48,7 @@ namespace Computer_Science_A_Level_NEA
             }
             else
             {
-                output = Sender + " " + Recipient + " " + Subject + " " + " ";
+                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + " ";
 
             }
             return output;
@@ -171,6 +185,68 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
             return graph;
+        }
+        public void ArchiveEmail(SQLDataBase dataBase) // need to mangage collisons - may need another table 
+        {
+            List<string[]> AllEmailIDsInDataBase = dataBase.ExecuteQuery("SELECT EmailID FROM Emails");
+            int IDToBeStored = EmailID;
+            if (!IsArchived)
+            {
+                if (AllEmailIDsInDataBase.Count == 0)
+                {
+                    AddToDatabase(EmailID, dataBase);
+                }
+                else
+                {
+                    while (CheckIds(IDToBeStored,AllEmailIDsInDataBase))
+                    {
+                        dataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt)" +
+                                                $"VALUES " +
+                                                $"({IDToBeStored})");
+                        IDToBeStored +=1;
+                    }
+                    AddToDatabase(IDToBeStored, dataBase);
+                }
+            }
+        }
+        private bool CheckIds(int ID, List<string[]> AllIds)
+        {
+            for (int i = 0; i < AllIds.Count; i++)
+            {
+                if (int.Parse(AllIds[i][0]) == ID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void AddToDatabase(int ID,SQLDataBase dataBase)
+        {
+            dataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
+                                     $"VALUES " +
+                                     $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords}')");
+            if (Tags.Count>0)
+            {
+                // add tags
+            }
+        }
+        private string CombineTags()
+        {
+            string output = "";
+            foreach(string s in Tags)
+            {
+                output += s;
+            }
+            return output;
+        }
+        private string CombineKeywords()
+        {
+            string output = "";
+            foreach (string s in Keywords)
+            {
+                output += s+" ";
+            }
+            return output;
         }
     }
 }

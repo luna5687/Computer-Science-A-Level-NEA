@@ -40,6 +40,13 @@ namespace Computer_Science_A_Level_NEA
             {
                 return Console.ReadLine();
             }
-            }
+        }
+        static public string GetBuffer(int value)
+        {
+            string output = "";
+            for (int i = 0; i < value; i++) { output+=" "; }
+            return output;
         }
     }
+  
+}

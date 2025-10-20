@@ -167,7 +167,10 @@ namespace NEA_protoype
                                      "VALUES " +
                                      "(0,'Metting')," +
                                      "(1,'Accounting')," +
-                                     "(2,'Important')"};
+                                     "(2,'Important')",
+
+                                     "CREATE TABLE Collisions " +
+                                     "(CollisionAt int)"};
             SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
             ConsoleInteraction.CheckConsoleExistance();
             AccountsMenu(ref DataBase);

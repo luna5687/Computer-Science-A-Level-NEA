@@ -7,7 +7,7 @@ namespace Computer_Science_A_Level_NEA
     public class SQLDataBase
     {
         private SQLiteConnection connection;
-        public SQLDataBase(string name, string[] IntalTables)
+        public SQLDataBase(string name, string[] IntalTables) // could make static
         {
 
             if (!File.Exists("Email_Archive.db"))

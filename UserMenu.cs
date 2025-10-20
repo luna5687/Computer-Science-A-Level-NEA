@@ -12,6 +12,11 @@ namespace Computer_Science_A_Level_NEA
         public static void EmailAddressesMenu(string accountName, ref SQLDataBase DataBase)
         {
             List<string> EmaliAddreses = GetEmailAddresses(DataBase, accountName);
+            if (EmaliAddreses == null)
+            {
+                Console.WriteLine("No Email address found please add an email address:");
+                CreateEmail(ref DataBase, accountName);
+            }
             bool exit = false;
             List<string[]> temp;
             int menuOption = 0;
@@ -103,11 +108,8 @@ namespace Computer_Science_A_Level_NEA
             temp = DataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
             if (temp == null)
             {
-                Console.WriteLine("No EmailAddress found \nEmailAddress input requred press enter to continue");
-                Console.ReadLine();
-                Console.Clear();
-                CreateEmail(ref DataBase, accountName);
-                temp = DataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
+                
+                return null;
             }
 
             List<string> EmaliAddreses = new List<string>();
@@ -127,7 +129,7 @@ namespace Computer_Science_A_Level_NEA
             string EmailAddress = Console.ReadLine();
 
             List<string> EmaliAddreses=GetEmailAddresses(DataBase, accountName);
-            while (EmaliAddreses.Contains(EmailAddress))
+            while (EmaliAddreses!=null && EmaliAddreses.Contains(EmailAddress))
             {
                 Console.Write("Email entered already exists\nPlease enter a diffrent email: ");
                 EmailAddress = Console.ReadLine();

@@ -1,4 +1,6 @@
 ﻿// Copyright 2025 Daniel Ian White
+using Org.BouncyCastle.Cms;
+
 namespace Computer_Science_A_Level_NEA
 {
 
@@ -60,12 +62,13 @@ namespace Computer_Science_A_Level_NEA
         private void DisplayEmails(int menuOption)
         {
             // when displaying emails add headings 
-            Console.WriteLine("Sender    | Recipient     | Subject");
-                if (menuOption == emails.Count)
+            int[] Buffers = { FindLongestSender(), FindLongestRecipient(),FindLongestSubject()};
+            Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+            if (menuOption == emails.Count)
                 {
                     for (int i = 0; i < emails.Count; i++)
                     {
-                        Console.Write("   " + emails[i].GetEmailShort() + "\n");
+                        Console.Write("   " + emails[i].GetEmailShort(Buffers) + "\n");
                     }
                     Console.Write(" > Exit");
                 }
@@ -75,15 +78,54 @@ namespace Computer_Science_A_Level_NEA
                     {
                         if (i == menuOption)
                         {
-                            Console.Write(" > " + emails[i].GetEmailShort() + "\n");
+                            Console.Write(" > " + emails[i].GetEmailShort(Buffers) + "\n");
                         }
                         else
                         {
-                            Console.Write("   " + emails[i].GetEmailShort() + "\n");
+                            Console.Write("   " + emails[i].GetEmailShort(Buffers) + "\n");
                         }
                     }
                     Console.Write("   Exit");
                 }
+        }
+        private int FindLongestRecipient()
+        {
+            int Longest = 0;
+
+            foreach (var email in emails)
+            {
+                if (Longest < email.GetRecipientLength())
+                {
+                    Longest = email.GetRecipientLength();
+                }
+            }
+            return Longest;
+        }
+        private int FindLongestSender()
+        {
+            int Longest = 0;
+
+            foreach (var email in emails)
+            {
+                if (Longest < email.GetSenderLength())
+                {
+                    Longest = email.GetSenderLength();
+                }
+            }
+            return Longest;
+        }
+        private int FindLongestSubject()
+        {
+            int Longest = 0;
+
+            foreach (var email in emails)
+            {
+                if (Longest < email.GetSubjectLength())
+                {
+                    Longest = email.GetSubjectLength();
+                }
+            }
+            return Longest;
         }
     }
 }
