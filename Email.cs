@@ -14,6 +14,7 @@ namespace Computer_Science_A_Level_NEA
         private List<string> Keywords;
         private Dictionary<string,int> Tags;
         private int EmailID;
+        private int DataBaseID;
         public Email(string Sender, string Recipient, string Subject, string Body)
         {
             this.Sender = Sender;
@@ -21,6 +22,7 @@ namespace Computer_Science_A_Level_NEA
             this.Subject = Subject;
             this.Body = Body;
             EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; // need to check if it is in database 
+            CheckArchived();
             CreateKeywords();
         }
         public int GetRecipientLength()
@@ -34,6 +36,71 @@ namespace Computer_Science_A_Level_NEA
         public int GetSubjectLength()
         {
             return Subject.Length;
+        }
+        private void CheckArchived()
+        {
+            List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID, CollisionAt FROM Emails,Collisions");
+            List<string[]> EmailData;
+            DataBaseID = EmailID;
+            foreach (string[] s in AllEmailIDsInDataBase)
+            {
+                if (s[0] == EmailID.ToString())
+                {
+                    EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                    while (!CheckIfDataMatches(EmailData))
+                    {
+                        DataBaseID += 1;
+                        if (CheckIDIsInEmailsTable(DataBaseID))
+                        {
+                            EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                        }
+                        else if (CheckIDIsInCollisions(DataBaseID))
+                        {
+                            DataBaseID += 1;
+                        }
+                    }
+                }
+                else if (s[1] == EmailID.ToString())
+                {
+
+                }
+
+            }
+        }
+        private bool CheckIfDataMatches(List<string[]> DataBaseData)
+        {        
+            foreach (string[] s in DataBaseData)
+            {
+                if (s[1] != Sender) return false;
+                if (s[2] != Recipient) return false;
+                if (s[3] != Subject) return false;
+                if (s[4] != Body) return false;
+            }
+            return true;
+        }
+        private bool CheckIDIsInEmailsTable(int ID)
+        {
+            List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID FROM Emails");
+            foreach (string[] s in AllEmailIDsInDataBase)
+            {
+                if (s[0] == EmailID.ToString())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool CheckIDIsInCollisions(int ID)
+        {
+            List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT * FROM Collisions");
+            foreach (string[] s in AllEmailIDsInDataBase)
+            {
+                if (s[0] == EmailID.ToString())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public string GetEmailShort(int[] Buffers)
         {
