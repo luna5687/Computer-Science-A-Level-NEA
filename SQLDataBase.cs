@@ -4,10 +4,10 @@ using System.Data.SqlTypes;
 using System.Data.SQLite;
 namespace Computer_Science_A_Level_NEA
 {
-    public class SQLDataBase
+    public static  class SQLDataBase
     {
-        private SQLiteConnection connection;
-        public SQLDataBase(string name, string[] IntalTables) // could make static
+        static private SQLiteConnection connection;
+        static public void CreateDataBase(string name, string[] IntalTables) // could make static
         {
 
             if (!File.Exists("Email_Archive.db"))
@@ -18,7 +18,7 @@ namespace Computer_Science_A_Level_NEA
 
                 foreach (string s in IntalTables)
                 {
-                    this.ExecuteNonQuery(s);
+                    ExecuteNonQuery(s);
                 }
             }
             else
@@ -27,11 +27,11 @@ namespace Computer_Science_A_Level_NEA
                 connection.Open();
             }
         }
-        public void ExecuteNonQuery(string Query)
+        static public void ExecuteNonQuery(string Query)
         {
             new SQLiteCommand(Query, connection).ExecuteNonQuery();
         }
-        public List<string[]> ExecuteQuery(string Query)
+        static public List<string[]> ExecuteQuery(string Query)
         {
             List<string[]> Data = new List<string[]>();
             SQLiteDataReader DR = new SQLiteCommand(Query, connection).ExecuteReader();
@@ -55,7 +55,7 @@ namespace Computer_Science_A_Level_NEA
             DR.Close();
             return Data;
         }
-        public void CloseConnection()
+        static public void CloseConnection()
         {
             connection.Close();
         }

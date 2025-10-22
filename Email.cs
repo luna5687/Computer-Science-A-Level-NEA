@@ -52,7 +52,7 @@ namespace Computer_Science_A_Level_NEA
             }
             return output;
         }
-        public void DisplayEmail(SQLDataBase dataBase)
+        public void DisplayEmail()
         {
             Console.Clear();
             string Tags = "";
@@ -106,12 +106,12 @@ namespace Computer_Science_A_Level_NEA
                     if (menuOption == 0) Exit = true;
                     else
                     {
-                        Exit = EmailActions(dataBase);
+                        Exit = EmailActions();
                     }
                 }
              }
          }
-        private bool EmailActions(SQLDataBase dataBase)
+        private bool EmailActions()
         {
             string[] MenuOptions = {"Back", "Archive" };
             bool exit = false;
@@ -152,7 +152,7 @@ namespace Computer_Science_A_Level_NEA
                             exit = true;
                             break;
                         case "Archive":
-                            ArchiveEmail(dataBase);
+                            ArchiveEmail();
                             break;
                     }
                 }
@@ -274,24 +274,24 @@ namespace Computer_Science_A_Level_NEA
             }
             return graph;
         }
-        private void ArchiveEmail(SQLDataBase dataBase)
+        private void ArchiveEmail()
         {
-            List<string[]> AllEmailIDsInDataBase = dataBase.ExecuteQuery("SELECT EmailID FROM Emails");
+            List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID FROM Emails");
             int IDToBeStored = EmailID;
             if (!IsArchived)
             {
-                if (AllEmailIDsInDataBase == null) AddToDatabase(EmailID, dataBase);
+                if (AllEmailIDsInDataBase == null) AddToDatabase(EmailID);
                 else
                 {
                     while (CheckIds(IDToBeStored, AllEmailIDsInDataBase))
                     {
-                        dataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt) " +
+                        SQLDataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt) " +
                                                 $"VALUES " +
                                                 $"({IDToBeStored.ToString()})");
                         IDToBeStored += 1;
                     }
 
-                    AddToDatabase(IDToBeStored, dataBase);
+                    AddToDatabase(IDToBeStored);
                 }
                 IsArchived = true;
             }
@@ -307,12 +307,12 @@ namespace Computer_Science_A_Level_NEA
             }
             return false;
         }
-        private void AddToDatabase(int ID,SQLDataBase dataBase)
+        private void AddToDatabase(int ID)
         {
-            dataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
+            SQLDataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
                                      $"VALUES " +
                                      $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords()}')");
-            dataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
+            SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
 
             if (Tags!=null)
