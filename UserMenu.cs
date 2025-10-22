@@ -1,6 +1,7 @@
 ﻿using Org.BouncyCastle.Asn1.Mozilla;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Computer_Science_A_Level_NEA
                 Console.WriteLine("No Email address found please add an email address:");
                 CreateEmail(ref DataBase, accountName);
             }
+            EmaliAddreses = GetEmailAddresses(DataBase, accountName);
             bool exit = false;
             List<string[]> temp;
             int menuOption = 0;
@@ -89,7 +91,7 @@ namespace Computer_Science_A_Level_NEA
                     {
 
                         temp = DataBase.ExecuteQuery($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'");
-                        EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2]);
+                        EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2],DataBase);
                         temp = null;
                         Console.Clear();
                     }
@@ -145,11 +147,11 @@ namespace Computer_Science_A_Level_NEA
                               $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
             Console.Clear();
         }
-        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver)
+        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver,SQLDataBase dataBase)
         {
             ImapServer imapServer = new ImapServer(EmailAddress, EmailPassword, Mailserver);
             LoadedEmails emalis = new LoadedEmails(imapServer);
-            emalis.EmailMenu();
+            emalis.EmailMenu(dataBase);
         }
         static void EmailManagement(List<string> EmaliAddreses, ref SQLDataBase DataBase, string accountName)
         {

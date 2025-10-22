@@ -41,10 +41,8 @@ namespace Computer_Science_A_Level_NEA
             if (IsArchived)
             {
                 output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
-                foreach (var tags in Tags)
-                {
-                    output += " " + Tags.Keys;
-                }
+                if (Tags != null) foreach (var tags in Tags) output += " " + Tags.Keys;
+                    
                 
             }
             else
@@ -115,7 +113,7 @@ namespace Computer_Science_A_Level_NEA
          }
         private bool EmailActions(SQLDataBase dataBase)
         {
-            string[] MenuOptions = { "Archive" };
+            string[] MenuOptions = {"Back", "Archive" };
             bool exit = false;
             int menuOption = 0;
             string input;
@@ -146,11 +144,17 @@ namespace Computer_Science_A_Level_NEA
                         menuOption = 0;
                     }
                 }
-                switch(MenuOptions[menuOption])
+                else if (input == "\r" || input == "")
                 {
-                    case "Archive":
-                        ArchiveEmail(dataBase);
-                        break;
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Back":
+                            exit = true;
+                            break;
+                        case "Archive":
+                            ArchiveEmail(dataBase);
+                            break;
+                    }
                 }
             }
 
@@ -276,22 +280,20 @@ namespace Computer_Science_A_Level_NEA
             int IDToBeStored = EmailID;
             if (!IsArchived)
             {
-                if (AllEmailIDsInDataBase.Count == 0)
-                {
-                    AddToDatabase(EmailID, dataBase);
-                }
+                if (AllEmailIDsInDataBase == null) AddToDatabase(EmailID, dataBase);
                 else
                 {
                     while (CheckIds(IDToBeStored, AllEmailIDsInDataBase))
                     {
-                        dataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt)" +
+                        dataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt) " +
                                                 $"VALUES " +
-                                                $"({IDToBeStored})");
+                                                $"({IDToBeStored.ToString()})");
                         IDToBeStored += 1;
                     }
-                    IsArchived = true;
+
                     AddToDatabase(IDToBeStored, dataBase);
                 }
+                IsArchived = true;
             }
         }
         private bool CheckIds(int ID, List<string[]> AllIds)
@@ -309,10 +311,11 @@ namespace Computer_Science_A_Level_NEA
         {
             dataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
                                      $"VALUES " +
-                                     $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords}')");
-            dataBase.ExecuteNonQuery($"DELETE FROM Collisions" +
-                                     $"WHERE CollisionAt == {ID}");
-            if (Tags.Count>0)
+                                     $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords()}')");
+            dataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
+                                     $"WHERE CollisionAt == {ID.ToString()}");
+
+            if (Tags!=null)
             {
                 // add tags
             }
@@ -329,10 +332,14 @@ namespace Computer_Science_A_Level_NEA
         private string CombineKeywords()
         {
             string output = "";
-            foreach (string s in Keywords)
+            if (Keywords != null)
+            {
+                foreach (string s in Keywords)
             {
                 output += s+" ";
             }
+            }
+            
             return output;
         }
     }
