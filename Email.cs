@@ -12,7 +12,7 @@ namespace Computer_Science_A_Level_NEA
         private string Subject;
         private string Body;
         private List<string> Keywords;
-        private List<string> Tags;
+        private Dictionary<string,int> Tags;
         private int EmailID;
         public Email(string Sender, string Recipient, string Subject, string Body)
         {
@@ -40,11 +40,12 @@ namespace Computer_Science_A_Level_NEA
             string output;
             if (IsArchived)
             {
-                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0]-Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1]-Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2]-Subject.Length)+ "|" + "A";
-                for (int i = 0; i < Tags.Count; i++)
+                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
+                foreach (var tags in Tags)
                 {
-                    output += " " + Tags[i];
+                    output += " " + Tags.Keys;
                 }
+                
             }
             else
             {
@@ -53,35 +54,118 @@ namespace Computer_Science_A_Level_NEA
             }
             return output;
         }
-        public void DisplayEmail()
+        public void DisplayEmail(SQLDataBase dataBase)
         {
             Console.Clear();
             string Tags = "";
             if (this.Tags != null)
             {
-                for (int i = 0; i < this.Tags.Count(); i++)
+                foreach (var tag in this.Tags)
                 {
-                    Tags += this.Tags[i] + " ";
+                    Tags += this.Tags.Keys + " ";
                 }
             }
             string keywords = "";
             //for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
             Console.Clear();
+            bool Exit = false;
+            int menuOption = 0;
+            string input;
+            while (!Exit)
+            {
+                if (menuOption == 0)
+                {
+                    Console.WriteLine("> Back |   Actions");
+                }
+                else
+                {
+                    Console.WriteLine("  Back | > Actions");
+                } 
+                Console.WriteLine($"From: {Sender} To: {Recipient}\n" +
+                                  $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
+                                  $"{Body}");
+                input = ConsoleInteraction.GetConsoleInput();
+                Console.CursorLeft = 0;
+                Console.CursorTop = 0;
+                if (input.ToLower() == "w" || input.ToLower() == "a")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = 1;
+                    }
+                }
+                else if (input == "s" || input == "d")
+                {
+                    menuOption++;
+                    if (menuOption > 1)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    if (menuOption == 0) Exit = true;
+                    else
+                    {
+                        Exit = EmailActions(dataBase);
+                    }
+                }
+             }
+         }
+        private bool EmailActions(SQLDataBase dataBase)
+        {
+            string[] MenuOptions = { "Archive" };
+            bool exit = false;
+            int menuOption = 0;
+            string input;
+            while (!exit)
+            {
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (menuOption == i) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput();
+                Console.CursorLeft = 0;
+                Console.CursorTop = 0;
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                switch(MenuOptions[menuOption])
+                {
+                    case "Archive":
+                        ArchiveEmail(dataBase);
+                        break;
+                }
+            }
 
-            Console.WriteLine("> Back");
-            Console.WriteLine($"From: {Sender} To: {Recipient}\n" +
-                              $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
-                              $"{Body}");
-            ConsoleInteraction.GetConsoleInput();
-            Console.Clear();
+
+            return false;
         }
+        
+        
         private void CreateKeywords()
         {
             if (Body != null)
             {
                 List<List<POSTagging.word>> POSTagged
                 = POSTagging.POStagging(Body);
-                //ConsoleInteraction.GetConsoleInput();
+            
                 Graph graph = CreateGraph(POSTagged);
 
                 foreach (Node node in graph.nodes)
@@ -114,7 +198,7 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
         }
-        static Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
+        private Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
         {
             List<POSTagging.word> words = new List<POSTagging.word>();
             for (int i = 0; i < input.Count; i++)
@@ -186,7 +270,7 @@ namespace Computer_Science_A_Level_NEA
             }
             return graph;
         }
-        public void ArchiveEmail(SQLDataBase dataBase) // need to mangage collisons - may need another table 
+        private void ArchiveEmail(SQLDataBase dataBase)
         {
             List<string[]> AllEmailIDsInDataBase = dataBase.ExecuteQuery("SELECT EmailID FROM Emails");
             int IDToBeStored = EmailID;
@@ -198,13 +282,14 @@ namespace Computer_Science_A_Level_NEA
                 }
                 else
                 {
-                    while (CheckIds(IDToBeStored,AllEmailIDsInDataBase))
+                    while (CheckIds(IDToBeStored, AllEmailIDsInDataBase))
                     {
                         dataBase.ExecuteNonQuery("INSERT INTO Collisions(CollisionAt)" +
                                                 $"VALUES " +
                                                 $"({IDToBeStored})");
-                        IDToBeStored +=1;
+                        IDToBeStored += 1;
                     }
+                    IsArchived = true;
                     AddToDatabase(IDToBeStored, dataBase);
                 }
             }
@@ -225,6 +310,8 @@ namespace Computer_Science_A_Level_NEA
             dataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
                                      $"VALUES " +
                                      $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords}')");
+            dataBase.ExecuteNonQuery($"DELETE FROM Collisions" +
+                                     $"WHERE CollisionAt == {ID}");
             if (Tags.Count>0)
             {
                 // add tags
@@ -233,9 +320,9 @@ namespace Computer_Science_A_Level_NEA
         private string CombineTags()
         {
             string output = "";
-            foreach(string s in Tags)
+            foreach(var s in Tags)
             {
-                output += s;
+                output += s.Key;
             }
             return output;
         }

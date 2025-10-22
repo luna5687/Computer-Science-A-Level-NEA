@@ -15,7 +15,7 @@ namespace Computer_Science_A_Level_NEA
         {
             return emails[index];
         }
-        public void EmailMenu()
+        public void EmailMenu(SQLDataBase dataBase)
         {
             Console.Clear();
             bool exit = false;
@@ -50,7 +50,7 @@ namespace Computer_Science_A_Level_NEA
                     else
                     {
                         // display emails
-                        emails[menuOption].DisplayEmail();
+                        emails[menuOption].DisplayEmail(dataBase);
                         Console.Clear();
                     }
 
