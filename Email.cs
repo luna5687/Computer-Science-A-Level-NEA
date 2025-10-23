@@ -12,7 +12,7 @@ namespace Computer_Science_A_Level_NEA
         private string Subject;
         private string Body;
         private List<string> Keywords;
-        private Dictionary<string,int> Tags;
+        private Dictionary<int,string> EmailTags;
         private int EmailID;
         private int DataBaseID;
         public Email(string Sender, string Recipient, string Subject, string Body)
@@ -89,6 +89,7 @@ namespace Computer_Science_A_Level_NEA
         private void LoadArchiveData()
         {
             IsArchived = true;
+
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
         {        
@@ -131,7 +132,7 @@ namespace Computer_Science_A_Level_NEA
             if (IsArchived)
             {
                 output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
-                if (Tags != null) foreach (var tags in Tags) output += " " + Tags.Keys;
+                if (EmailTags != null) foreach (var tags in EmailTags) output += " " + EmailTags.Keys;
                     
                 
             }
@@ -146,11 +147,11 @@ namespace Computer_Science_A_Level_NEA
         {
             Console.Clear();
             string Tags = "";
-            if (this.Tags != null)
+            if (this.EmailTags != null)
             {
-                foreach (var tag in this.Tags)
+                foreach (var tag in this.EmailTags)
                 {
-                    Tags += this.Tags.Keys + " ";
+                    Tags += this.EmailTags.Keys + " ";
                 }
             }
             string keywords = "";
@@ -203,7 +204,7 @@ namespace Computer_Science_A_Level_NEA
          }
         private bool EmailActions()
         {
-            string[] MenuOptions = {"Back", "Archive" };
+            string[] MenuOptions = {"Back", "Archive","Manage Tags"};
             bool exit = false;
             int menuOption = 0;
             string input;
@@ -244,6 +245,10 @@ namespace Computer_Science_A_Level_NEA
                         case "Archive":
                             ArchiveEmail();
                             break;
+                        case "Manage Tags":
+                            if (!IsArchived) Console.WriteLine("Email needs to be archived before tags can be managed");
+                            else TagManagement();
+                            break;
                     }
                 }
             }
@@ -252,7 +257,10 @@ namespace Computer_Science_A_Level_NEA
             return false;
         }
         
-        
+        private void TagManagement()
+        {
+            List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
+        }
         private void CreateKeywords()
         {
             if (Body != null)
@@ -404,8 +412,8 @@ namespace Computer_Science_A_Level_NEA
                                      $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords()}')");
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
-
-            if (Tags!=null)
+            DataBaseID = ID;
+            if (EmailTags!=null)
             {
                 // add tags
             }
@@ -413,9 +421,9 @@ namespace Computer_Science_A_Level_NEA
         private string CombineTags()
         {
             string output = "";
-            foreach(var s in Tags)
+            foreach(var s in EmailTags)
             {
-                output += s.Key;
+                output += s.Value;
             }
             return output;
         }
