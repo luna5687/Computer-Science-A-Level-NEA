@@ -23,7 +23,7 @@ namespace Computer_Science_A_Level_NEA
             this.Body = Body;
             EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; // need to check if it is in database 
             CheckArchived();
-            CreateKeywords();
+            if (!IsArchived) CreateKeywords();
         }
         public int GetRecipientLength()
         {
@@ -37,17 +37,18 @@ namespace Computer_Science_A_Level_NEA
         {
             return Subject.Length;
         }
-        private void CheckArchived()
+        private void CheckArchived() // will need rigrous testing 
         {
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID, CollisionAt FROM Emails,Collisions");
-            List<string[]> EmailData;
+            List<string[]> EmailData = null;
+            bool found;
             DataBaseID = EmailID;
             foreach (string[] s in AllEmailIDsInDataBase)
             {
                 if (s[0] == EmailID.ToString())
                 {
                     EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
-                    while (!CheckIfDataMatches(EmailData))
+                    while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
                     {
                         DataBaseID += 1;
                         if (CheckIDIsInEmailsTable(DataBaseID))
@@ -62,10 +63,32 @@ namespace Computer_Science_A_Level_NEA
                 }
                 else if (s[1] == EmailID.ToString())
                 {
-
+                    DataBaseID++;
+                    while (EmailData == null && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
+                    {
+                        if (CheckIDIsInEmailsTable(DataBaseID)) EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                        else DataBaseID++;
+                    }
+                    while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
+                    {
+                        DataBaseID += 1;
+                        if (CheckIDIsInEmailsTable(DataBaseID))
+                        {
+                            EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                        }
+                        else if (CheckIDIsInCollisions(DataBaseID))
+                        {
+                            DataBaseID += 1;
+                        }
+                    }
                 }
 
             }
+            if (CheckIfDataMatches(EmailData)) LoadArchiveData();
+        }
+        private void LoadArchiveData()
+        {
+            IsArchived = true;
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
         {        
