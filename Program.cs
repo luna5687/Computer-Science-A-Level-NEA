@@ -9,13 +9,13 @@ namespace NEA_protoype
 
     internal class Program
     {
-        static void AccountsMenu(ref SQLDataBase DataBase)
+        static void AccountsMenu()
         {
             List<string[]> temp;
 
 
             List<string> Accounts = new List<string>();
-            temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+            temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             if (temp == null)
             {
                 Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
@@ -33,10 +33,10 @@ namespace NEA_protoype
 
                     accountPassword = Console.ReadLine();
                 }
-                DataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
+                SQLDataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
                                   "VALUES " +
                                   $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
-                temp = DataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+                temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             }
 
             Accounts = new List<string>();
@@ -103,14 +103,14 @@ namespace NEA_protoype
                             $"");
                         string EnteredPassword = Console.ReadLine();
                         bool passwordConfined = false;
-                        temp = DataBase.ExecuteQuery($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'");
+                        temp = SQLDataBase.ExecuteQuery($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'");
                         while (EnteredPassword != "" && !passwordConfined)
                         {
                             if (EnteredPassword == Encryption.Decrypt(temp[0][0]))
                             {
 
                                 passwordConfined = true;
-                                UserMenu.EmailAddressesMenu(Accounts[menuOption], ref DataBase);
+                                UserMenu.EmailAddressesMenu(Accounts[menuOption]);
                             }
                             else
                             {
@@ -171,10 +171,11 @@ namespace NEA_protoype
 
                                      "CREATE TABLE Collisions " +
                                      "(CollisionAt int)"};
-            SQLDataBase DataBase = new SQLDataBase("Email_Archive", InitalTable);
+            SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
             
             ConsoleInteraction.CheckConsoleExistance();
-            AccountsMenu(ref DataBase);
+            AccountsMenu();
+            SQLDataBase.CloseConnection();
         }
 
     }
