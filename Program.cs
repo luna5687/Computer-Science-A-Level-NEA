@@ -172,7 +172,7 @@ namespace NEA_protoype
                                      "CREATE TABLE Collisions " +
                                      "(CollisionAt int)"};
             SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
-            
+            Tags.LoadTags();
             ConsoleInteraction.CheckConsoleExistance();
             AccountsMenu();
             SQLDataBase.CloseConnection();

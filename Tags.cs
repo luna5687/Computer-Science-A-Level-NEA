@@ -9,7 +9,7 @@ namespace Computer_Science_A_Level_NEA
 {
     static class Tags
     {
-        static public Dictionary<int, string> AllTags = new Dictionary<int, string>();
+        static private Dictionary<int, string> AllTags = new Dictionary<int, string>();
         static public void LoadTags()
         {
             List<string[]> TagsInDataBase = SQLDataBase.ExecuteQuery("SELECT * FROM Tags");
@@ -25,6 +25,9 @@ namespace Computer_Science_A_Level_NEA
             SQLDataBase.ExecuteNonQuery($"INSERT INTO Tags(TagID,TagName)" +
                                         $" VALUES ({key},'{Value}')");
         }
-        
+        static public Dictionary<int,string> GetAllTags()
+        {
+            return AllTags;
+        }
     }
 }

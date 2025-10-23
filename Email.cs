@@ -1,6 +1,4 @@
 ﻿using NEA_protoype;
-using Org.BouncyCastle.Crypto;
-using System.Data.Entity;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -12,7 +10,7 @@ namespace Computer_Science_A_Level_NEA
         private string Subject;
         private string Body;
         private List<string> Keywords;
-        private Dictionary<int,string> EmailTags;
+        private Dictionary<int, string> EmailTags = new Dictionary<int, string>();
         private int EmailID;
         private int DataBaseID;
         public Email(string Sender, string Recipient, string Subject, string Body)
@@ -43,56 +41,64 @@ namespace Computer_Science_A_Level_NEA
             List<string[]> EmailData = null;
             bool found;
             DataBaseID = EmailID;
-            foreach (string[] s in AllEmailIDsInDataBase)
+            if (AllEmailIDsInDataBase != null)
             {
-                if (s[0] == EmailID.ToString())
+                foreach (string[] s in AllEmailIDsInDataBase)
                 {
-                    EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
-                    while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
+                    if (s[0] == EmailID.ToString())
                     {
-                        DataBaseID += 1;
-                        if (CheckIDIsInEmailsTable(DataBaseID))
-                        {
-                            EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
-                        }
-                        else if (CheckIDIsInCollisions(DataBaseID))
+                        EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                        while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
                         {
                             DataBaseID += 1;
+                            if (CheckIDIsInEmailsTable(DataBaseID))
+                            {
+                                EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                            }
+                            else if (CheckIDIsInCollisions(DataBaseID))
+                            {
+                                DataBaseID += 1;
+                            }
                         }
                     }
-                }
-                else if (s[1] == EmailID.ToString())
-                {
-                    DataBaseID++;
-                    while (EmailData == null && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
+                    else if (s[1] == EmailID.ToString())
                     {
-                        if (CheckIDIsInEmailsTable(DataBaseID)) EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
-                        else DataBaseID++;
-                    }
-                    while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
-                    {
-                        DataBaseID += 1;
-                        if (CheckIDIsInEmailsTable(DataBaseID))
+                        DataBaseID++;
+                        while (EmailData == null && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
                         {
-                            EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                            if (CheckIDIsInEmailsTable(DataBaseID)) EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                            else DataBaseID++;
                         }
-                        else if (CheckIDIsInCollisions(DataBaseID))
+                        while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
                         {
                             DataBaseID += 1;
+                            if (CheckIDIsInEmailsTable(DataBaseID))
+                            {
+                                EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
+                            }
+                            else if (CheckIDIsInCollisions(DataBaseID))
+                            {
+                                DataBaseID += 1;
+                            }
                         }
                     }
+
                 }
 
+                if (!(EmailData==null) && CheckIfDataMatches(EmailData)) LoadArchiveData();
             }
-            if (CheckIfDataMatches(EmailData)) LoadArchiveData();
+            
         }
         private void LoadArchiveData()
         {
             IsArchived = true;
+            List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
 
+            if (AllTagIDS.Count == 0) Console.WriteLine("No currently assigned tags");
+            else for (int i = 0; i < AllTagIDS.Count; i++) Console.WriteLine(AllTagIDS[i][0]);
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
-        {        
+        {
             foreach (string[] s in DataBaseData)
             {
                 if (s[1] != Sender) return false;
@@ -133,8 +139,8 @@ namespace Computer_Science_A_Level_NEA
             {
                 output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
                 if (EmailTags != null) foreach (var tags in EmailTags) output += " " + EmailTags.Keys;
-                    
-                
+
+
             }
             else
             {
@@ -169,7 +175,7 @@ namespace Computer_Science_A_Level_NEA
                 else
                 {
                     Console.WriteLine("  Back | > Actions");
-                } 
+                }
                 Console.WriteLine($"From: {Sender} To: {Recipient}\n" +
                                   $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
                                   $"{Body}");
@@ -200,11 +206,11 @@ namespace Computer_Science_A_Level_NEA
                         Exit = EmailActions();
                     }
                 }
-             }
-         }
+            }
+        }
         private bool EmailActions()
         {
-            string[] MenuOptions = {"Back", "Archive","Manage Tags"};
+            string[] MenuOptions = { "Back", "Archive", "Manage Tags" };
             bool exit = false;
             int menuOption = 0;
             string input;
@@ -248,6 +254,7 @@ namespace Computer_Science_A_Level_NEA
                         case "Manage Tags":
                             if (!IsArchived) Console.WriteLine("Email needs to be archived before tags can be managed");
                             else TagManagement();
+                            Console.Clear();
                             break;
                     }
                 }
@@ -256,10 +263,210 @@ namespace Computer_Science_A_Level_NEA
 
             return false;
         }
-        
+
         private void TagManagement()
         {
-            List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
+            Console.Clear();
+            bool exit = false;
+            List<string[]> AllTagIDS;
+            int menuOption = 0;
+            string input;
+            string[] MenuOptions = { "Add tag to email", "Remove tags from email", "Create tag", "Delete Tag", "Back" };
+            while (!exit)
+            {
+                Console.CursorLeft = 0;
+                Console.CursorTop = 0;
+                Console.WriteLine("Current Tags:");
+                if (EmailTags == null || EmailTags.Count == 0) Console.WriteLine("No tags to display");
+                else
+                {
+                    foreach (var t in EmailTags)
+                    {
+                        Console.WriteLine($"{t.Value}");
+                    }
+                }
+
+                
+
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (menuOption == i) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput(true);
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Back":
+                            exit = true;
+                            break;
+                        case "Add tag to email":
+                            AddTag();
+                            break;
+                        case "Remove tags from email":
+                            RemoveTag();
+                            break;
+                        case "Create tag":
+                            Console.Write("Please Enter name for tag: ");
+                            Tags.CreateNewTag(Console.ReadLine());
+                            Console.Clear();
+                            break;
+                        case "Delete Tag":
+
+                            break;
+                    }
+                }
+            }
+
+
+        }
+        private void AddTag()
+        {
+            Dictionary<int, string> AllTags = Tags.GetAllTags();
+            bool exit = false;
+            int menuOption = 0;
+            string input;
+            int count = 0;
+            while (!exit)
+            {
+                Console.WriteLine("Select A tag");
+                count = 0;
+                foreach (var t in AllTags)
+                {
+                    if (!EmailTags.ContainsKey(t.Key))
+                    {
+                        if (count == menuOption) Console.Write(" > ");
+                        else Console.Write("   ");
+                        Console.WriteLine(t.Value);
+                        count++;
+                    }
+                }
+                if (menuOption == AllTags.Count - EmailTags.Count) Console.Write(" > ");
+                else Console.Write("   ");
+                Console.WriteLine("Back");
+                input = ConsoleInteraction.GetConsoleInput();
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = AllTags.Count - EmailTags.Count;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption == AllTags.Count - EmailTags.Count + 1)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    if (menuOption == AllTags.Count - EmailTags.Count) exit = true;
+                    else
+                    {
+                        count = 0;
+                        foreach (var i in AllTags)
+                        {
+                            if (!EmailTags.ContainsKey(i.Key))
+                            { 
+                                if (count == menuOption) EmailTags.Add(i.Key,i.Value);
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+            UpdateTags();
+            Console.Clear();
+        }
+        private void RemoveTag()
+        {
+            if (EmailTags == null || EmailTags.Count == 0) Console.WriteLine("No tags to remvoe");
+            else
+            {
+                bool exit = false;
+                int menuOption = 0;
+                string input;
+                int count = 0;
+                while (!exit)
+                {
+                    Console.WriteLine("Current Tags:");
+
+                    for (int i = 0; i < EmailTags.Count; i++)
+                    {
+                        if (i == menuOption) Console.Write(" > ");
+                        else Console.Write("   ");
+                        Console.WriteLine(EmailTags[i]);
+                    }
+                    if (menuOption == EmailTags.Count) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine("Back");
+                    input = ConsoleInteraction.GetConsoleInput();
+                    if (input.ToLower() == "w")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = EmailTags.Count;
+                        }
+                    }
+                    else if (input.ToLower() == "s")
+                    {
+                        menuOption++;
+                        if (menuOption == EmailTags.Count + 1)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "\r" || input == "")
+                    {
+                        if (menuOption == EmailTags.Count) exit = true;
+                        else
+                        {
+                            count = 0;
+                            foreach (var i in EmailTags)
+                            {
+                                if (count == menuOption) EmailTags.Remove(i.Key);
+                                count++;
+                            }
+                        }
+                    }
+                }
+                UpdateTags();
+            }
+            Console.Clear();
+        }
+        private void UpdateTags()
+        {
+            List<string[]> CurrentStoredTags = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
+            foreach (string[] s in CurrentStoredTags)
+            {
+                if (!EmailTags.ContainsKey(int.Parse(s[0]))) SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE TagID == {s[0]} AND EmailID == {DataBaseID}");
+            }
+            foreach (var t in EmailTags)
+            {
+                if (!CheckIds(t.Key, CurrentStoredTags)) SQLDataBase.ExecuteNonQuery($"INSERT INTO AssignedTags(TagID,EmailID) VALUES ({t.Key},{DataBaseID}");
+            }
         }
         private void CreateKeywords()
         {
@@ -267,7 +474,7 @@ namespace Computer_Science_A_Level_NEA
             {
                 List<List<POSTagging.word>> POSTagged
                 = POSTagging.POStagging(Body);
-            
+
                 Graph graph = CreateGraph(POSTagged);
 
                 foreach (Node node in graph.nodes)
@@ -413,7 +620,7 @@ namespace Computer_Science_A_Level_NEA
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
             DataBaseID = ID;
-            if (EmailTags!=null)
+            if (EmailTags != null)
             {
                 // add tags
             }
@@ -421,7 +628,7 @@ namespace Computer_Science_A_Level_NEA
         private string CombineTags()
         {
             string output = "";
-            foreach(var s in EmailTags)
+            foreach (var s in EmailTags)
             {
                 output += s.Value;
             }
@@ -433,11 +640,11 @@ namespace Computer_Science_A_Level_NEA
             if (Keywords != null)
             {
                 foreach (string s in Keywords)
-            {
-                output += s+" ";
+                {
+                    output += s + " ";
+                }
             }
-            }
-            
+
             return output;
         }
     }
