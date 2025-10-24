@@ -88,7 +88,7 @@ namespace Computer_Science_A_Level_NEA
                     Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
                     Console.Write("   >");
                 }
-                input = ConsoleInteraction.GetConsoleInput();
+                input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
                 if (input == "W")
                 {
                     menuOption--;
@@ -123,11 +123,11 @@ namespace Computer_Science_A_Level_NEA
                     {
                         Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
                     }
-                    Console.Write(" > Exit");
+                    Console.Write("   Exit");
             }
-            if (menuOption-1 == CurrentDispalyEmails.Count)
+            else if (menuOption-1 == CurrentDispalyEmails.Count)
             {
-                Console.WriteLine("   Search Emails");
+                Console.WriteLine("   Search Emails\n");
                      Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
                     for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                     {
@@ -137,11 +137,11 @@ namespace Computer_Science_A_Level_NEA
             }
                 else
             {
-                     Console.WriteLine("   Search Emails");
+                     Console.WriteLine("   Search Emails\n");
                      Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
                     for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                     {
-                        if (i == menuOption)
+                        if (i == menuOption-1)
                         {
                             Console.Write(" > " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
                         }
@@ -151,7 +151,7 @@ namespace Computer_Science_A_Level_NEA
                         }
                     }
                     Console.Write("   Exit");
-                }
+            }
         }
         private int FindLongestRecipient()
         {

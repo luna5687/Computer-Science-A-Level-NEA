@@ -93,9 +93,8 @@ namespace Computer_Science_A_Level_NEA
         {
             IsArchived = true;
             List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
-
-            if (AllTagIDS.Count == 0) Console.WriteLine("No currently assigned tags");
-            else for (int i = 0; i < AllTagIDS.Count; i++) Console.WriteLine(AllTagIDS[i][0]);
+            if (!(AllTagIDS == null || AllTagIDS.Count == 0)) foreach(string[] s in AllTagIDS)  EmailTags.Add(int.Parse(s[0]), SQLDataBase.ExecuteQuery($"SELECT TagName FROM Tags WHERE TagId == {int.Parse(s[0])}")[0][0]);
+ 
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
         {
@@ -138,7 +137,7 @@ namespace Computer_Science_A_Level_NEA
             if (IsArchived)
             {
                 output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
-                if (EmailTags != null) foreach (var tags in EmailTags) output += " " + EmailTags.Keys;
+                if (EmailTags != null) foreach (var tags in EmailTags) output += " " + tags.Value;
 
 
             }
@@ -157,7 +156,7 @@ namespace Computer_Science_A_Level_NEA
             {
                 foreach (var tag in this.EmailTags)
                 {
-                    Tags += this.EmailTags.Keys + " ";
+                    Tags += tag.Value + " ";
                 }
             }
             string keywords = "";
@@ -286,7 +285,7 @@ namespace Computer_Science_A_Level_NEA
                     }
                 }
 
-                
+
 
                 for (int i = 0; i < MenuOptions.Length; i++)
                 {
@@ -330,13 +329,17 @@ namespace Computer_Science_A_Level_NEA
                             Console.Clear();
                             break;
                         case "Delete Tag":
-
+                            DeleteTag();
                             break;
                     }
                 }
             }
 
 
+        }
+        private void DeleteTag()
+        {
+            
         }
         private void AddTag()
         {
@@ -459,13 +462,16 @@ namespace Computer_Science_A_Level_NEA
         private void UpdateTags()
         {
             List<string[]> CurrentStoredTags = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
-            foreach (string[] s in CurrentStoredTags)
+            if (CurrentStoredTags != null)
             {
-                if (!EmailTags.ContainsKey(int.Parse(s[0]))) SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE TagID == {s[0]} AND EmailID == {DataBaseID}");
+                foreach (string[] s in CurrentStoredTags)
+                {
+                    if (!EmailTags.ContainsKey(int.Parse(s[0]))) SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE TagID == {s[0]} AND EmailID == {DataBaseID}");
+                }
             }
             foreach (var t in EmailTags)
             {
-                if (!CheckIds(t.Key, CurrentStoredTags)) SQLDataBase.ExecuteNonQuery($"INSERT INTO AssignedTags(TagID,EmailID) VALUES ({t.Key},{DataBaseID}");
+                if (!CheckIds(t.Key, CurrentStoredTags)) SQLDataBase.ExecuteNonQuery($"INSERT INTO AssignedTags(TagID,EmailID) VALUES ({t.Key},{DataBaseID})");
             }
         }
         private void CreateKeywords()
@@ -603,6 +609,7 @@ namespace Computer_Science_A_Level_NEA
         }
         private bool CheckIds(int ID, List<string[]> AllIds)
         {
+            if (AllIds == null) return false;
             for (int i = 0; i < AllIds.Count; i++)
             {
                 if (int.Parse(AllIds[i][0]) == ID)

@@ -165,7 +165,7 @@ namespace NEA_protoype
 
                                      "INSERT INTO Tags(tagID,TagName)" +
                                      "VALUES " +
-                                     "(0,'Metting')," +
+                                     "(0,'Meeting')," +
                                      "(1,'Accounting')," +
                                      "(2,'Important')",
 

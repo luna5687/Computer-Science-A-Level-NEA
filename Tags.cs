@@ -25,9 +25,14 @@ namespace Computer_Science_A_Level_NEA
             SQLDataBase.ExecuteNonQuery($"INSERT INTO Tags(TagID,TagName)" +
                                         $" VALUES ({key},'{Value}')");
         }
-        static public Dictionary<int,string> GetAllTags()
+        static public Dictionary<int, string> GetAllTags()
         {
             return AllTags;
+        }
+        static void DeleteTag(int TagID)
+        {
+            SQLDataBase.ExecuteNonQuery($"DELETE FROM Tags WHERE TagID == {TagID}");
+            SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE TagID == {TagID}");
         }
     }
 }
