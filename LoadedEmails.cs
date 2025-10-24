@@ -7,9 +7,12 @@ namespace Computer_Science_A_Level_NEA
     public class LoadedEmails
     {
         private List<Email> emails;
+        private List<Email> CurrentDispalyEmails = new List<Email>();
+        
         public LoadedEmails(ImapServer server)
         {
             emails = server.GetAllEmails();
+            foreach (Email e in emails) CurrentDispalyEmails.Add(e);
         }
         public Email GetEmail(int index)
         {
@@ -17,6 +20,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public void EmailMenu()
         {
+
             Console.Clear();
             bool exit = false;
             int menuOption = 0;
@@ -30,27 +34,31 @@ namespace Computer_Science_A_Level_NEA
                     menuOption--;
                     if (menuOption < 0)
                     {
-                        menuOption = emails.Count;
+                        menuOption = CurrentDispalyEmails.Count;
                     }
                 }
                 else if (input == "S")
                 {
                     menuOption++;
-                    if (menuOption > emails.Count)
+                    if (menuOption > CurrentDispalyEmails.Count + 1)
                     {
                         menuOption = 0;
                     }
                 }
                 else if (input == "\r" || input == "")
                 {
-                    if (menuOption == emails.Count)
+                    if (menuOption == CurrentDispalyEmails.Count + 1)
                     {
                         exit = true;
+                    }
+                    else if (menuOption == 0)
+                    {
+                        SearchForEamils();
                     }
                     else
                     {
                         // display emails
-                        emails[menuOption].DisplayEmail();
+                        CurrentDispalyEmails[menuOption - 1].DisplayEmail();
                         Console.Clear();
                     }
 
@@ -59,30 +67,87 @@ namespace Computer_Science_A_Level_NEA
                 Console.CursorLeft = 0;
             }
         }
+        private void SearchForEamils()
+        {
+            bool Exit = false;
+            Console.CursorTop = 0;
+            Console.CursorLeft = 0;
+            Console.Write("Please Select Field to filter");
+            string SenderFilter, SubjectFilter;
+            string input;
+            int menuOption = 1;
+            while (!Exit)
+            {
+                if (menuOption == 0)
+                {
+                    Console.CursorLeft = 0;
+                    Console.Write("   >");
+                }
+                if (menuOption == 1)
+                {
+                    Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
+                    Console.Write("   >");
+                }
+                input = ConsoleInteraction.GetConsoleInput();
+                if (input == "W")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = 1;
+                    }
+                }
+                else if (input == "S")
+                {
+                    menuOption++;
+                    if (menuOption > 1)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    
+                }
+            }
+        }
         private void DisplayEmails(int menuOption)
         {
             // when displaying emails add headings 
             int[] Buffers = { FindLongestSender(), FindLongestRecipient(),FindLongestSubject()};
-            Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
-            if (menuOption == emails.Count)
-                {
-                    for (int i = 0; i < emails.Count; i++)
+            if (menuOption == 0)
+            {
+                Console.WriteLine(" > Search Emails\n");
+                  Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                    for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                     {
-                        Console.Write("   " + emails[i].GetEmailShort(Buffers) + "\n");
+                        Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
                     }
                     Console.Write(" > Exit");
-                }
+            }
+            if (menuOption-1 == CurrentDispalyEmails.Count)
+            {
+                Console.WriteLine("   Search Emails");
+                     Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                    for (int i = 0; i < CurrentDispalyEmails.Count; i++)
+                    {
+                        Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
+                    }
+                    Console.Write(" > Exit");
+            }
                 else
-                {
-                    for (int i = 0; i < emails.Count; i++)
+            {
+                     Console.WriteLine("   Search Emails");
+                     Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                    for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                     {
                         if (i == menuOption)
                         {
-                            Console.Write(" > " + emails[i].GetEmailShort(Buffers) + "\n");
+                            Console.Write(" > " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
                         }
                         else
                         {
-                            Console.Write("   " + emails[i].GetEmailShort(Buffers) + "\n");
+                            Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
                         }
                     }
                     Console.Write("   Exit");

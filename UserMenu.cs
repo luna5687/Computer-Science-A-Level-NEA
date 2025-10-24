@@ -84,6 +84,7 @@ namespace Computer_Science_A_Level_NEA
                     {
                         exit = true;
                     }
+                    
                     else if (menuOption == EmaliAddreses.Count)
                     {
                         EmailManagement(EmaliAddreses, accountName);
@@ -124,10 +125,6 @@ namespace Computer_Science_A_Level_NEA
         }
         static void CreateEmail(string accountName)
         {
-            
-
-
-
             Console.Write("Enter Emailaddress: ");
             string EmailAddress = Console.ReadLine();
 
