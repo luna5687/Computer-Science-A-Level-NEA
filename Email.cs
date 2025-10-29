@@ -35,6 +35,23 @@ namespace Computer_Science_A_Level_NEA
         {
             return Subject.Length;
         }
+        public bool CheckAgainstFilters( string SenderFilter, string SubjectFilter, string TagFilter)
+        {
+            
+            if (SenderFilter != "" && SenderFilter!=Sender) return false;
+            if (SubjectFilter !="" && SubjectFilter!=Subject) return false;
+            if (TagFilter !="" && EmailTags!=null)
+            {
+                List<string> Tags = new List<string>(); 
+                foreach (var t in EmailTags)
+                {
+                    Tags.Add(t.Value);
+                }
+                return Tags.Contains(TagFilter);
+            }
+            return true;
+     
+        }
         private void CheckArchived() // will need rigrous testing 
         {
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID, CollisionAt FROM Emails,Collisions");
