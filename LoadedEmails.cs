@@ -70,7 +70,7 @@ namespace Computer_Science_A_Level_NEA
         private void SearchForEamils()
         {
             bool Exit = false;
-            Console.CursorTop = 0;
+            Console.CursorTop = 1;
             Console.CursorLeft = 0;
             Console.Write("Please Select Field to filter");
             string SenderFilter, SubjectFilter;
