@@ -165,7 +165,7 @@ namespace Computer_Science_A_Level_NEA
             }
             return output;
         }
-        public void DisplayEmail()
+        public void DisplayEmail(LoadedEmails AllEmails)
         {
             Console.Clear();
             string Tags = "";
@@ -219,14 +219,15 @@ namespace Computer_Science_A_Level_NEA
                     if (menuOption == 0) Exit = true;
                     else
                     {
-                        Exit = EmailActions();
+                        Exit = EmailActions(AllEmails);
                     }
                 }
             }
         }
-        private bool EmailActions()
+        private bool EmailActions(LoadedEmails AllEmails)
         {
-            string[] MenuOptions = { "Back", "Archive", "Manage Tags" };
+            Console.Clear();
+            string[] MenuOptions = { "Back", "Archive","UnArchive", "Manage Tags" };
             bool exit = false;
             int menuOption = 0;
             string input;
@@ -267,9 +268,12 @@ namespace Computer_Science_A_Level_NEA
                         case "Archive":
                             ArchiveEmail();
                             break;
+                        case "UnArchive":
+
+                            break;
                         case "Manage Tags":
                             if (!IsArchived) Console.WriteLine("Email needs to be archived before tags can be managed");
-                            else TagManagement();
+                            else TagManagement(AllEmails);
                             Console.Clear();
                             break;
                     }
@@ -279,8 +283,15 @@ namespace Computer_Science_A_Level_NEA
 
             return false;
         }
+        private void UnArchiveEmail()
+        {
+            if (IsArchived)
+            {
+                IsArchived = false;
 
-        private void TagManagement()
+            }
+        }
+        private void TagManagement(LoadedEmails AllEmails)
         {
             Console.Clear();
             bool exit = false;
@@ -346,7 +357,7 @@ namespace Computer_Science_A_Level_NEA
                             Console.Clear();
                             break;
                         case "Delete Tag":
-                            DeleteTag();
+                            DeleteTag(AllEmails);
                             break;
                     }
                 }
@@ -354,12 +365,17 @@ namespace Computer_Science_A_Level_NEA
 
 
         }
-        private void DeleteTag()
+        private void DeleteTag(LoadedEmails AllEmails)
         {
-            Tags.DeleteTagMenu();
+            Tags.DeleteTagMenu(AllEmails);
+        }
+        public void RemoveTagFromEmail(int tagId)
+        {
+            EmailTags.Remove(tagId);
         }
         private void AddTag()
         {
+            Console.Clear();
             Dictionary<int, string> AllTags = Tags.GetAllTags();
             bool exit = false;
             int menuOption = 0;
@@ -367,6 +383,8 @@ namespace Computer_Science_A_Level_NEA
             int count = 0;
             while (!exit)
             {
+                Console.CursorTop = 0;
+                Console.CursorLeft = 0;
                 Console.WriteLine("Select A tag");
                 count = 0;
                 foreach (var t in AllTags)

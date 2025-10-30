@@ -20,7 +20,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public void EmailMenu()
         {
-
+            Console.WindowWidth = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject() + 20;
             Console.Clear();
             bool exit = false;
             int menuOption = 0;
@@ -58,7 +58,7 @@ namespace Computer_Science_A_Level_NEA
                     else
                     {
                         // display emails
-                        CurrentDispalyEmails[menuOption - 1].DisplayEmail();
+                        CurrentDispalyEmails[menuOption - 1].DisplayEmail(this);
                         Console.Clear();
                     }
 
@@ -75,6 +75,9 @@ namespace Computer_Science_A_Level_NEA
             Console.Write("    " + SenderFilter);
             Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
             Console.Write("    " + SubjectFilter);
+            Console.CursorTop = 1;
+            Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject();
+            Console.Write("    "+ TagFilter);
         }
         private void SearchForEamils()
         {
@@ -83,7 +86,7 @@ namespace Computer_Science_A_Level_NEA
             
             string input;
             int menuOption = 0;
-            int MaxMenuOption = 2;
+            int MaxMenuOption = 3;
             while (!Exit)
             {
                 Console.CursorTop = 0;
@@ -111,6 +114,12 @@ namespace Computer_Science_A_Level_NEA
                 {
                     Console.CursorTop = 1;
                     Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
+                    Console.Write("   >");
+                }
+                if (menuOption == 3)
+                {
+                    Console.CursorTop = 1;
+                    Console.CursorLeft = 3+FindLongestSender()+1+FindLongestRecipient()+1+FindLongestSubject();
                     Console.Write("   >");
                 }
                 input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
@@ -145,6 +154,12 @@ namespace Computer_Science_A_Level_NEA
                         Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient()+3;
                         SubjectFilter = Console.ReadLine();
                     }
+                    else if (menuOption == 3)
+                    {
+                        Console.CursorTop = 1;
+                        Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject()+3;
+                        TagFilter = Console.ReadLine();
+                    }
                 }
                 Console.Clear();
                 UpdateDisplayedEmails();
@@ -165,7 +180,7 @@ namespace Computer_Science_A_Level_NEA
         
         private void DisplayEmails(int menuOption)
         {
-           
+            Console.Clear();
             // when displaying emails add headings 
             DisplaySearchParamters();
             Console.CursorTop = 0;
@@ -247,6 +262,13 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
             return Longest;
+        }
+        public void RemoveTagFromEmails(int tagID)
+        {
+            foreach (Email email in emails)
+            {
+                email.RemoveTagFromEmail(tagID);
+            }
         }
     }
 }
