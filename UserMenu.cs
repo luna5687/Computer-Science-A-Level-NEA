@@ -32,7 +32,8 @@ namespace Computer_Science_A_Level_NEA
                     {
                         Console.Write("   " + EmaliAddreses[i] + "\n");
                     }
-                    Console.WriteLine(" > Manage Emails");
+                    Console.WriteLine(" > Manage Tags");
+                    Console.WriteLine("   Manage Emails");
                     Console.Write("   Exit");
                 }
                 else if (menuOption == EmaliAddreses.Count + 1)
@@ -41,6 +42,17 @@ namespace Computer_Science_A_Level_NEA
                     {
                         Console.Write("   " + EmaliAddreses[i] + "\n");
                     }
+                    Console.WriteLine("   Manage Tags");
+                    Console.WriteLine(" > Manage Emails");
+                    Console.Write("   Exit");
+                }
+                else if (menuOption == EmaliAddreses.Count + 2)
+                {
+                    for (int i = 0; i < EmaliAddreses.Count; i++)
+                    {
+                        Console.Write("   " + EmaliAddreses[i] + "\n");
+                    }
+                    Console.WriteLine("   Manage Tags");
                     Console.WriteLine("   Manage Emails");
                     Console.Write(" > Exit");
                 }
@@ -57,6 +69,7 @@ namespace Computer_Science_A_Level_NEA
                             Console.Write("   " + EmaliAddreses[i] + "\n");
                         }
                     }
+                    Console.WriteLine("   Manage Tags");
                     Console.WriteLine("   Manage Emails");
                     Console.Write("   Exit");
                 }
@@ -67,27 +80,32 @@ namespace Computer_Science_A_Level_NEA
                     menuOption--;
                     if (menuOption < 0)
                     {
-                        menuOption = EmaliAddreses.Count + 1;
+                        menuOption = EmaliAddreses.Count + 2;
                     }
                 }
                 else if (input == "S")
                 {
                     menuOption++;
-                    if (menuOption > EmaliAddreses.Count + 1)
+                    if (menuOption > EmaliAddreses.Count + 2)
                     {
                         menuOption = 0;
                     }
                 }
                 else if (input == "\r" || input == "")
                 {
-                    if (menuOption == EmaliAddreses.Count + 1)
+                    if (menuOption == EmaliAddreses.Count + 2)
                     {
                         exit = true;
                     }
-                    
-                    else if (menuOption == EmaliAddreses.Count)
+                    else if (menuOption == EmaliAddreses.Count+1)
                     {
                         EmailManagement(EmaliAddreses, accountName);
+                        Console.Clear();
+                    }
+                    else if (menuOption == EmaliAddreses.Count)
+                    {
+                        Tags.TagManagement();
+                        Console.Clear();
                     }
                     else
                     {
