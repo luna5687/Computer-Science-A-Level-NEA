@@ -1,4 +1,5 @@
 ﻿using Computer_Science_A_Level_NEA;
+using Microsoft.VisualBasic;
 // Copyright 2025 Daniel Ian White
 
 
@@ -49,13 +50,23 @@ namespace NEA_protoype
             int menuOption = 0;
             while (!exit)
             {
-                if (menuOption == Accounts.Count)
+                if (menuOption == Accounts.Count+1)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
+                    Console.Write("   Manage Global settings\n");
                     Console.Write(" > Exit");
+                }
+                else if(menuOption == Accounts.Count)
+                {
+                    for (int i = 0; i < Accounts.Count; i++)
+                    {
+                        Console.Write("   " + Accounts[i] + "\n");
+                    }
+                    Console.Write(" > Manage Global settings\n");
+                    Console.Write("   Exit");
                 }
                 else
                 {
@@ -70,6 +81,7 @@ namespace NEA_protoype
                             Console.Write("   " + Accounts[i] + "\n");
                         }
                     }
+                    Console.Write("   Manage Global settings\n");
                     Console.Write("   Exit");
                 }
                 string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
@@ -92,9 +104,13 @@ namespace NEA_protoype
                 }
                 else if (input == "\r" || input == "")
                 {
-                    if (menuOption == Accounts.Count)
+                    if (menuOption == Accounts.Count+1)
                     {
                         exit = true;
+                    }
+                    else if (menuOption == Accounts.Count)
+                    {
+                        EditGlobalSettings();
                     }
                     else
                     {
@@ -132,8 +148,114 @@ namespace NEA_protoype
             }
 
         }
-
-        
+        static void EditGlobalSettings()
+        {
+            string[] MenuOptions = { "Back", "Resest To Default", "Edit Max database size", "Edit Overflow handaling" };
+            bool exit = false;
+            string input;
+            int menuOption = 0;
+            while (!exit)
+            {
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (i == menuOption) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput(true);
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Back":
+                            exit = true;
+                            break;
+                        case "Resest To Default":
+                            SQLDataBase.SetMaxSize(-1);
+                            SQLDataBase.SetOverFlowType("Error");
+                            break;
+                        case "Edit Max database size":
+                            Console.WriteLine("Please enter the max database size in GB (Must be greater than or equal to 1 or -1 for unlimited)");
+                            int Size = int.Parse(Console.ReadLine());
+                            while (Size <= 1 && Size != -1)
+                            {
+                                Console.WriteLine("Invalid Size");
+                                Console.WriteLine("Please enter the max database size in GB (Must be greater than or equal to 1)");
+                                Size = int.Parse(Console.ReadLine());
+                            }
+                            SQLDataBase.SetMaxSize(Size);
+                            break;
+                        case "Edit Overflow handaling":
+                            EditOverFlowSettings();
+                            break;
+                    }
+                }
+            }
+        }
+        static void EditOverFlowSettings()
+        {
+            string[] MenuOptions = { "Back", "Error","Delete Oldest"};
+            bool exit = false;
+            string input;
+            int menuOption = 0;
+            while (!exit)
+            {
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (i == menuOption) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput(true);
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Back":
+                            exit = true;
+                            break;
+                        case "Error":
+                            SQLDataBase.SetOverFlowType("Error");
+                            break;
+                        case "Delete Oldest":
+                            SQLDataBase.SetOverFlowType("Delete Oldest");
+                            break;
+                    }
+                }
+            }
+        }
         static void Main(string[] args)
         {
             string[] InitalTable = {"CREATE TABLE Users (" +
@@ -149,7 +271,8 @@ namespace NEA_protoype
                                       "Subject varchar," +
                                      "TextBody varchar," +
                                       "Keywords varchar," +
-                                     "EmailAddress varchar)",
+                                     "EmailAddress varchar," +
+                                     "DataRecived Date)",
 
                                      "CREATE TABLE Tags(" +
                                      "TagID int PRIMARY KEY," +
@@ -171,13 +294,36 @@ namespace NEA_protoype
 
                                      "CREATE TABLE Collisions " +
                                      "(CollisionAt int)"};
+            
             SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
+
+            
+
             Tags.LoadTags();
+            
+            Console.ReadLine();
             ConsoleInteraction.CheckConsoleExistance();
             AccountsMenu();
             SQLDataBase.CloseConnection();
         }
-
+        static void CheckForGlobalSettings()
+        {
+            if (!File.Exists("GlobalSettings.txt"))
+            {
+                File.Create("GlobalSettings.txt");
+                StreamWriter SW = new StreamWriter("GlobalSettings.txt");
+                SW.Write("-1,Error");
+                SW.Close();
+            }
+            else
+            {
+                StreamReader SR = new StreamReader("GlobalSettings.txt");
+               string body = SR.ReadToEnd();
+                SQLDataBase.SetMaxSize(int.Parse(body.Split(',')[0]));
+                SQLDataBase.SetOverFlowType(body.Split(',')[1]);
+                SR.Close();
+            }
+        }
     }
 
 }

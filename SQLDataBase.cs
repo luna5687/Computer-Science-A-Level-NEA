@@ -2,12 +2,15 @@
 using Computer_Science_A_Level_NEA;
 using System.Data.SqlTypes;
 using System.Data.SQLite;
+using Microsoft.VisualBasic;
 namespace Computer_Science_A_Level_NEA
 {
     public static  class SQLDataBase
     {
         static private SQLiteConnection connection;
-        static public void CreateDataBase(string name, string[] IntalTables) // could make static
+        static private int MaxMemory = -1;
+        static private string OverFlowType = "Error";
+        static public void CreateDataBase(string name, string[] IntalTables) 
         {
 
             if (!File.Exists("Email_Archive.db"))
@@ -26,10 +29,30 @@ namespace Computer_Science_A_Level_NEA
                 connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");  
                 connection.Open();
             }
+            
         }
+        static public void SetMaxSize(int max)
+        {
+            MaxMemory = max;
+        }
+        static public void SetOverFlowType(string overflow)
+        {
+            OverFlowType= overflow;
+        }
+        static public bool IsFull()
+        {
+            if (MaxMemory == -1) return false;
+            FileSystem.FileCopy("Email_Archive.db", "TempFile");
+            int FileNumber = FileSystem.FreeFile();
+            FileSystem.FileOpen(FileNumber, "TempFile", OpenMode.Input);
+            return  FileSystem.LOF(FileNumber)>MaxMemory;
+            
+        }
+
         static public void ExecuteNonQuery(string Query)
         {
             new SQLiteCommand(Query, connection).ExecuteNonQuery();
+            if (IsFull()) throw new Exception("DataBase is full");
         }
         static public List<string[]> ExecuteQuery(string Query)
         {
