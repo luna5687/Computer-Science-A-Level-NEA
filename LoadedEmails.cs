@@ -1,4 +1,6 @@
 ﻿// Copyright 2025 Daniel Ian White
+using System.Linq;
+
 namespace Computer_Science_A_Level_NEA
 {
 
@@ -58,7 +60,7 @@ namespace Computer_Science_A_Level_NEA
                     else
                     {
                         // display emails
-                        CurrentDispalyEmails[menuOption - 1].DisplayEmail(this);
+                        CurrentDispalyEmails[CurrentDispalyEmails.Count -menuOption].DisplayEmail(this);
                         Console.Clear();
                     }
 
@@ -189,36 +191,36 @@ namespace Computer_Science_A_Level_NEA
             if (menuOption == 0)
             {
                 Console.WriteLine($" > Search Emails{ConsoleInteraction.GetBuffer(100)}\n");
-                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}|Date/Tine Recived  |");
                 for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                 {
-                    Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
+                    Console.Write("   " + CurrentDispalyEmails[CurrentDispalyEmails.Count-1-i].GetEmailShort(Buffers) + "\n");
                 }
                 Console.Write("   Exit");
             }
             else if (menuOption - 1 == CurrentDispalyEmails.Count)
             {
                 Console.WriteLine($"   Search Emails{ConsoleInteraction.GetBuffer(100)}\n");
-                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}|Date/Tine Recived  |");
                 for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                 {
-                    Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
+                    Console.Write("   " + CurrentDispalyEmails[CurrentDispalyEmails.Count - 1 - i].GetEmailShort(Buffers) + "\n");
                 }
                 Console.Write(" > Exit");
             }
             else
             {
                 Console.WriteLine($"   Search Emails{ConsoleInteraction.GetBuffer(100)}\n");
-                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}");
+                Console.WriteLine($"   Sender{ConsoleInteraction.GetBuffer(Buffers[0] - 6)}|Recipient{ConsoleInteraction.GetBuffer(Buffers[1] - 9)}|Subject{ConsoleInteraction.GetBuffer(Buffers[2] - 7)}|Date/Tine Recived  |");
                 for (int i = 0; i < CurrentDispalyEmails.Count; i++)
                 {
                     if (i == menuOption - 1)
                     {
-                        Console.Write(" > " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
+                        Console.Write(" > " + CurrentDispalyEmails[CurrentDispalyEmails.Count - 1 - i].GetEmailShort(Buffers) + "\n");
                     }
                     else
                     {
-                        Console.Write("   " + CurrentDispalyEmails[i].GetEmailShort(Buffers) + "\n");
+                        Console.Write("   " + CurrentDispalyEmails[CurrentDispalyEmails.Count - 1 - i].GetEmailShort(Buffers) + "\n");
                     }
                 }
                 Console.Write("   Exit");

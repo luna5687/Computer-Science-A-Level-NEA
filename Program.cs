@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using Microsoft.VisualBasic;
 // Copyright 2025 Daniel Ian White
 
 
@@ -50,7 +49,7 @@ namespace NEA_protoype
             int menuOption = 0;
             while (!exit)
             {
-                if (menuOption == Accounts.Count+1)
+                if (menuOption == Accounts.Count + 1)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
@@ -59,7 +58,7 @@ namespace NEA_protoype
                     Console.Write("   Manage Global settings\n");
                     Console.Write(" > Exit");
                 }
-                else if(menuOption == Accounts.Count)
+                else if (menuOption == Accounts.Count)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
@@ -104,7 +103,7 @@ namespace NEA_protoype
                 }
                 else if (input == "\r" || input == "")
                 {
-                    if (menuOption == Accounts.Count+1)
+                    if (menuOption == Accounts.Count + 1)
                     {
                         exit = true;
                     }
@@ -210,7 +209,7 @@ namespace NEA_protoype
         }
         static void EditOverFlowSettings()
         {
-            string[] MenuOptions = { "Back", "Error","Delete Oldest"};
+            string[] MenuOptions = { "Back", "Error", "Delete Oldest" };
             bool exit = false;
             string input;
             int menuOption = 0;
@@ -272,7 +271,7 @@ namespace NEA_protoype
                                      "TextBody varchar," +
                                       "Keywords varchar," +
                                      "EmailAddress varchar," +
-                                     "DataRecived Date)",
+                                     "DateRecived varchar)",
 
                                      "CREATE TABLE Tags(" +
                                      "TagID int PRIMARY KEY," +
@@ -294,14 +293,9 @@ namespace NEA_protoype
 
                                      "CREATE TABLE Collisions " +
                                      "(CollisionAt int)"};
-            
+
             SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
-
-            
-
             Tags.LoadTags();
-            
-            Console.ReadLine();
             ConsoleInteraction.CheckConsoleExistance();
             AccountsMenu();
             SQLDataBase.CloseConnection();
@@ -318,7 +312,7 @@ namespace NEA_protoype
             else
             {
                 StreamReader SR = new StreamReader("GlobalSettings.txt");
-               string body = SR.ReadToEnd();
+                string body = SR.ReadToEnd();
                 SQLDataBase.SetMaxSize(int.Parse(body.Split(',')[0]));
                 SQLDataBase.SetOverFlowType(body.Split(',')[1]);
                 SR.Close();

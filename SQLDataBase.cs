@@ -1,16 +1,24 @@
 // Copyright 2025 Daniel Ian White
-using Computer_Science_A_Level_NEA;
-using System.Data.SqlTypes;
-using System.Data.SQLite;
 using Microsoft.VisualBasic;
+using System.Data.SQLite;
 namespace Computer_Science_A_Level_NEA
 {
-    public static  class SQLDataBase
+    public static class SQLDataBase
     {
         static private SQLiteConnection connection;
         static private int MaxMemory = -1;
         static private string OverFlowType = "Error";
-        static public void CreateDataBase(string name, string[] IntalTables) 
+        private struct Date
+        {
+            public int year;
+            public int month;
+            public int day;
+            public int hour;
+            public int minute;
+            public int second;
+        }
+
+        static public void CreateDataBase(string name, string[] IntalTables)
         {
 
             if (!File.Exists("Email_Archive.db"))
@@ -26,10 +34,10 @@ namespace Computer_Science_A_Level_NEA
             }
             else
             {
-                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");  
+                connection = new SQLiteConnection($"Data Source={name}.db;Version=3;New=True;Compress=True;");
                 connection.Open();
             }
-            
+
         }
         static public void SetMaxSize(int max)
         {
@@ -37,7 +45,7 @@ namespace Computer_Science_A_Level_NEA
         }
         static public void SetOverFlowType(string overflow)
         {
-            OverFlowType= overflow;
+            OverFlowType = overflow;
         }
         static public bool IsFull()
         {
@@ -45,14 +53,63 @@ namespace Computer_Science_A_Level_NEA
             FileSystem.FileCopy("Email_Archive.db", "TempFile");
             int FileNumber = FileSystem.FreeFile();
             FileSystem.FileOpen(FileNumber, "TempFile", OpenMode.Input);
-            return  FileSystem.LOF(FileNumber)>MaxMemory;
-            
+            bool full = FileSystem.LOF(FileNumber) > MaxMemory;
+            File.Delete("TempFile");
+            return full;
         }
 
         static public void ExecuteNonQuery(string Query)
         {
-            new SQLiteCommand(Query, connection).ExecuteNonQuery();
-            if (IsFull()) throw new Exception("DataBase is full");
+            if ((Query.StartsWith("INSERT") || Query.StartsWith("CREATE")))
+            {
+                if (!IsFull()) new SQLiteCommand(Query, connection).ExecuteNonQuery();
+            }
+            else
+            {
+                new SQLiteCommand(Query, connection).ExecuteNonQuery();
+            }
+            if (IsFull() && OverFlowType == "Error") throw new Exception("DataBase is full");
+            else if (IsFull() && OverFlowType == "Delete Oldest") ResolveOverFlow();
+        }
+        static private void ResolveOverFlow()
+        {
+            List<string[]> AllDates = ExecuteQuery("SELECT EmailId,DateReviced FROM Emails");
+            List<Date> Dates = new List<Date>();
+            string SingleDate;
+            Date TempDate;
+            foreach (string[] s in AllDates)
+            {
+                TempDate = new Date();
+                SingleDate = s[1];
+                TempDate.day = int.Parse(SingleDate.Split(' ')[0].Split('/')[0]);
+                TempDate.month = int.Parse(SingleDate.Split(' ')[0].Split('/')[1]);
+                TempDate.month = int.Parse(SingleDate.Split(' ')[0].Split('/')[2]);
+                TempDate.hour = int.Parse(SingleDate.Split(' ')[1].Split(':')[0]);
+                TempDate.minute = int.Parse(SingleDate.Split(' ')[1].Split(':')[1]);
+                TempDate.second = int.Parse(SingleDate.Split(' ')[1].Split(':')[2]);
+                Dates.Add(TempDate);
+            }
+            int IndexOfOldest = 0;
+            while (IsFull() && AllDates.Count > 0)
+            {
+                IndexOfOldest = 0;
+                for (int i = 0; i < AllDates.Count; i++)
+                {
+                    if (Dates[i].year < Dates[IndexOfOldest].year) IndexOfOldest = i;
+                    else if (Dates[i].year <= Dates[IndexOfOldest].year && Dates[i].month < Dates[IndexOfOldest].month) IndexOfOldest = i;
+                    else if (Dates[i].year <= Dates[IndexOfOldest].year && Dates[i].month <= Dates[IndexOfOldest].month && Dates[i].day < Dates[IndexOfOldest].day) IndexOfOldest = i;
+                    else if (Dates[i].year <= Dates[IndexOfOldest].year && Dates[i].month <= Dates[IndexOfOldest].month && Dates[i].day <= Dates[IndexOfOldest].day 
+                        && Dates[i].hour < Dates[IndexOfOldest].hour) IndexOfOldest = i;
+                    else if (Dates[i].year <= Dates[IndexOfOldest].year && Dates[i].month <= Dates[IndexOfOldest].month && Dates[i].day <= Dates[IndexOfOldest].day 
+                        && Dates[i].hour <= Dates[IndexOfOldest].hour && Dates[i].minute < Dates[IndexOfOldest].minute) IndexOfOldest = i;
+                    else if (Dates[i].year <= Dates[IndexOfOldest].year && Dates[i].month <= Dates[IndexOfOldest].month && Dates[i].day <= Dates[IndexOfOldest].day
+                        && Dates[i].hour <= Dates[IndexOfOldest].hour && Dates[i].minute <= Dates[IndexOfOldest].minute && Dates[i].second < Dates[IndexOfOldest].second) IndexOfOldest = i;
+                }
+                ExecuteNonQuery($"DELETE FROM Emails WHERE EmailID == {AllDates[IndexOfOldest][0]}");
+                ExecuteNonQuery($"DELETE FROM AssignedTags WHERE EmailID == {AllDates[IndexOfOldest][0]}");
+                AllDates.RemoveAt(IndexOfOldest);
+                Dates.RemoveAt(IndexOfOldest);
+            }
         }
         static public List<string[]> ExecuteQuery(string Query)
         {

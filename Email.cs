@@ -13,13 +13,17 @@ namespace Computer_Science_A_Level_NEA
         private Dictionary<int, string> EmailTags = new Dictionary<int, string>();
         private int EmailID;
         private int DataBaseID;
-        public Email(string Sender, string Recipient, string Subject, string Body)
+        private string DateRecived;
+        public Email(string Sender, string Recipient, string Subject, string Body, DateTimeOffset date)
         {
             this.Sender = Sender;
             this.Recipient = Recipient;
             this.Subject = Subject;
             this.Body = Body;
-            EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; // need to check if it is in database 
+
+            DateRecived = date.DateTime.ToString();
+
+            EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; 
             CheckArchived();
             if (!IsArchived) CreateKeywords();
         }
@@ -35,14 +39,14 @@ namespace Computer_Science_A_Level_NEA
         {
             return Subject.Length;
         }
-        public bool CheckAgainstFilters( string SenderFilter, string SubjectFilter, string TagFilter)
+        public bool CheckAgainstFilters(string SenderFilter, string SubjectFilter, string TagFilter)
         {
-            
-            if (SenderFilter != "" && SenderFilter!=Sender) return false;
-            if (SubjectFilter !="" && SubjectFilter!=Subject) return false;
-            if (TagFilter !="" && EmailTags!=null)
+
+            if (SenderFilter != "" && SenderFilter != Sender) return false;
+            if (SubjectFilter != "" && SubjectFilter != Subject) return false;
+            if (TagFilter != "" && EmailTags != null)
             {
-                List<string> Tags = new List<string>(); 
+                List<string> Tags = new List<string>();
                 foreach (var t in EmailTags)
                 {
                     Tags.Add(t.Value);
@@ -50,7 +54,7 @@ namespace Computer_Science_A_Level_NEA
                 return Tags.Contains(TagFilter);
             }
             return true;
-     
+
         }
         private void CheckArchived() // will need rigrous testing 
         {
@@ -102,16 +106,16 @@ namespace Computer_Science_A_Level_NEA
 
                 }
 
-                if (!(EmailData==null) && CheckIfDataMatches(EmailData)) LoadArchiveData();
+                if (!(EmailData == null) && CheckIfDataMatches(EmailData)) LoadArchiveData();
             }
-            
+
         }
         private void LoadArchiveData()
         {
             IsArchived = true;
             List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
-            if (!(AllTagIDS == null || AllTagIDS.Count == 0)) foreach(string[] s in AllTagIDS)  EmailTags.Add(int.Parse(s[0]), SQLDataBase.ExecuteQuery($"SELECT TagName FROM Tags WHERE TagId == {int.Parse(s[0])}")[0][0]);
- 
+            if (!(AllTagIDS == null || AllTagIDS.Count == 0)) foreach (string[] s in AllTagIDS) EmailTags.Add(int.Parse(s[0]), SQLDataBase.ExecuteQuery($"SELECT TagName FROM Tags WHERE TagId == {int.Parse(s[0])}")[0][0]);
+
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
         {
@@ -153,14 +157,14 @@ namespace Computer_Science_A_Level_NEA
             string output;
             if (IsArchived)
             {
-                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + "A";
+                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + DateRecived + "|" + "A";
                 if (EmailTags != null) foreach (var tags in EmailTags) output += " " + tags.Value;
 
 
             }
             else
             {
-                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + " ";
+                output = Sender + ConsoleInteraction.GetBuffer(Buffers[0] - Sender.Length) + "|" + Recipient + ConsoleInteraction.GetBuffer(Buffers[1] - Recipient.Length) + "|" + Subject + ConsoleInteraction.GetBuffer(Buffers[2] - Subject.Length) + "|" + DateRecived + "|";
 
             }
             return output;
@@ -177,8 +181,8 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
             string keywords = "";
-            //for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
-            Console.Clear();
+            for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
+          
             bool Exit = false;
             int menuOption = 0;
             string input;
@@ -224,10 +228,10 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
         }
-        private bool EmailActions(LoadedEmails AllEmails)
+        private bool EmailActions(LoadedEmails AllEmails) // NeedTo run checkArcived
         {
             Console.Clear();
-            string[] MenuOptions = { "Back", "Archive","UnArchive", "Manage Tags" };
+            string[] MenuOptions = { "Back", "Archive", "UnArchive", "Manage Tags" };
             bool exit = false;
             int menuOption = 0;
             string input;
@@ -269,7 +273,7 @@ namespace Computer_Science_A_Level_NEA
                             ArchiveEmail();
                             break;
                         case "UnArchive":
-
+                            UnArchiveEmail();
                             break;
                         case "Manage Tags":
                             if (!IsArchived) Console.WriteLine("Email needs to be archived before tags can be managed");
@@ -294,6 +298,7 @@ namespace Computer_Science_A_Level_NEA
         }
         private void TagManagement(LoadedEmails AllEmails)
         {
+
             Console.Clear();
             bool exit = false;
             List<string[]> AllTagIDS;
@@ -427,8 +432,8 @@ namespace Computer_Science_A_Level_NEA
                         foreach (var i in AllTags)
                         {
                             if (!EmailTags.ContainsKey(i.Key))
-                            { 
-                                if (count == menuOption) EmailTags.Add(i.Key,i.Value);
+                            {
+                                if (count == menuOption) EmailTags.Add(i.Key, i.Value);
                                 count++;
                             }
                         }
@@ -657,9 +662,9 @@ namespace Computer_Science_A_Level_NEA
         }
         private void AddToDatabase(int ID)
         {
-            SQLDataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords)" +
+            SQLDataBase.ExecuteNonQuery($"INSERT INTO Emails(EmailId,Sender,Recipient,Subject,TextBody,KeyWords,DateRecived)" +
                                      $"VALUES " +
-                                     $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords()}')");
+                                     $"({ID},'{Sender}','{Recipient}','{Subject}','{Body}','{CombineKeywords()}','{DateRecived}')");
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
             DataBaseID = ID;

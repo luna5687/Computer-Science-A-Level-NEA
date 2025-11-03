@@ -25,7 +25,7 @@ namespace Computer_Science_A_Level_NEA
             {
                 var message = inbox.GetMessage(i);
 
-                list.Add(new Email(message.From.ToString(), message.To.ToString(), message.Subject, message.TextBody));
+                list.Add(new Email(message.From.ToString(), message.To.ToString(), message.Subject, message.TextBody,message.Date));
             }
             return list;
         }
