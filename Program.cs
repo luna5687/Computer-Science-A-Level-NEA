@@ -1,4 +1,5 @@
 ﻿using Computer_Science_A_Level_NEA;
+using System.Linq.Expressions;
 // Copyright 2025 Daniel Ian White
 
 
@@ -9,6 +10,25 @@ namespace NEA_protoype
 
     internal class Program
     {
+        static void AddAccounts()
+        {
+            Console.Clear();
+            Console.Write("Enter Account Username: ");
+            string accountname = Console.ReadLine();
+            Console.Write("Enter Account Password (Please note it is not hidden): ");
+
+            string accountPassword = Console.ReadLine();
+            while (accountPassword == "")
+            {
+                Console.WriteLine("invalid password");
+                Console.Write("Enter Account Password (Please note it is not hidden): ");
+
+                accountPassword = Console.ReadLine();
+            }
+            SQLDataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
+                              "VALUES " +
+                              $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
+        }
         static void AccountsMenu()
         {
             List<string[]> temp;
@@ -20,22 +40,7 @@ namespace NEA_protoype
             {
                 Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
                 Console.ReadLine();
-                Console.Clear();
-                Console.Write("Enter Account Username: ");
-                string accountname = Console.ReadLine();
-                Console.Write("Enter Account Password (Please note it is not hidden): ");
-
-                string accountPassword = Console.ReadLine();
-                while (accountPassword == "")
-                {
-                    Console.WriteLine("invalid password");
-                    Console.Write("Enter Account Password (Please note it is not hidden): ");
-
-                    accountPassword = Console.ReadLine();
-                }
-                SQLDataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
-                                  "VALUES " +
-                                  $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
+                AddAccounts();
                 temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
             }
 
@@ -49,22 +54,34 @@ namespace NEA_protoype
             int menuOption = 0;
             while (!exit)
             {
-                if (menuOption == Accounts.Count + 1)
+                if (menuOption == Accounts.Count + 2)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
+                    Console.Write("   Manage Accounts");
                     Console.Write("   Manage Global settings\n");
                     Console.Write(" > Exit");
                 }
-                else if (menuOption == Accounts.Count)
+                else if (menuOption == Accounts.Count+1)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
+                    Console.Write("   Manage Accounts");
                     Console.Write(" > Manage Global settings\n");
+                    Console.Write("   Exit");
+                }
+                else if (menuOption==Accounts.Count)
+                { 
+                    for (int i = 0; i < Accounts.Count; i++)
+                    {
+                        Console.Write("   " + Accounts[i] + "\n");
+                    }
+                    Console.Write(" > Manage Accounts");
+                    Console.Write("   Manage Global settings\n");
                     Console.Write("   Exit");
                 }
                 else
@@ -80,6 +97,7 @@ namespace NEA_protoype
                             Console.Write("   " + Accounts[i] + "\n");
                         }
                     }
+                    Console.Write("   Manage Accounts");
                     Console.Write("   Manage Global settings\n");
                     Console.Write("   Exit");
                 }
@@ -90,26 +108,30 @@ namespace NEA_protoype
                     menuOption--;
                     if (menuOption < 0)
                     {
-                        menuOption = Accounts.Count;
+                        menuOption = Accounts.Count+2;
                     }
                 }
                 else if (input == "S")
                 {
                     menuOption++;
-                    if (menuOption > Accounts.Count)
+                    if (menuOption > Accounts.Count+2)
                     {
                         menuOption = 0;
                     }
                 }
                 else if (input == "\r" || input == "")
                 {
-                    if (menuOption == Accounts.Count + 1)
+                    if (menuOption == Accounts.Count + 2)
                     {
                         exit = true;
                     }
-                    else if (menuOption == Accounts.Count)
+                    else if (menuOption == Accounts.Count+1)
                     {
                         EditGlobalSettings();
+                    }
+                    else if (menuOption == Accounts.Count)
+                    {
+                        ManageAccounts();
                     }
                     else
                     {
@@ -146,6 +168,56 @@ namespace NEA_protoype
                 Console.CursorLeft = 0;
             }
 
+        }
+        static void ManageAccounts()
+        {
+            string[] MenuOptions = { "Back", "Add account", "Delete account" };
+            bool Exit = false;
+            int menuOption = 0;
+            string input;
+            while (!Exit)
+            {
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (menuOption == i) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput();
+                Console.CursorLeft = 0;
+                Console.CursorTop = 0;
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Back":
+                            Exit = true;
+                            break;
+                        case "Add account":
+                            AddAccounts();
+                            break;
+                        case "Delete account":
+                            break;
+                    }
+
+                }
+            }
         }
         static void EditGlobalSettings()
         {
