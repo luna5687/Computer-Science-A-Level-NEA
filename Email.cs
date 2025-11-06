@@ -517,6 +517,7 @@ namespace Computer_Science_A_Level_NEA
         }
         private void CreateKeywords()
         {
+            Keywords = new List<string>();
             if (Body != null)
             {
                 List<List<POSTagging.word>> POSTagged
@@ -552,6 +553,14 @@ namespace Computer_Science_A_Level_NEA
                         HighestScore3 = graph.nodes[i];
                     }
                 }
+                if (HighestScore1 != null) Keywords.Add(HighestScore1.GetWord());
+                else Keywords.Add("");
+                if (HighestScore2 != null)
+                    Keywords.Add(HighestScore2.GetWord());
+                else Keywords.Add("");
+                if (HighestScore3 != null)
+                    Keywords.Add(HighestScore3.GetWord());
+                else Keywords.Add("");
             }
         }
         private Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
@@ -668,10 +677,10 @@ namespace Computer_Science_A_Level_NEA
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
             DataBaseID = ID;
-            if (EmailTags != null)
-            {
-                // add tags
-            }
+            
+           
+            
+            
         }
         private string CombineTags()
         {

@@ -60,7 +60,7 @@ namespace NEA_protoype
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
-                    Console.Write("   Manage Accounts");
+                    Console.Write("   Manage Accounts\n");
                     Console.Write("   Manage Global settings\n");
                     Console.Write(" > Exit");
                 }
@@ -70,7 +70,7 @@ namespace NEA_protoype
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
-                    Console.Write("   Manage Accounts");
+                    Console.Write("   Manage Accounts\n");
                     Console.Write(" > Manage Global settings\n");
                     Console.Write("   Exit");
                 }
@@ -80,7 +80,7 @@ namespace NEA_protoype
                     {
                         Console.Write("   " + Accounts[i] + "\n");
                     }
-                    Console.Write(" > Manage Accounts");
+                    Console.Write(" > Manage Accounts\n");
                     Console.Write("   Manage Global settings\n");
                     Console.Write("   Exit");
                 }
@@ -97,7 +97,7 @@ namespace NEA_protoype
                             Console.Write("   " + Accounts[i] + "\n");
                         }
                     }
-                    Console.Write("   Manage Accounts");
+                    Console.Write("   Manage Accounts\n");
                     Console.Write("   Manage Global settings\n");
                     Console.Write("   Exit");
                 }

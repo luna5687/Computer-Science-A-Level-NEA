@@ -1,5 +1,6 @@
 ﻿namespace Computer_Science_A_Level_NEA
 {
+    // Copyright 2025 Daniel Ian White
     public static class POSTagging
     {
         public struct word
