@@ -1,5 +1,5 @@
 ﻿using Computer_Science_A_Level_NEA;
-using System.Linq.Expressions;
+using System.Data.Entity.ModelConfiguration.Configuration;
 // Copyright 2025 Daniel Ian White
 
 
@@ -64,7 +64,7 @@ namespace NEA_protoype
                     Console.Write("   Manage Global settings\n");
                     Console.Write(" > Exit");
                 }
-                else if (menuOption == Accounts.Count+1)
+                else if (menuOption == Accounts.Count + 1)
                 {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
@@ -74,8 +74,8 @@ namespace NEA_protoype
                     Console.Write(" > Manage Global settings\n");
                     Console.Write("   Exit");
                 }
-                else if (menuOption==Accounts.Count)
-                { 
+                else if (menuOption == Accounts.Count)
+                {
                     for (int i = 0; i < Accounts.Count; i++)
                     {
                         Console.Write("   " + Accounts[i] + "\n");
@@ -108,13 +108,13 @@ namespace NEA_protoype
                     menuOption--;
                     if (menuOption < 0)
                     {
-                        menuOption = Accounts.Count+2;
+                        menuOption = Accounts.Count + 2;
                     }
                 }
                 else if (input == "S")
                 {
                     menuOption++;
-                    if (menuOption > Accounts.Count+2)
+                    if (menuOption > Accounts.Count + 2)
                     {
                         menuOption = 0;
                     }
@@ -125,7 +125,7 @@ namespace NEA_protoype
                     {
                         exit = true;
                     }
-                    else if (menuOption == Accounts.Count+1)
+                    else if (menuOption == Accounts.Count + 1)
                     {
                         EditGlobalSettings();
                     }
@@ -213,11 +213,91 @@ namespace NEA_protoype
                             AddAccounts();
                             break;
                         case "Delete account":
+                            DeleteAccountsMenu();
                             break;
                     }
 
                 }
             }
+        }
+        static void DeleteAccountsMenu()
+        {
+            Console.Clear();
+            if (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count == 1)
+            {
+                Console.WriteLine("Deleting accounts is not possible");
+            }
+            else
+            {
+                bool exit = false;
+                string input;
+                int menuOption = 0;
+                string[] menuOptions = GetAllAccountNames();
+                menuOptions[0] = "Back";
+                while (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count != 1 && exit != false)
+                {
+                    for (int i = 0; i < menuOptions.Length; i++)
+                    {
+                        if (i == menuOptions.Length) Console.Write(" > ");
+                        else Console.Write("   ");
+                        Console.WriteLine(menuOptions[i]);
+                    }
+                    input = ConsoleInteraction.GetConsoleInput();
+                    Console.CursorLeft = 0;
+                    Console.CursorTop = 0;
+                    if (input.ToLower() == "w")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = menuOptions.Length - 1;
+                        }
+                    }
+                    else if (input == "s")
+                    {
+                        menuOption++;
+                        if (menuOption == menuOptions.Length)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "\r" || input == "")
+                    {
+                        if (menuOptions[menuOption] == "Back") exit = true;
+                        else
+                        {
+                            DeleteAccount((SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts"))[menuOption][0]);
+                        }
+                    }
+                }
+            }
+        }
+        static void DeleteAccount(string accountName)
+        {
+            List<string[]> AllConnectedEmailAddresses = SQLDataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == {accountName}");
+            for (int i = 0; i < AllConnectedEmailAddresses.Count; i++)
+            {
+                List<string[]> AllEmailsIDs = SQLDataBase.ExecuteQuery($"SELECT EmailID FROM Emails WHERE Recipient == '{AllConnectedEmailAddresses[i][0]}'");
+                for (int j = 0; j < AllEmailsIDs.Count; j++)
+                {
+                    SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE EmailID == {AllEmailsIDs[i][0]}");
+                    SQLDataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailID == {AllEmailsIDs[i][0]}");
+                }
+            }
+            SQLDataBase.ExecuteNonQuery($"DELETE FROM Users WHERE Account == '{accountName}'");
+            SQLDataBase.ExecuteNonQuery($"DELETE FROM Accounts WHERE AccountName == '{accountName}'");
+        }
+        static string[] GetAllAccountNames()
+        {
+            List<string[]> AllAccounts = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+            int maxAccounts = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count;
+            string[] output = new string[maxAccounts + 1];
+
+            for (int i = 0; i < maxAccounts; i++)
+            {
+                output[i + 1] = AllAccounts[i][0];
+            }
+            return output;
         }
         static void EditGlobalSettings()
         {
