@@ -561,6 +561,29 @@ namespace Computer_Science_A_Level_NEA
                 if (HighestScore3 != null)
                     Keywords.Add(HighestScore3.GetWord());
                 else Keywords.Add("");
+
+
+                // automatic arciving
+                List<string[]> Tags = SQLDataBase.ExecuteQuery("SELECT * FROM Tags");
+                List<int> TagIdsToadd = new List<int>();
+                foreach (string[] tag in Tags)
+                {
+                    foreach (string s in Keywords)
+                    {
+                        if (s.ToLower() == tag[1].ToLower()) TagIdsToadd.Add(int.Parse(tag[0]));
+                    }
+                }
+                if (TagIdsToadd.Count > 0)
+                {
+                    ArchiveEmail();
+                    foreach (int i in  TagIdsToadd)
+                    {
+                        if (!EmailTags.ContainsKey(i)) EmailTags.Add(i, SQLDataBase.ExecuteQuery($"SELECT TagName FROM Tags WHERE TagID == {i}")[0][0]);
+                        
+                    }
+                    UpdateTags();
+                }
+
             }
         }
         private Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
@@ -677,10 +700,6 @@ namespace Computer_Science_A_Level_NEA
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Collisions " +
                                      $"WHERE CollisionAt == {ID.ToString()}");
             DataBaseID = ID;
-            
-           
-            
-            
         }
         private string CombineTags()
         {
