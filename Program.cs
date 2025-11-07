@@ -448,8 +448,20 @@ namespace NEA_protoype
 
             SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
             Tags.LoadTags();
+            CheckForGlobalSettings();
             ConsoleInteraction.CheckConsoleExistance();
-            AccountsMenu();
+            try
+            {
+                AccountsMenu();
+            }
+            catch (MailKit.Security.SslHandshakeException) { Console.WriteLine("Cannot cannot connect to mail server due to security issues "); Console.ReadKey(); }
+            catch(Exception e)
+            {
+                Console.Write("An error occured with exeption ");
+                Console.WriteLine(e.Message);
+                Console.ReadKey();
+            }
+            Console.ReadKey();
             SQLDataBase.CloseConnection();
         }
         static void CheckForGlobalSettings()
