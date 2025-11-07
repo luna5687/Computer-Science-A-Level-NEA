@@ -17,8 +17,9 @@ namespace Computer_Science_A_Level_NEA
                 Console.ReadLine();
                 HasConsole = false;
             }
-           if (HasConsole) Console.Write("To navigate use W/S keys and then ENTER to select");
-           else Console.Write("To navigate input W/S and press ENTER and to select press ENTER when the input is empty");
+            if (HasConsole) Console.Write("To navigate use W/S keys and then ENTER to select");
+            else Console.Write("To navigate input W/S and press ENTER and to select press ENTER when the input is empty");
+            GetConsoleInput();
             Console.Clear();
         }
         static public string GetConsoleInput()
