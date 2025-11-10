@@ -1,4 +1,5 @@
 ﻿using NEA_protoype;
+using Org.BouncyCastle.Asn1.Misc;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -56,7 +57,7 @@ namespace Computer_Science_A_Level_NEA
             return true;
 
         }
-        private void CheckArchived() // will need rigrous testing 
+        private void CheckArchived() // will need rigrous testing sometimes skips records for IDS does manage collisions properly 
         {
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID, CollisionAt FROM Emails,Collisions");
             List<string[]> EmailData = null;
@@ -90,7 +91,7 @@ namespace Computer_Science_A_Level_NEA
                             if (CheckIDIsInEmailsTable(DataBaseID)) EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
                             else DataBaseID++;
                         }
-                        while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))
+                        while ((CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)) &&!CheckIfDataMatches(EmailData))
                         {
                             DataBaseID += 1;
                             if (CheckIDIsInEmailsTable(DataBaseID))
@@ -115,10 +116,15 @@ namespace Computer_Science_A_Level_NEA
             IsArchived = true;
             List<string[]> AllTagIDS = SQLDataBase.ExecuteQuery($"SELECT TagID FROM AssignedTags WHERE EmailID == {DataBaseID}");
             if (!(AllTagIDS == null || AllTagIDS.Count == 0)) foreach (string[] s in AllTagIDS) EmailTags.Add(int.Parse(s[0]), SQLDataBase.ExecuteQuery($"SELECT TagName FROM Tags WHERE TagId == {int.Parse(s[0])}")[0][0]);
+            List<string[]> Keywords = SQLDataBase.ExecuteQuery($"SELECT Keywords FROM Emails WHERE EmailID == {DataBaseID}");
+            this.Keywords = new List<string>();
+            foreach (string[] s in Keywords) this.Keywords.Add(s[0]);
+            
 
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
         {
+            if (DataBaseData == null) return false;
             foreach (string[] s in DataBaseData)
             {
                 if (s[1] != Sender) return false;
@@ -133,7 +139,7 @@ namespace Computer_Science_A_Level_NEA
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID FROM Emails");
             foreach (string[] s in AllEmailIDsInDataBase)
             {
-                if (s[0] == EmailID.ToString())
+                if (s[0] == ID.ToString())
                 {
                     return true;
                 }
@@ -145,7 +151,7 @@ namespace Computer_Science_A_Level_NEA
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT * FROM Collisions");
             foreach (string[] s in AllEmailIDsInDataBase)
             {
-                if (s[0] == EmailID.ToString())
+                if (s[0] == ID.ToString())
                 {
                     return true;
                 }
@@ -386,7 +392,7 @@ namespace Computer_Science_A_Level_NEA
             int count = 0;
             while (!exit)
             {
-                ConsoleInteraction.ResetCursor();
+                Console.Clear();
                 Console.WriteLine("Select A tag");
                 count = 0;
                 foreach (var t in AllTags)
