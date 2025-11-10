@@ -22,6 +22,11 @@ namespace Computer_Science_A_Level_NEA
             GetConsoleInput();
             Console.Clear();
         }
+        public static void ResetCursor()
+        {
+            Console.CursorLeft = 0;
+            Console.CursorTop = 0;
+        }
         static public string GetConsoleInput()
         {
             if (HasConsole)

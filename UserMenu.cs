@@ -117,8 +117,7 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor(); ;
             }
 
 
@@ -227,8 +226,7 @@ namespace Computer_Science_A_Level_NEA
                         exit = true;
                     }
                 }
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
             }
         }
         static void DeleteEmails(List<string> EmailAddresses,string accountName)
@@ -297,8 +295,7 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
                 EmailAddresses = GetEmailAddresses( accountName);
             }
         }

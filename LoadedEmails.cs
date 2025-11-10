@@ -65,8 +65,7 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
             }
         }
         private void DisplaySearchParamters()
@@ -91,8 +90,7 @@ namespace Computer_Science_A_Level_NEA
             int MaxMenuOption = 3;
             while (!Exit)
             {
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
                 Console.Write("Please Select Field to filter");
                 Console.CursorTop = 0;
                 Console.CursorLeft = 29;
@@ -159,7 +157,7 @@ namespace Computer_Science_A_Level_NEA
                     else if (menuOption == 3)
                     {
                         Console.CursorTop = 1;
-                        Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject()+3;
+                        Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject()+3+19;
                         TagFilter = Console.ReadLine();
                     }
                 }
@@ -185,8 +183,7 @@ namespace Computer_Science_A_Level_NEA
             Console.Clear();
             // when displaying emails add headings 
             DisplaySearchParamters();
-            Console.CursorTop = 0;
-            Console.CursorLeft = 0;
+            ConsoleInteraction.ResetCursor();
             int[] Buffers = { FindLongestSender(), FindLongestRecipient(), FindLongestSubject() };
             if (menuOption == 0)
             {

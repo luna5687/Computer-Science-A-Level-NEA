@@ -151,8 +151,7 @@ namespace NEA_protoype
                             }
                             else
                             {
-                                Console.CursorTop = 0;
-                                Console.CursorLeft = 0;
+                                ConsoleInteraction.ResetCursor();
                                 Console.WriteLine("Password invalid                              ");
 
                                 Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel                                                         \n                                                  ");
@@ -164,8 +163,8 @@ namespace NEA_protoype
                     }
 
                 }
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
+
             }
 
         }
@@ -184,8 +183,7 @@ namespace NEA_protoype
                     Console.WriteLine(MenuOptions[i]);
                 }
                 input = ConsoleInteraction.GetConsoleInput();
-                Console.CursorLeft = 0;
-                Console.CursorTop = 0;
+                ConsoleInteraction.ResetCursor();
                 if (input.ToLower() == "w")
                 {
                     menuOption--;
@@ -243,8 +241,7 @@ namespace NEA_protoype
                         Console.WriteLine(menuOptions[i]);
                     }
                     input = ConsoleInteraction.GetConsoleInput();
-                    Console.CursorLeft = 0;
-                    Console.CursorTop = 0;
+                    ConsoleInteraction.ResetCursor();
                     if (input.ToLower() == "w")
                     {
                         menuOption--;
@@ -307,6 +304,7 @@ namespace NEA_protoype
             int menuOption = 0;
             while (!exit)
             {
+                ConsoleInteraction.ResetCursor();
                 for (int i = 0; i < MenuOptions.Length; i++)
                 {
                     if (i == menuOption) Console.Write(" > ");
@@ -468,7 +466,7 @@ namespace NEA_protoype
         {
             if (!File.Exists("GlobalSettings.txt"))
             {
-                File.Create("GlobalSettings.txt");
+                File.Create("GlobalSettings.txt").Close();
                 StreamWriter SW = new StreamWriter("GlobalSettings.txt");
                 SW.Write("-1,Error");
                 SW.Close();

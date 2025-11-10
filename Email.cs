@@ -200,8 +200,7 @@ namespace Computer_Science_A_Level_NEA
                                   $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
                                   $"{Body}");
                 input = ConsoleInteraction.GetConsoleInput();
-                Console.CursorLeft = 0;
-                Console.CursorTop = 0;
+                ConsoleInteraction.ResetCursor(); 
                 if (input.ToLower() == "w" || input.ToLower() == "a")
                 {
                     menuOption--;
@@ -244,8 +243,7 @@ namespace Computer_Science_A_Level_NEA
                     Console.WriteLine(MenuOptions[i]);
                 }
                 input = ConsoleInteraction.GetConsoleInput();
-                Console.CursorLeft = 0;
-                Console.CursorTop = 0;
+                ConsoleInteraction.ResetCursor();
                 if (input.ToLower() == "w")
                 {
                     menuOption--;
@@ -307,8 +305,7 @@ namespace Computer_Science_A_Level_NEA
             string[] MenuOptions = { "Add tag to email", "Remove tags from email", "Create tag", "Delete Tag", "Back" };
             while (!exit)
             {
-                Console.CursorLeft = 0;
-                Console.CursorTop = 0;
+                ConsoleInteraction.ResetCursor();
                 Console.WriteLine("Current Tags:");
                 if (EmailTags == null || EmailTags.Count == 0) Console.WriteLine("No tags to display");
                 else
@@ -389,8 +386,7 @@ namespace Computer_Science_A_Level_NEA
             int count = 0;
             while (!exit)
             {
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
+                ConsoleInteraction.ResetCursor();
                 Console.WriteLine("Select A tag");
                 count = 0;
                 foreach (var t in AllTags)
