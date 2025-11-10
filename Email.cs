@@ -290,7 +290,7 @@ namespace Computer_Science_A_Level_NEA
             if (IsArchived)
             {
                 IsArchived = false;
-                SQLDataBase.ExecuteNonQuery($"DELET FROM Emails WHERE EmailID == {EmailID}");
+                SQLDataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailID == {EmailID}");
                 SQLDataBase.ExecuteNonQuery($"DELETE FROM AssignedTags WHERE EmailID == {EmailID}");
             }
         }

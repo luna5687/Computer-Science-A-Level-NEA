@@ -1,5 +1,4 @@
 ﻿using Computer_Science_A_Level_NEA;
-using System.Data.Entity.ModelConfiguration.Configuration;
 // Copyright 2025 Daniel Ian White
 
 
@@ -298,7 +297,8 @@ namespace NEA_protoype
         }
         static void EditGlobalSettings()
         {
-            string[] MenuOptions = { "Back", "Resest To Default", "Edit Max database size", "Edit Overflow handaling" };
+            Console.Clear();
+            string[] MenuOptions = { "Back", "Resest To Default", "Edit Max database size", "Edit Overflow handaling", "View current settings" };
             bool exit = false;
             string input;
             int menuOption = 0;
@@ -342,6 +342,7 @@ namespace NEA_protoype
                         case "Edit Max database size":
                             Console.WriteLine("Please enter the max database size in GB (Must be greater than or equal to 1 or -1 for unlimited)");
                             int Size = int.Parse(Console.ReadLine());
+                            Console.Clear();
                             while (Size <= 1 && Size != -1)
                             {
                                 Console.WriteLine("Invalid Size");
@@ -353,18 +354,40 @@ namespace NEA_protoype
                         case "Edit Overflow handaling":
                             EditOverFlowSettings();
                             break;
+                        case "View current settings":
+                            OutPutSettings();
+                            Console.CursorTop -= 2;
+                            Console.Write("                                        \n");
+                            Console.Write("                                        \n");
+                            break;
                     }
                 }
             }
+            Console.Clear();
+        }
+        static void OutPutSettings()
+        {
+            StreamReader SR = new StreamReader("GlobalSettings.txt");
+            string body = SR.ReadToEnd();
+            Console.Write("Max database Size: ");
+            if (int.Parse(body.Split(',')[0]) == -1) Console.Write("Unlimited\n");
+            else Console.Write($"{body.Split(',')[0]}GB\n");
+            Console.WriteLine($"Overfolw handling: {body.Split(',')[1]}");
+            Console.ReadKey();
+
+
+            SR.Close();
         }
         static void EditOverFlowSettings()
         {
+            Console.Clear();
             string[] MenuOptions = { "Back", "Error", "Delete Oldest" };
             bool exit = false;
             string input;
             int menuOption = 0;
             while (!exit)
             {
+                ConsoleInteraction.ResetCursor();
                 for (int i = 0; i < MenuOptions.Length; i++)
                 {
                     if (i == menuOption) Console.Write(" > ");
@@ -407,7 +430,12 @@ namespace NEA_protoype
         }
         static void Main(string[] args)
         {
-            string[] InitalTable = {"CREATE TABLE Users (" +
+            bool exit = false;
+            while (!exit)
+            {
+                try
+                {
+                    string[] InitalTable = {"CREATE TABLE Users (" +
                                     "EmailAddress varchar PRIMARY KEY," +
                                      "Password varchar," +
                                      "Mailserver varchar," +
@@ -444,23 +472,69 @@ namespace NEA_protoype
                                      "CREATE TABLE Collisions " +
                                      "(CollisionAt int)"};
 
-            SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
-            Tags.LoadTags();
-            CheckForGlobalSettings();
-            ConsoleInteraction.CheckConsoleExistance();
-            try
-            {
-                AccountsMenu();
+                    SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
+                    Tags.LoadTags();
+                    CheckForGlobalSettings();
+                    ConsoleInteraction.CheckConsoleExistance();
+
+                    AccountsMenu();
+                    exit = true;
+                    SQLDataBase.CloseConnection();
+                }
+                catch (MailKit.Security.SslHandshakeException) { Console.WriteLine("Cannot cannot connect to mail server due to security issues "); Console.ReadKey(); }
+                catch (Exception e)
+                {
+                    Console.Write("An error occured with exeption ");
+                    Console.WriteLine(e.Message);
+                    exit = ChrashOptions();
+                    SQLDataBase.CloseConnection();
+                }
             }
-            catch (MailKit.Security.SslHandshakeException) { Console.WriteLine("Cannot cannot connect to mail server due to security issues "); Console.ReadKey(); }
-            catch(Exception e)
+
+        }
+        static bool ChrashOptions()
+        {
+            string[] MenuOptions = { "Restart Program","Exit Program" };
+            string input;
+            int menuOption = 0;
+            while (true)
             {
-                Console.Write("An error occured with exeption ");
-                Console.WriteLine(e.Message);
-                Console.ReadKey();
+                ConsoleInteraction.ResetCursor();
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (i == menuOption) Console.Write(" > ");
+                    else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
+                }
+                input = ConsoleInteraction.GetConsoleInput(true);
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption = MenuOptions.Length - 1;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption == MenuOptions.Length)
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    switch (MenuOptions[menuOption])
+                    {
+                        case "Restart Program":
+                            return false;
+                        case "Exit Program":
+                            return true;
+                    }
+                }
             }
-            Console.ReadKey();
-            SQLDataBase.CloseConnection();
+            return true;
         }
         static void CheckForGlobalSettings()
         {

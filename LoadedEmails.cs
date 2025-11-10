@@ -77,7 +77,7 @@ namespace Computer_Science_A_Level_NEA
             Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
             Console.Write("    " + SubjectFilter);
             Console.CursorTop = 1;
-            Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject();
+            Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject()+18;
             Console.Write("    "+ TagFilter);
         }
         private void SearchForEamils()
@@ -107,20 +107,23 @@ namespace Computer_Science_A_Level_NEA
                 {
                     Console.CursorTop = 1;
                     Console.CursorLeft = 0;
-                    Console.Write("   >");
+                    Console.Write("   >"+ConsoleInteraction.GetBuffer(SenderFilter.Length));
+                    Console.CursorLeft -= SenderFilter.Length;
 
                 }
                 if (menuOption == 2)
                 {
                     Console.CursorTop = 1;
                     Console.CursorLeft = 3 + FindLongestSender() + 1 + FindLongestRecipient();
-                    Console.Write("   >");
+                    Console.Write("   >"+ConsoleInteraction.GetBuffer(SubjectFilter.Length));
+                    Console.CursorLeft -= SubjectFilter.Length;
                 }
                 if (menuOption == 3)
                 {
                     Console.CursorTop = 1;
-                    Console.CursorLeft = 3+FindLongestSender()+1+FindLongestRecipient()+1+FindLongestSubject();
-                    Console.Write("   >");
+                    Console.CursorLeft = 3+FindLongestSender()+1+FindLongestRecipient()+1+FindLongestSubject()+17;
+                    Console.Write("   >"+ConsoleInteraction.GetBuffer(TagFilter.Length));
+                    Console.CursorLeft -= TagFilter.Length;
                 }
                 input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
                 if (input == "W")
