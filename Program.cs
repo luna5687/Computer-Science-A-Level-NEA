@@ -470,7 +470,11 @@ namespace NEA_protoype
                                      "(2,'Important')",
 
                                      "CREATE TABLE Collisions " +
-                                     "(CollisionAt int)"};
+                                     "(CollisionAt int)",
+
+                                     "INSERT INTO Collisions (CollisionAt)" + 
+                                     " VALUES (-1)" // it is -1 as an email can never have this tag
+                                     };
 
                     SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
                     Tags.LoadTags();

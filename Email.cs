@@ -67,7 +67,7 @@ namespace Computer_Science_A_Level_NEA
             {
                 foreach (string[] s in AllEmailIDsInDataBase)
                 {
-                    if (s[0] == EmailID.ToString())
+                    if (s[0] == DataBaseID.ToString())
                     {
                         EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
                         while (!CheckIfDataMatches(EmailData) && (CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)))

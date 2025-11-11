@@ -60,7 +60,7 @@ namespace Computer_Science_A_Level_NEA
 
         static public void ExecuteNonQuery(string Query)
         {
-            if ((Query.StartsWith("INSERT") || Query.StartsWith("CREATE")))
+            if (Query.StartsWith("INSERT") || Query.StartsWith("CREATE"))
             {
                 if (!IsFull()) new SQLiteCommand(Query, connection).ExecuteNonQuery();
             }
