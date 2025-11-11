@@ -22,7 +22,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public void EmailMenu()
         {
-            Console.WindowWidth = 3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject() + 20;
+            ConsoleInteraction.SetConsoleWidth(3 + FindLongestSender() + 1 + FindLongestRecipient() + 1 + FindLongestSubject() + 20);
             Console.Clear();
             bool exit = false;
             int menuOption = 0;

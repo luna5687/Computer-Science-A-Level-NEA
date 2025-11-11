@@ -1,7 +1,7 @@
 ﻿// Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
-    internal class ConsoleInteraction
+    static class ConsoleInteraction
     {
         static private bool HasConsole;
         static public void CheckConsoleExistance()
@@ -32,6 +32,10 @@ namespace Computer_Science_A_Level_NEA
             {
                 return Console.ReadLine();
             }
+        }
+        static public void SetConsoleWidth(int num)
+        {
+           if (HasConsole) Console.WindowWidth =num;
         }
         static public string GetConsoleInput(bool hiddenCoursor)
         {
