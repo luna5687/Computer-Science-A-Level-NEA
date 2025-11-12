@@ -1,11 +1,4 @@
-﻿using NEA_protoype;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Computer_Science_A_Level_NEA
+﻿namespace Computer_Science_A_Level_NEA
 {
     static class Accounts
     {
@@ -34,9 +27,9 @@ namespace Computer_Science_A_Level_NEA
                               "VALUES " +
                               $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
         }
-       public static void SetDefulatAccountSettings(string accountName)
+        public static void SetDefulatAccountSettings(string accountName)
         {
-            StreamWriter SW = new StreamWriter($"{accountName}Settings.txt",false);
+            StreamWriter SW = new StreamWriter($"{accountName}Settings.txt", false);
             SW.WriteLine("Algorithm");
             SW.Close();
         }
@@ -50,143 +43,150 @@ namespace Computer_Science_A_Level_NEA
             if (name == "") return false;
             return true;
         }
-        public static  void AccountsMenu()
+        public static void AccountsMenu()
         {
-            List<string[]> temp;
-
-
-            List<string> Accounts = new List<string>();
-            temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
-            if (temp == null)
+            try
             {
-                Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
-                Console.ReadLine();
-                AddAccounts();
+                List<string[]> temp;
+
+
+                List<string> Accounts = new List<string>();
                 temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
-            }
+                if (temp == null)
+                {
+                    Console.WriteLine("No accounts found \nAccount creation requred press enter to continue");
+                    Console.ReadLine();
+                    AddAccounts();
+                    temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+                }
 
-            Accounts = new List<string>();
-            foreach (string[] s in temp)
-            {
-                Accounts.Add(s[0].ToString());
-            }
-            temp = null;
-            bool exit = false;
-            int menuOption = 0;
-            while (!exit)
-            {
-                if (menuOption == Accounts.Count + 2)
+                Accounts = new List<string>();
+                foreach (string[] s in temp)
                 {
-                    for (int i = 0; i < Accounts.Count; i++)
-                    {
-                        Console.Write("   " + Accounts[i] + "\n");
-                    }
-                    Console.Write("   Manage Accounts\n");
-                    Console.Write("   Manage Global settings\n");
-                    Console.Write(" > Exit");
+                    Accounts.Add(s[0].ToString());
                 }
-                else if (menuOption == Accounts.Count + 1)
-                {
-                    for (int i = 0; i < Accounts.Count; i++)
-                    {
-                        Console.Write("   " + Accounts[i] + "\n");
-                    }
-                    Console.Write("   Manage Accounts\n");
-                    Console.Write(" > Manage Global settings\n");
-                    Console.Write("   Exit");
-                }
-                else if (menuOption == Accounts.Count)
-                {
-                    for (int i = 0; i < Accounts.Count; i++)
-                    {
-                        Console.Write("   " + Accounts[i] + "\n");
-                    }
-                    Console.Write(" > Manage Accounts\n");
-                    Console.Write("   Manage Global settings\n");
-                    Console.Write("   Exit");
-                }
-                else
-                {
-                    for (int i = 0; i < Accounts.Count; i++)
-                    {
-                        if (i == menuOption)
-                        {
-                            Console.Write(" > " + Accounts[i] + "\n");
-                        }
-                        else
-                        {
-                            Console.Write("   " + Accounts[i] + "\n");
-                        }
-                    }
-                    Console.Write("   Manage Accounts\n");
-                    Console.Write("   Manage Global settings\n");
-                    Console.Write("   Exit");
-                }
-                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
-
-                if (input == "W")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = Accounts.Count + 2;
-                    }
-                }
-                else if (input == "S")
-                {
-                    menuOption++;
-                    if (menuOption > Accounts.Count + 2)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
+                temp = null;
+                bool exit = false;
+                int menuOption = 0;
+                while (!exit)
                 {
                     if (menuOption == Accounts.Count + 2)
                     {
-                        exit = true;
+                        for (int i = 0; i < Accounts.Count; i++)
+                        {
+                            Console.Write("   " + Accounts[i] + "\n");
+                        }
+                        Console.Write("   Manage Accounts\n");
+                        Console.Write("   Manage Global settings\n");
+                        Console.Write(" > Exit");
                     }
                     else if (menuOption == Accounts.Count + 1)
                     {
-                        EditGlobalSettings();
+                        for (int i = 0; i < Accounts.Count; i++)
+                        {
+                            Console.Write("   " + Accounts[i] + "\n");
+                        }
+                        Console.Write("   Manage Accounts\n");
+                        Console.Write(" > Manage Global settings\n");
+                        Console.Write("   Exit");
                     }
                     else if (menuOption == Accounts.Count)
                     {
-                        ManageAccounts();
+                        for (int i = 0; i < Accounts.Count; i++)
+                        {
+                            Console.Write("   " + Accounts[i] + "\n");
+                        }
+                        Console.Write(" > Manage Accounts\n");
+                        Console.Write("   Manage Global settings\n");
+                        Console.Write("   Exit");
                     }
                     else
                     {
-                        Console.Clear();
-                        Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel\n" +
-                            $"");
-                        string EnteredPassword = Console.ReadLine();
-                        bool passwordConfined = false;
-                        temp = SQLDataBase.ExecuteQuery($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'");
-                        while (EnteredPassword != "" && !passwordConfined)
+                        for (int i = 0; i < Accounts.Count; i++)
                         {
-                            if (EnteredPassword == Encryption.Decrypt(temp[0][0]))
+                            if (i == menuOption)
                             {
-
-                                passwordConfined = true;
-                                UserMenu.EmailAddressesMenu(Accounts[menuOption]);
+                                Console.Write(" > " + Accounts[i] + "\n");
                             }
                             else
                             {
-                                ConsoleInteraction.ResetCursor();
-                                Console.WriteLine("Password invalid                              ");
-
-                                Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel                                                         \n                                                  ");
-                                Console.CursorLeft = 0;
-                                EnteredPassword = Console.ReadLine();
+                                Console.Write("   " + Accounts[i] + "\n");
                             }
                         }
-                        Console.Clear();
+                        Console.Write("   Manage Accounts\n");
+                        Console.Write("   Manage Global settings\n");
+                        Console.Write("   Exit");
                     }
+                    string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
 
+                    if (input == "W")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = Accounts.Count + 2;
+                        }
+                    }
+                    else if (input == "S")
+                    {
+                        menuOption++;
+                        if (menuOption > Accounts.Count + 2)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "\r" || input == "")
+                    {
+                        if (menuOption == Accounts.Count + 2)
+                        {
+                            exit = true;
+                        }
+                        else if (menuOption == Accounts.Count + 1)
+                        {
+                            EditGlobalSettings();
+                        }
+                        else if (menuOption == Accounts.Count)
+                        {
+                            ManageAccounts();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel\n" +
+                                $"");
+                            string EnteredPassword = Console.ReadLine();
+                            bool passwordConfined = false;
+                            temp = SQLDataBase.ExecuteQuery($"SELECT Password FROM Accounts WHERE AccountName = '{Accounts[menuOption]}'");
+                            while (EnteredPassword != "" && !passwordConfined)
+                            {
+                                if (EnteredPassword == Encryption.Decrypt(temp[0][0]))
+                                {
+
+                                    passwordConfined = true;
+                                    UserMenu.EmailAddressesMenu(Accounts[menuOption]);
+                                }
+                                else
+                                {
+                                    ConsoleInteraction.ResetCursor();
+                                    Console.WriteLine("Password invalid                              ");
+
+                                    Console.Write($"Please enter password for Account: {Accounts[menuOption]}.\nPress ENTER when input is empty to cancel                                                         \n                                                  ");
+                                    Console.CursorLeft = 0;
+                                    EnteredPassword = Console.ReadLine();
+                                }
+                            }
+                            Console.Clear();
+                        }
+
+                    }
+                    ConsoleInteraction.ResetCursor();
                 }
-                ConsoleInteraction.ResetCursor();
-
             }
+            catch (MailKit.ServiceNotConnectedException ex)
+            {
+                // need to manage exeption
+            }
+
 
         }
         static void ManageAccounts()

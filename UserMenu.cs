@@ -1,12 +1,11 @@
 ﻿// Copyright 2025 Daniel Ian White
-using System.Data.Entity.ModelConfiguration.Configuration;
+using System.Collections.Generic;
 
 namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
     {
 
-        public AccountSettings CurrentAccountSettings;
         static int EmailAddressesMennOptionSelect(List<string> EmaliAddreses)
         {
             bool exit = false;
@@ -102,54 +101,106 @@ namespace Computer_Science_A_Level_NEA
         }
         public static void EmailAddressesMenu(string accountName)
         {
-            List<string> EmaliAddreses = GetEmailAddresses(accountName);
-            if (EmaliAddreses == null)
+            try
             {
-                Console.WriteLine("No Email address found please add an email address:");
-                CreateEmail(accountName);
+                List<string> EmaliAddreses = GetEmailAddresses(accountName);
+                if (EmaliAddreses == null)
+                {
+                    Console.WriteLine("No Email address found please add an email address:");
+                    CreateEmail(accountName);
+                }
+                EmaliAddreses = GetEmailAddresses(accountName);
+                bool exit = false;
+                List<string[]> temp;
+                int menuOption = 0;
+                Console.Clear();
+                while (!exit)
+                {
+                    EmailAddressesMennOptionSelect(EmaliAddreses);
+                    if (menuOption == EmaliAddreses.Count + 3)
+                    {
+                        exit = true;
+                    }
+                    else if (menuOption == EmaliAddreses.Count + 2)
+                    {
+                        ManageAccountSettings(accountName);
+                        Console.Clear();
+                    }
+                    else if (menuOption == EmaliAddreses.Count + 1)
+                    {
+                        EmailManagement(EmaliAddreses, accountName);
+                        Console.Clear();
+                    }
+                    else if (menuOption == EmaliAddreses.Count)
+                    {
+                        Tags.TagManagement();
+                        Console.Clear();
+                    }
+                    else
+                    {
+
+                        temp = SQLDataBase.ExecuteQuery($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'");
+                        EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2], accountName);
+                        temp = null;
+                        Console.Clear();
+                    }
+
+
+                    ConsoleInteraction.ResetCursor(); ;
+                }
+
+
             }
-            EmaliAddreses = GetEmailAddresses(accountName);
-            bool exit = false;
-            List<string[]> temp;
-            int menuOption = 0;
-            Console.Clear();
-            while (!exit)
+            catch (DataBaseFullExeption ex)
             {
-                EmailAddressesMennOptionSelect(EmaliAddreses);
-                if (menuOption == EmaliAddreses.Count + 3)
-                {
-                    exit = true;
-                }
-                else if (menuOption == EmaliAddreses.Count + 2)
-                {
-                    ManageAccountSettings(accountName);
-                    Console.Clear();
-                }
-                else if (menuOption == EmaliAddreses.Count + 1)
-                {
-                    EmailManagement(EmaliAddreses, accountName);
-                    Console.Clear();
-                }
-                else if (menuOption == EmaliAddreses.Count)
-                {
-                    Tags.TagManagement();
-                    Console.Clear();
-                }
-                else
+                Console.WriteLine("The database is full Please select an option: ");
+                string[] MenuOptions = { "Set all accounts automatic archive settings to off", "Manualy Delete emails form archive", "Automaticaly Delete oldest" };
+                int menuOption = 0;
+                bool exit = false;
+                string input;
+                while (!exit)
                 {
 
-                    temp = SQLDataBase.ExecuteQuery($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'");
-                    EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2],accountName);
-                    temp = null;
-                    Console.Clear();
+                    for (int i = 0; i < MenuOptions.Length; i++)
+                    {
+                        if (menuOption == i) Console.Write(" > ");
+                        else Console.Write("   ");
+                        Console.WriteLine(MenuOptions[i]);
+                    }
+                    input = ConsoleInteraction.GetConsoleInput();
+                    ConsoleInteraction.ResetCursor();
+                    if (input.ToLower() == "w")
+                    {
+                        menuOption--;
+                        if (menuOption < 0)
+                        {
+                            menuOption = MenuOptions.Length - 1;
+                        }
+                    }
+                    else if (input == "s")
+                    {
+                        menuOption++;
+                        if (menuOption == MenuOptions.Length)
+                        {
+                            menuOption = 0;
+                        }
+                    }
+                    else if (input == "\r" || input == "")
+                    {
+                        switch (MenuOptions[menuOption])
+                        {
+                            case "Set automatic archive settings to off":
+                                break;
+                            case "Manualy Delete emails form archive":
+                                break;
+                            case "Automaticaly Delete oldest":
+                                break; 
+
+                        }
+
+                    }
                 }
-
-
-                ConsoleInteraction.ResetCursor(); ;
             }
-
-
-
         }
         static void ManageAccountSettings(string accountName)
         {
@@ -206,11 +257,11 @@ namespace Computer_Science_A_Level_NEA
         }
         static void UpdateAccoutArciveSettings(string input)
         {
-           
-            AccountSettings accountSettings = new AccountSettings(input);
-           
 
-            string[] MenuOptions = { "Set to 'Algorithm'", "Set to 'All Emails'", "Set to 'Off'" ,"Back"};
+            AccountSettings accountSettings = new AccountSettings(input);
+
+
+            string[] MenuOptions = { "Set to 'Algorithm'", "Set to 'All Emails'", "Set to 'Off'", "Back" };
             int MenuOption = 0;
             bool exit = false;
             while (!exit)
@@ -257,11 +308,11 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
-               accountSettings.UpdateSettingsFile();
+                accountSettings.UpdateSettingsFile();
             }
         }
-       
-       
+
+
         static void DisplayAccoutSettings(string accountName)
         {
             StreamReader SR = new StreamReader($"{accountName}Settings.txt");
@@ -318,10 +369,10 @@ namespace Computer_Science_A_Level_NEA
                               $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
             Console.Clear();
         }
-        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver,string accountName)
+        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver, string accountName)
         {
             ImapServer imapServer = new ImapServer(EmailAddress, EmailPassword, Mailserver);
-            LoadedEmails emalis = new LoadedEmails(imapServer,accountName);
+            LoadedEmails emalis = new LoadedEmails(imapServer, accountName);
             emalis.EmailMenu();
         }
         static void EmailManagement(List<string> EmaliAddreses, string accountName)
