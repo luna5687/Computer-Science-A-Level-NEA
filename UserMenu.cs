@@ -1,10 +1,12 @@
 ﻿using Org.BouncyCastle.Asn1.Mozilla;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
@@ -123,13 +125,18 @@ namespace Computer_Science_A_Level_NEA
 
             // work on text rank on email and automate archive
         }
+        static bool CheckEmailAddressIsValid(string input)
+        {
+            List<string[]> AllEmailAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddresses FROM Users");
+            foreach (string[] EmailAddress in AllEmailAddresses) if (EmailAddress[0] == input) return false;
+            return true;
+        }
         static List<string> GetEmailAddresses(string accountName)
         {
             List<string[]> temp;
             temp = SQLDataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
             if (temp == null)
             {
-                
                 return null;
             }
 
@@ -144,7 +151,11 @@ namespace Computer_Science_A_Level_NEA
         {
             Console.Write("Enter Emailaddress: ");
             string EmailAddress = Console.ReadLine();
-
+            while (!CheckEmailAddressIsValid(EmailAddress))
+            {
+                Console.Write("Email Address is not valid please ReEnter Usersame: ");
+                EmailAddress = Console.ReadLine();
+            }
             List<string> EmaliAddreses=GetEmailAddresses(accountName);
             while (EmaliAddreses!=null && EmaliAddreses.Contains(EmailAddress))
             {
