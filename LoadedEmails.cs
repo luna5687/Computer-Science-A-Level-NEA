@@ -11,9 +11,9 @@ namespace Computer_Science_A_Level_NEA
         private string SenderFilter = "";
         private string SubjectFilter = "";
         private string TagFilter = "";
-        public LoadedEmails(ImapServer server)
+        public LoadedEmails(ImapServer server,string accountName)
         {
-            emails = server.GetAllEmails();
+            emails = server.GetAllEmails(accountName);
             foreach (Email e in emails) CurrentDispalyEmails.Add(e);
         }
         public Email GetEmail(int index)

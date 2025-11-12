@@ -5,8 +5,8 @@ namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
     {
-       
 
+        public AccountSettings CurrentAccountSettings;
         static int EmailAddressesMennOptionSelect(List<string> EmaliAddreses)
         {
             bool exit = false;
@@ -139,7 +139,7 @@ namespace Computer_Science_A_Level_NEA
                 {
 
                     temp = SQLDataBase.ExecuteQuery($"SELECT * FROM users WHERE EmailAddress = '{EmaliAddreses[menuOption]}'");
-                    EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2]);
+                    EmailMenu(temp[0][0], Encryption.Decrypt(temp[0][1]), temp[0][2],accountName);
                     temp = null;
                     Console.Clear();
                 }
@@ -257,7 +257,7 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
-                accountSettings.UpdateSettingsFile();
+               accountSettings.UpdateSettingsFile();
             }
         }
        
@@ -318,10 +318,10 @@ namespace Computer_Science_A_Level_NEA
                               $"('{EmailAddress}','{Encryption.Encrypt(EmailPassword)}','{MailServer}','{accountName}');");
             Console.Clear();
         }
-        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver)
+        static void EmailMenu(string EmailAddress, string EmailPassword, string Mailserver,string accountName)
         {
             ImapServer imapServer = new ImapServer(EmailAddress, EmailPassword, Mailserver);
-            LoadedEmails emalis = new LoadedEmails(imapServer);
+            LoadedEmails emalis = new LoadedEmails(imapServer,accountName);
             emalis.EmailMenu();
         }
         static void EmailManagement(List<string> EmaliAddreses, string accountName)

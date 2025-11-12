@@ -1,5 +1,4 @@
 ﻿using NEA_protoype;
-using Org.BouncyCastle.Asn1.Misc;
 // Copyright 2025 Daniel Ian White
 namespace Computer_Science_A_Level_NEA
 {
@@ -24,9 +23,10 @@ namespace Computer_Science_A_Level_NEA
 
             DateRecived = date.DateTime.ToString();
 
-            EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length; 
+            EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length;
             CheckArchived();
             if (!IsArchived) CreateKeywords();
+
         }
         public int GetRecipientLength()
         {
@@ -92,7 +92,7 @@ namespace Computer_Science_A_Level_NEA
                             if (CheckIDIsInEmailsTable(DataBaseID)) EmailData = SQLDataBase.ExecuteQuery($"SELECT * FROM Emails WHERE EmailID == {DataBaseID}");
                             else DataBaseID++;
                         }
-                        while ((CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)) &&!CheckIfDataMatches(EmailData))
+                        while ((CheckIDIsInEmailsTable(DataBaseID) || CheckIDIsInCollisions(DataBaseID)) && !CheckIfDataMatches(EmailData))
                         {
                             DataBaseID += 1;
                             if (CheckIDIsInEmailsTable(DataBaseID))
@@ -120,7 +120,7 @@ namespace Computer_Science_A_Level_NEA
             List<string[]> Keywords = SQLDataBase.ExecuteQuery($"SELECT Keywords FROM Emails WHERE EmailID == {DataBaseID}");
             this.Keywords = new List<string>();
             foreach (string[] s in Keywords) this.Keywords.Add(s[0]);
-            
+
 
         }
         private bool CheckIfDataMatches(List<string[]> DataBaseData)
@@ -189,7 +189,7 @@ namespace Computer_Science_A_Level_NEA
             }
             string keywords = "";
             for (int i = 0; i < this.Keywords.Count(); i++) { keywords += this.Keywords[i] + " "; }
-          
+
             bool Exit = false;
             int menuOption = 0;
             string input;
@@ -207,7 +207,7 @@ namespace Computer_Science_A_Level_NEA
                                   $"Subject: {Subject} Tags: {Tags} KeyWords: {keywords}\n\n" +
                                   $"{Body}");
                 input = ConsoleInteraction.GetConsoleInput();
-                ConsoleInteraction.ResetCursor(); 
+                ConsoleInteraction.ResetCursor();
                 if (input.ToLower() == "w" || input.ToLower() == "a")
                 {
                     menuOption--;
@@ -565,11 +565,18 @@ namespace Computer_Science_A_Level_NEA
                 if (HighestScore3 != null)
                     Keywords.Add(HighestScore3.GetWord());
                 else Keywords.Add("");
-
-
-                // automatic arciving
-                
-
+            }
+        }
+        public void RunAutomaticArcive(string accountName)
+        {
+            if (!IsArchived)
+            {
+                AccountSettings CurrentSettings = new AccountSettings(accountName);
+                if (CurrentSettings.AutomaticArcive != "Off")
+                {
+                    if (CurrentSettings.AutomaticArcive == "All Emails") AutomaticArcive(true);
+                    else AutomaticArcive(false);
+                }
             }
         }
         private void AutomaticArcive(bool BypassAlgorithm)
@@ -598,7 +605,7 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
         }
-        private Graph CreateGraph(List<List<POSTagging.word>> input) 
+        private Graph CreateGraph(List<List<POSTagging.word>> input)
         {
             List<POSTagging.word> words = new List<POSTagging.word>();
             for (int i = 0; i < input.Count; i++)

@@ -16,7 +16,7 @@ namespace Computer_Science_A_Level_NEA
             client.Connect(MailServer, 993, true);
             client.Authenticate(emailAddress, Password);
         }
-        public List<Email> GetAllEmails()
+        public List<Email> GetAllEmails(string accountName)
         {
             List<Email> list = new List<Email>();
             var inbox = client.Inbox;
@@ -27,6 +27,7 @@ namespace Computer_Science_A_Level_NEA
 
                 list.Add(new Email(message.From.ToString(), message.To.ToString(), message.Subject, message.TextBody,message.Date));
             }
+            foreach (var email in list) email.RunAutomaticArcive(accountName);
             return list;
         }
 
