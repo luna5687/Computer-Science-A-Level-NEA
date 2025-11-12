@@ -28,9 +28,17 @@ namespace Computer_Science_A_Level_NEA
 
                 accountPassword = Console.ReadLine();
             }
+            File.Create($"{accountname}Settings.txt").Close();
+            SetDefulatAccountSettings(accountname);
             SQLDataBase.ExecuteNonQuery("INSERT INTO Accounts(AccountName,Password)" +
                               "VALUES " +
                               $"('{accountname}','{Encryption.Encrypt(accountPassword)}');");
+        }
+       public static void SetDefulatAccountSettings(string accountName)
+        {
+            StreamWriter SW = new StreamWriter($"{accountName}Settings.txt",false);
+            SW.WriteLine("Algorithm");
+            SW.Close();
         }
         static bool IsVaildAccountName(string name)
         {
@@ -294,6 +302,7 @@ namespace Computer_Science_A_Level_NEA
                     SQLDataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailID == {AllEmailsIDs[i][0]}");
                 }
             }
+            File.Delete($"{accountName}Settings.txt");
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Users WHERE Account == '{accountName}'");
             SQLDataBase.ExecuteNonQuery($"DELETE FROM Accounts WHERE AccountName == '{accountName}'");
         }
