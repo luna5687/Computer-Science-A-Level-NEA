@@ -68,7 +68,7 @@ namespace Computer_Science_A_Level_NEA
             {
                 new SQLiteCommand(Query, connection).ExecuteNonQuery();
             }
-            if (IsFull() && OverFlowType == "Error") throw new Exception("DataBase is full");
+            if (IsFull() && OverFlowType == "Error") throw new DataBaseFullExeption();
             else if (IsFull() && OverFlowType == "Delete Oldest") ResolveOverFlow();
         }
         static private void ResolveOverFlow()
