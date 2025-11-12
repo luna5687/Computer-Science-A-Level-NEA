@@ -5,10 +5,7 @@ namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
     {
-        public struct AccountSettings
-        {
-            public string AutomaticArcive;
-        }
+       
 
         static int EmailAddressesMennOptionSelect(List<string> EmaliAddreses)
         {
@@ -209,9 +206,9 @@ namespace Computer_Science_A_Level_NEA
         }
         static void UpdateAccoutArciveSettings(string input)
         {
-            StreamReader sr = new StreamReader($"{input}Settings.txt");
-            AccountSettings accountSettings = CreateStuct(sr.ReadToEnd());
-            sr.Close();
+           
+            AccountSettings accountSettings = new AccountSettings(input);
+           
 
             string[] MenuOptions = { "Set to 'Algorithm'", "Set to 'All Emails'", "Set to 'Off'" ,"Back"};
             int MenuOption = 0;
@@ -260,25 +257,11 @@ namespace Computer_Science_A_Level_NEA
                     }
 
                 }
+                accountSettings.UpdateSettingsFile();
             }
         }
-        public static void UpdateSettingsFile(AccountSettings input,string AccountName)
-        {
-            string output = "";
-            output += input.AutomaticArcive;
-
-            StreamWriter SW = new StreamWriter($"{AccountName}Settings.txt",false);
-            SW.Write(output);
-            SW.Close();
-
-        }
-        public static AccountSettings CreateStuct(string input)
-        {
-            string[] AllSettings = input.Split(',');
-            AccountSettings output;
-            output.AutomaticArcive = AllSettings[0];
-            return output;
-        }
+       
+       
         static void DisplayAccoutSettings(string accountName)
         {
             StreamReader SR = new StreamReader($"{accountName}Settings.txt");
@@ -483,4 +466,25 @@ namespace Computer_Science_A_Level_NEA
             Console.Clear();
         }
     }
+    public class AccountSettings
+    {
+        public string AutomaticArcive;
+        public string AccountName;
+        public AccountSettings(string accountName)
+        {
+            StreamReader sr = new StreamReader($"{accountName}Settings.txt");
+            string[] AllSettings = sr.ReadToEnd().Split(',');
+            sr.Close();
+            AutomaticArcive = AllSettings[0];
+        }
+        public void UpdateSettingsFile()
+        {
+            string output = "";
+            output += AutomaticArcive;
+            StreamWriter SW = new StreamWriter($"{AccountName}Settings.txt", false);
+            SW.Write(output);
+            SW.Close();
+        }
+    }
+
 }
