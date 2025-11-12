@@ -57,8 +57,9 @@ namespace Computer_Science_A_Level_NEA
             return true;
 
         }
-        private void CheckArchived() // will need rigrous testing sometimes skips records for IDS does manage collisions properly 
+        private void CheckArchived()
         {
+            IsArchived = false;
             List<string[]> AllEmailIDsInDataBase = SQLDataBase.ExecuteQuery("SELECT EmailID, CollisionAt FROM Emails,Collisions");
             List<string[]> EmailData = null;
             bool found;
@@ -233,8 +234,9 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
         }
-        private bool EmailActions(LoadedEmails AllEmails) // NeedTo run checkArcived
+        private bool EmailActions(LoadedEmails AllEmails)
         {
+            CheckArchived();
             Console.Clear();
             string[] MenuOptions = { "Back", "Archive", "UnArchive", "Manage Tags" };
             bool exit = false;
@@ -588,7 +590,7 @@ namespace Computer_Science_A_Level_NEA
 
             }
         }
-        private Graph CreateGraph(List<List<POSTagging.word>> input) // needs implementing with POStagging word stucture
+        private Graph CreateGraph(List<List<POSTagging.word>> input) 
         {
             List<POSTagging.word> words = new List<POSTagging.word>();
             for (int i = 0; i < input.Count; i++)
