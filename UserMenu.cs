@@ -190,17 +190,28 @@ namespace Computer_Science_A_Level_NEA
                         switch (MenuOptions[menuOption])
                         {
                             case "Set automatic archive settings to off":
+                                AccountSettings accountSettings = new AccountSettings(accountName);
+                                accountSettings.AutomaticArcive = "Off";
+                                accountSettings.UpdateSettingsFile();
                                 break;
                             case "Manualy Delete emails form archive":
+                                DeleteEmailMenu(accountName);
                                 break;
                             case "Automaticaly Delete oldest":
-                                break; 
+                                SQLDataBase.ResolveOverFlow();
+                                break;
 
                         }
 
                     }
                 }
             }
+        }
+        static void DeleteEmailMenu(string accountName)
+        {
+            bool exit = false;
+            int MenuOption = 0;
+            List<string[]> AllEmailsAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddress FROM Users WHERE ");
         }
         static void ManageAccountSettings(string accountName)
         {
@@ -536,6 +547,7 @@ namespace Computer_Science_A_Level_NEA
             SW.Write(output);
             SW.Close();
         }
+        
     }
 
 }

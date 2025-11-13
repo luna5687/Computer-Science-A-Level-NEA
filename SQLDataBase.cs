@@ -71,7 +71,7 @@ namespace Computer_Science_A_Level_NEA
             if (IsFull() && OverFlowType == "Error") throw new DataBaseFullExeption();
             else if (IsFull() && OverFlowType == "Delete Oldest") ResolveOverFlow();
         }
-        static private void ResolveOverFlow()
+        public static void ResolveOverFlow()
         {
             List<string[]> AllDates = ExecuteQuery("SELECT EmailId,DateReviced FROM Emails");
             List<Date> Dates = new List<Date>();
