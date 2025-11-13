@@ -73,6 +73,7 @@ namespace Computer_Science_A_Level_NEA
                     }
                     Console.WriteLine("   Manage Tags");
                     Console.WriteLine("   Manage Emails");
+                    Console.WriteLine("   Manage Account Settings");
                     Console.Write("   Exit");
                 }
                 string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
@@ -117,7 +118,7 @@ namespace Computer_Science_A_Level_NEA
                 Console.Clear();
                 while (!exit)
                 {
-                    EmailAddressesMennOptionSelect(EmaliAddreses);
+                    menuOption= EmailAddressesMennOptionSelect(EmaliAddreses);
                     if (menuOption == EmaliAddreses.Count + 3)
                     {
                         exit = true;
@@ -291,7 +292,8 @@ namespace Computer_Science_A_Level_NEA
         }
         static bool CheckEmailAddressIsValid(string input)
         {
-            List<string[]> AllEmailAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddresses FROM Users");
+            List<string[]> AllEmailAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
+            if (AllEmailAddresses == null) return true;
             foreach (string[] EmailAddress in AllEmailAddresses) if (EmailAddress[0] == input) return false;
             return true;
         }
@@ -409,7 +411,7 @@ namespace Computer_Science_A_Level_NEA
             bool exit = false;
             int menuOption = 0;
             Console.Clear();
-            while (!exit)
+            while (!exit && EmailAddresses !=null)
             {
                 if (menuOption == EmailAddresses.Count)
                 {

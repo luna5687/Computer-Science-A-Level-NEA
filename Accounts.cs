@@ -1,4 +1,6 @@
-﻿namespace Computer_Science_A_Level_NEA
+﻿using System.Data.Common;
+
+namespace Computer_Science_A_Level_NEA
 {
     static class Accounts
     {
@@ -35,7 +37,8 @@
         }
         static bool IsVaildAccountName(string name)
         {
-            List<string[]> AllUsernames = SQLDataBase.ExecuteQuery("SELLECT AccountName FROM Accounts");
+            List<string[]> AllUsernames = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+            if (AllUsernames == null) return true;
             foreach (string[] usernames in AllUsernames)
             {
                 if (usernames[0] == name) return false;
@@ -184,9 +187,18 @@
             }
             catch (MailKit.ServiceNotConnectedException ex)
             {
-                // need to manage exeption
+                Console.WriteLine("Could not connect to mail server");
+                ConsoleInteraction.GetConsoleInput();
             }
-
+            catch (System.Net.Sockets.SocketException)
+            {
+                Console.WriteLine("A mail server for an email was invalid");
+                ConsoleInteraction.GetConsoleInput();   
+            }
+            catch (MailKit.Security.AuthenticationException)
+            {
+                Console.WriteLine("A email address or password for email address was invalid");
+            }
 
         }
         static void ManageAccounts()
