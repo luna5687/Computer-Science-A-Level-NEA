@@ -1,6 +1,4 @@
 ﻿// Copyright 2025 Daniel Ian White
-using System.Collections.Generic;
-
 namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
@@ -153,7 +151,7 @@ namespace Computer_Science_A_Level_NEA
             }
             catch (DataBaseFullExeption ex)
             {
-                Console.WriteLine("The database is full Please select an option: ");
+                
                 string[] MenuOptions = { "Set all accounts automatic archive settings to off", "Manualy Delete emails form archive", "Automaticaly Delete oldest" };
                 int menuOption = 0;
                 bool exit = false;
@@ -161,47 +159,24 @@ namespace Computer_Science_A_Level_NEA
                 while (!exit)
                 {
 
-                    for (int i = 0; i < MenuOptions.Length; i++)
+                    menuOption = ConsoleInteraction.Menu("The database is full Please select an option: ", MenuOptions);
+                    switch (MenuOptions[menuOption])
                     {
-                        if (menuOption == i) Console.Write(" > ");
-                        else Console.Write("   ");
-                        Console.WriteLine(MenuOptions[i]);
-                    }
-                    input = ConsoleInteraction.GetConsoleInput();
-                    ConsoleInteraction.ResetCursor();
-                    if (input.ToLower() == "w")
-                    {
-                        menuOption--;
-                        if (menuOption < 0)
-                        {
-                            menuOption = MenuOptions.Length - 1;
-                        }
-                    }
-                    else if (input == "s")
-                    {
-                        menuOption++;
-                        if (menuOption == MenuOptions.Length)
-                        {
-                            menuOption = 0;
-                        }
-                    }
-                    else if (input == "\r" || input == "")
-                    {
-                        switch (MenuOptions[menuOption])
-                        {
-                            case "Set automatic archive settings to off":
-                                break;
-                            case "Manualy Delete emails form archive":
-                                break;
-                            case "Automaticaly Delete oldest":
-                                break; 
+                        case "Set automatic archive settings to off":
 
-                        }
+                            break;
+                        case "Manualy Delete emails form archive":
+                            break;
+                        case "Automaticaly Delete oldest":
+                            break;
+
+
 
                     }
                 }
             }
         }
+
         static void ManageAccountSettings(string accountName)
         {
             bool exit = false;
@@ -209,49 +184,24 @@ namespace Computer_Science_A_Level_NEA
             string[] MenOptions = { "View settings", "Update Automatic archive settings", "Reset To defualt", "Back" };
             while (!exit)
             {
-                for (int i = 0; i < MenOptions.Length; i++)
-                {
-                    if (MenuOption == i) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenOptions[i]);
-                }
-                string input = ConsoleInteraction.GetConsoleInput(true);
-
-                if (input == "W")
-                {
-                    MenuOption--;
-                    if (MenuOption < 0)
-                    {
-                        MenuOption = MenOptions.Length - 1;
-                    }
-                }
-                else if (input == "S")
-                {
-                    MenuOption++;
-                    if (MenuOption > MenOptions.Length - 1)
-                    {
-                        MenuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                MenuOption = ConsoleInteraction.Menu("", MenOptions);
                     switch (MenOptions[MenuOption])
                     {
                         case "Back":
                             exit = true;
                             break;
                         case "View settings":
-                            DisplayAccoutSettings(input);
+                            DisplayAccoutSettings(accountName);
                             break;
                         case "Update Automatic archive settings":
-                            UpdateAccoutArciveSettings(input);
+                            UpdateAccoutArciveSettings(accountName);
                             break;
                         case "Reset To defualt":
-                            Accounts.SetDefulatAccountSettings(input);
+                            Accounts.SetDefulatAccountSettings(accountName);
                             break;
                     }
 
-                }
+                
             }
 
         }
@@ -266,31 +216,7 @@ namespace Computer_Science_A_Level_NEA
             bool exit = false;
             while (!exit)
             {
-                for (int i = 0; i < MenuOptions.Length; i++)
-                {
-                    if (i == MenuOption) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenuOptions[i]);
-                }
-
-                if (input == "W")
-                {
-                    MenuOption--;
-                    if (MenuOption < 0)
-                    {
-                        MenuOption = MenuOptions.Length - 1;
-                    }
-                }
-                else if (input == "S")
-                {
-                    MenuOption++;
-                    if (MenuOption > MenuOptions.Length - 1)
-                    {
-                        MenuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                MenuOption = ConsoleInteraction.Menu("",MenuOptions);
                     switch (MenuOptions[MenuOption])
                     {
                         case "Back":
@@ -307,7 +233,7 @@ namespace Computer_Science_A_Level_NEA
                             break;
                     }
 
-                }
+                
                 accountSettings.UpdateSettingsFile();
             }
         }

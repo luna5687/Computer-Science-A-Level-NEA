@@ -1,4 +1,7 @@
 ﻿// Copyright 2025 Daniel Ian White
+using System.Data.Entity.ModelConfiguration.Configuration;
+using System.Reflection.Metadata;
+
 namespace Computer_Science_A_Level_NEA
 {
     static class ConsoleInteraction
@@ -59,6 +62,45 @@ namespace Computer_Science_A_Level_NEA
             for (int i = 0; i < value; i++) { output+=" "; }
             return output;
         }
+        public static int Menu(string message, string[] MenuOptions)
+        {
+            bool exit = false;
+            int menuOption = 0;
+            string input;
+            while (!exit)
+            {
+                ResetCursor();
+                if(message != "") Console.WriteLine(message);
+                for (int i = 0; i < MenuOptions.Length; i++)
+                {
+                    if (i == menuOption) Console.Write(" > ");
+                    else Console.Write("   ");
+                }
+                input = GetConsoleInput(true);
+                if (input.ToLower() == "w")
+                {
+                    menuOption--;
+                    if (menuOption < 0)
+                    {
+                        menuOption =MenuOptions.Length-1;
+                    }
+                }
+                else if (input.ToLower() == "s")
+                {
+                    menuOption++;
+                    if (menuOption > MenuOptions.Length-1 )
+                    {
+                        menuOption = 0;
+                    }
+                }
+                else if (input == "\r" || input == "")
+                {
+                    exit = true;
+                }
+            }
+            return menuOption;
+        }
+
     }
   
 }
