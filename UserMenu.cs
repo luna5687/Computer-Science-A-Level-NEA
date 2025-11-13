@@ -1,4 +1,7 @@
 ﻿// Copyright 2025 Daniel Ian White
+using System.Data.Entity.ModelConfiguration.Configuration;
+using System.Runtime.Serialization;
+
 namespace Computer_Science_A_Level_NEA
 {
     public class UserMenu
@@ -155,7 +158,7 @@ namespace Computer_Science_A_Level_NEA
                 string[] MenuOptions = { "Set all accounts automatic archive settings to off", "Manualy Delete emails form archive", "Automaticaly Delete oldest" };
                 int menuOption = 0;
                 bool exit = false;
-                string input;
+            
                 while (!exit)
                 {
 
@@ -163,16 +166,19 @@ namespace Computer_Science_A_Level_NEA
                     switch (MenuOptions[menuOption])
                     {
                         case "Set automatic archive settings to off":
-
+                            AccountSettings accountSettings = new AccountSettings(accountName);
+                            accountSettings.AutomaticArcive = "Off";
+                            accountSettings.UpdateSettingsFile();
                             break;
                         case "Manualy Delete emails form archive":
+                            DeleteEmailMenu(accountName);
                             break;
                         case "Automaticaly Delete oldest":
+                            SQLDataBase.ResolveOverFlow();
                             break;
-
-
-
                     }
+                    if (SQLDataBase.IsFull()) exit = false;
+                    else exit = true;
                 }
             }
         }
@@ -180,9 +186,39 @@ namespace Computer_Science_A_Level_NEA
         {
             bool exit = false;
             int MenuOption = 0;
-            List<string[]> AllEmailsAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddress FROM Users WHERE ");
-        }
+            List<string[]> AllEmails = SQLDataBase.ExecuteQuery("SELECT * FROM Emails");
+            string[] MenuOptions = new string[AllEmails.Count + 1];
 
+            MenuOptions[MenuOptions.Length - 1] = "Back";
+            while (!exit)
+            {
+                AllEmails = SQLDataBase.ExecuteQuery("SELECT * FROM Emails");
+                for (int i = 0; i < AllEmails.Count; i++)
+                {
+                    string temp = AllEmails[i][0] + "|" + AllEmails[i][1] + "|" + AllEmails[i][2] + "|" + AllEmails[i][3] + "|" + AllEmails[i][5] + "|" + AllEmails[i][7];
+                    MenuOptions[i] = temp;
+                }
+                MenuOption = ConsoleInteraction.Menu($"ID{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 0) - 2)}|Sender{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 1) - 6)}|Recipient{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 2) - 9)}|Subject{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 3) - 7)}|Keywords{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 5) - 8)}|Date Recived",
+                                                       MenuOptions);
+                if (MenuOption == MenuOptions.Length-1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    SQLDataBase.ExecuteNonQuery($"DELETE FROM Emails WHERE EmailID == {AllEmails[MenuOption][0]}");
+                }
+            }
+        }
+        static int GetLongestPart(List<string[]> Emails,int indexOfPart)
+        {
+            int Longest = 0;
+            foreach (string[] Email in Emails)
+            {
+                if (Email[indexOfPart].Length > indexOfPart) Longest = Email[indexOfPart].Length;
+            }
+            return Longest;
+        }
         static void ManageAccountSettings(string accountName)
         {
             bool exit = false;
