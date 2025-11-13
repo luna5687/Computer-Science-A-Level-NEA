@@ -75,6 +75,7 @@ namespace Computer_Science_A_Level_NEA
                 {
                     if (i == menuOption) Console.Write(" > ");
                     else Console.Write("   ");
+                    Console.WriteLine(MenuOptions[i]);
                 }
                 input = GetConsoleInput(true);
                 if (input.ToLower() == "w")

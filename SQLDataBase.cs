@@ -62,7 +62,7 @@ namespace Computer_Science_A_Level_NEA
         {
             if (Query.StartsWith("INSERT") || Query.StartsWith("CREATE"))
             {
-                if (!IsFull()) new SQLiteCommand(Query, connection).ExecuteNonQuery();
+                if (!IsFull()) new SQLiteCommand(Query, connection).ExecuteNonQuery();// need to sanitize 
             }
             else
             {

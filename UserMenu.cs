@@ -243,7 +243,7 @@ namespace Computer_Science_A_Level_NEA
                             Accounts.SetDefulatAccountSettings(accountName);
                             break;
                     }
-
+                Console.Clear();
                 
             }
 
@@ -275,7 +275,7 @@ namespace Computer_Science_A_Level_NEA
                             accountSettings.AutomaticArcive = "Off";
                             break;
                     }
-
+                Console.Clear();
                 
                 accountSettings.UpdateSettingsFile();
             }
@@ -495,6 +495,7 @@ namespace Computer_Science_A_Level_NEA
         {
             StreamReader sr = new StreamReader($"{accountName}Settings.txt");
             string[] AllSettings = sr.ReadToEnd().Split(',');
+            AccountName = accountName;
             sr.Close();
             AutomaticArcive = AllSettings[0];
         }
