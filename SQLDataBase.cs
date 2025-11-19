@@ -141,31 +141,3 @@ namespace Computer_Science_A_Level_NEA
         }
     }
 }
-/*  new SQLiteCommand("CREATE TABLE Users (" +
-                                  "EmailAddress varchar PRIMARY KEY," +
-                                  "Password varchar," +
-                                  "Mailserver varchar," +
-                                  "Account varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Emails(" +
-                                  "EmailID int PRIMARY KEY," +
-                                  "Sender varchar," +
-                                  "Recipient varchar," +
-                                  "Subject varchar," +
-                                  "TextBody varchar," +
-                                  "Keywords varchar," +
-                                  "EmailAddress varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Tags(" +
-                                  "TagID int PRIMARY KEY," +
-                                  "TagName varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE AssignedTags(" +
-                                  "TagID int," +
-                                  "EmailID int)", connection).ExecuteNonQuery();
-                new SQLiteCommand("CREATE TABLE Accounts(" +
-                                  "AccountName varchar PRIMARY KEY," +
-                                  "Password varchar)", connection).ExecuteNonQuery();
-                new SQLiteCommand("INSERT INTO Tags(tagID,TagName)" +
-                                  "VALUES " +
-                                  "(0,'Metting')," +
-                                  "(1,'Accounting')," +
-                                  "(2,'Important')", connection).ExecuteNonQuery();
-*/

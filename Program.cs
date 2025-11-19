@@ -16,8 +16,8 @@ namespace NEA_protoype
             bool exit = false;
             while (!exit)
             {
-               // try
-               // {
+                try
+                {
                     string[] InitalTable = {"CREATE TABLE Users (" +
                                     "EmailAddress varchar PRIMARY KEY," +
                                      "Password varchar," +
@@ -67,8 +67,8 @@ namespace NEA_protoype
                     Accounts.AccountsMenu();
                     exit = true;
                     SQLDataBase.CloseConnection();
-                //}
-                /*
+                }
+                
                 catch (MailKit.Security.SslHandshakeException) { Console.WriteLine("Cannot cannot connect to mail server due to security issues "); Console.ReadKey(); }
                 catch (Exception e)
                 {
@@ -77,7 +77,7 @@ namespace NEA_protoype
                     exit = ChrashOptions();
                     SQLDataBase.CloseConnection();
                 }
-                */
+                
             }
 
         }

@@ -184,7 +184,7 @@ namespace Computer_Science_A_Level_NEA
         private void DisplayEmails(int menuOption)
         {
             Console.Clear();
-            // when displaying emails add headings 
+            
             DisplaySearchParamters();
             ConsoleInteraction.ResetCursor();
             int[] Buffers = { FindLongestSender(), FindLongestRecipient(), FindLongestSubject() };
