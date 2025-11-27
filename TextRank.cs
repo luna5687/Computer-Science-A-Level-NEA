@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using MailKit;
+using System.Text.RegularExpressions;
 
 namespace Computer_Science_A_Level_NEA
 {
@@ -202,8 +203,13 @@ namespace Computer_Science_A_Level_NEA
 
     static public class TextRank
     {
+
         static public string KeywordExtraction(string input)
         {
+            if (input == null) return "";
+            
+                
+            
             string[] Sentenses = input.Split('.', '\n', '!', '?');
             List<string> AllWords = new List<string>();
             foreach (string s in Sentenses)
