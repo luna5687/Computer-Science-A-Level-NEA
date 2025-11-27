@@ -260,9 +260,6 @@ namespace Computer_Science_A_Level_NEA
             output.Add(".");
             return output;
         }
-        static bool CheckWeightChangeSignificance()
-        {
-            return false;
-        }
+        
     }
 }
