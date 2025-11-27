@@ -344,9 +344,8 @@ namespace Computer_Science_A_Level_NEA
                 MailServer = Console.ReadLine();
             }
 
-
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-            // TODO - validate password 
+            
             string EmailPassword = Console.ReadLine();
 
             SQLDataBase.ExecuteNonQuery("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +

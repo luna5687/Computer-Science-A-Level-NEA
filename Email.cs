@@ -14,6 +14,8 @@ namespace Computer_Science_A_Level_NEA
         private int EmailID;
         private int DataBaseID;
         private string DateRecived;
+        private bool HasBeenSetUp = false;
+        public Email() { }
         public Email(string Sender, string Recipient, string Subject, string Body, DateTimeOffset date)
         {
             this.Sender = Sender;
@@ -26,7 +28,27 @@ namespace Computer_Science_A_Level_NEA
             EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length;
             CheckArchived();
             if (!IsArchived) CreateKeywords();
+            HasBeenSetUp = true;
+        }
+        public void SetUp(string Sender, string Recipient, string Subject, string Body, DateTimeOffset date)
+        {
+            if (!HasBeenSetUp)
+            {
+                this.Sender = Sender;
+                this.Recipient = Recipient;
+                this.Subject = Subject;
+                this.Body = Body;
 
+                DateRecived = date.DateTime.ToString();
+
+                EmailID = Sender.Length + Recipient.Length + Subject.Length + Body.Length;
+                CheckArchived();
+                if (!IsArchived) CreateKeywords();
+                HasBeenSetUp = true;
+            }
+
+
+           
         }
         public int GetRecipientLength()
         {

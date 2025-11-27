@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace Computer_Science_A_Level_NEA
 {
@@ -93,7 +88,7 @@ namespace Computer_Science_A_Level_NEA
                 Edges[Edges.Count - 1].SetIndex(Edges.Count - 1);
                 Nodes[GetNodeIndex(NodeToConnectTo)].AddEdgeIndex(Edges.Count - 1);
                 Nodes[GetNodeIndex(NodeToConnectFrom)].AddEdgeIndex(Edges.Count - 1);
-                RecaculateAllNodes();
+                //RecaculateAllNodes();
             }
 
         }
@@ -121,18 +116,19 @@ namespace Computer_Science_A_Level_NEA
             bestIndex[0] = 0;
             bestIndex[1] = 1;
             bestIndex[2] = 2;
-            while (IsStopWord(Nodes[bestIndex[0]].GetData()) && bestIndex[0] < Nodes.Count)
+
+            while (bestIndex[0] < Nodes.Count && IsStopWord(Nodes[bestIndex[0]].GetData()))
             {
                 bestIndex[0] += 1;
                 bestIndex[1] += 1;
                 bestIndex[2] += 1;
             }
-            while (IsStopWord(Nodes[bestIndex[1]].GetData()) && bestIndex[1] < Nodes.Count)
+            while (bestIndex[1] < Nodes.Count && IsStopWord(Nodes[bestIndex[1]].GetData()))
             {
                 bestIndex[1] += 1;
                 bestIndex[2] += 1;
             }
-            while (IsStopWord(Nodes[bestIndex[2]].GetData()) && bestIndex[2] < Nodes.Count)
+            while (bestIndex[2] < Nodes.Count && IsStopWord(Nodes[bestIndex[2]].GetData()))
             {
                 bestIndex[2] += 1;
             }
@@ -141,18 +137,23 @@ namespace Computer_Science_A_Level_NEA
             {
                 if (Nodes[bestIndex[0]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData())) bestIndex[0] = i;
             }
-            for (int i = 0; i < Nodes.Count; i++)
+            if (Nodes.Count >= 2)
             {
-                if (Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
+                for (int i = 0; i < Nodes.Count; i++)
+                {
+                    if (Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
+                }
             }
-            for (int i = 0; i < Nodes.Count; i++)
+            if (Nodes.Count >= 3)
             {
-                if (Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
+                for (int i = 0; i < Nodes.Count; i++)
+                {
+                    if (Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
+                }
             }
-
             threeBest[0] = Nodes[bestIndex[0]].GetData();
-            threeBest[1] = Nodes[bestIndex[1]].GetData();
-            threeBest[2] = Nodes[bestIndex[2]].GetData();
+            if (Nodes.Count >= 2) threeBest[1] = Nodes[bestIndex[1]].GetData();
+            if (Nodes.Count >= 3) threeBest[2] = Nodes[bestIndex[2]].GetData();
 
             return threeBest;
         }
@@ -189,6 +190,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public bool CheckConvergance()
         {
+            if (PreviousWeights.Count == 0) return false;
             for (int i = 0; i < Nodes.Count; i++)
             {
                 if (PreviousWeights[i] != Nodes[i].GetScore()) return false;
@@ -249,7 +251,7 @@ namespace Computer_Science_A_Level_NEA
             foreach (string s in FormatedString.Split(' '))
             {
 
-                if (s != "" || !Regex.IsMatch(s, "^\\s*$")) 
+                if (s != "" || !Regex.IsMatch(s, "^\\s*$"))
                 {
                     ToAdd = s;
                     ToAdd = ToAdd.ToLower();
