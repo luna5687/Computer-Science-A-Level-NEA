@@ -1,6 +1,5 @@
 ﻿// Copyright 2025 Daniel Ian White
-using System.Data.Entity.ModelConfiguration.Configuration;
-using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Computer_Science_A_Level_NEA
 {
@@ -118,7 +117,7 @@ namespace Computer_Science_A_Level_NEA
                 Console.Clear();
                 while (!exit)
                 {
-                    menuOption= EmailAddressesMennOptionSelect(EmaliAddreses);
+                    menuOption = EmailAddressesMennOptionSelect(EmaliAddreses);
                     if (menuOption == EmaliAddreses.Count + 3)
                     {
                         exit = true;
@@ -155,11 +154,11 @@ namespace Computer_Science_A_Level_NEA
             }
             catch (DataBaseFullExeption ex)
             {
-                
+
                 string[] MenuOptions = { "Set all accounts automatic archive settings to off", "Manualy Delete emails form archive", "Automaticaly Delete oldest" };
                 int menuOption = 0;
                 bool exit = false;
-            
+
                 while (!exit)
                 {
 
@@ -201,7 +200,7 @@ namespace Computer_Science_A_Level_NEA
                 }
                 MenuOption = ConsoleInteraction.Menu($"ID{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 0) - 2)}|Sender{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 1) - 6)}|Recipient{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 2) - 9)}|Subject{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 3) - 7)}|Keywords{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 5) - 8)}|Date Recived",
                                                        MenuOptions);
-                if (MenuOption == MenuOptions.Length-1)
+                if (MenuOption == MenuOptions.Length - 1)
                 {
                     exit = true;
                 }
@@ -211,7 +210,7 @@ namespace Computer_Science_A_Level_NEA
                 }
             }
         }
-        static int GetLongestPart(List<string[]> Emails,int indexOfPart)
+        static int GetLongestPart(List<string[]> Emails, int indexOfPart)
         {
             int Longest = 0;
             foreach (string[] Email in Emails)
@@ -228,23 +227,23 @@ namespace Computer_Science_A_Level_NEA
             while (!exit)
             {
                 MenuOption = ConsoleInteraction.Menu("", MenOptions);
-                    switch (MenOptions[MenuOption])
-                    {
-                        case "Back":
-                            exit = true;
-                            break;
-                        case "View settings":
-                            DisplayAccoutSettings(accountName);
-                            break;
-                        case "Update Automatic archive settings":
-                            UpdateAccoutArciveSettings(accountName);
-                            break;
-                        case "Reset To defualt":
-                            Accounts.SetDefulatAccountSettings(accountName);
-                            break;
-                    }
+                switch (MenOptions[MenuOption])
+                {
+                    case "Back":
+                        exit = true;
+                        break;
+                    case "View settings":
+                        DisplayAccoutSettings(accountName);
+                        break;
+                    case "Update Automatic archive settings":
+                        UpdateAccoutArciveSettings(accountName);
+                        break;
+                    case "Reset To defualt":
+                        Accounts.SetDefulatAccountSettings(accountName);
+                        break;
+                }
                 Console.Clear();
-                
+
             }
 
         }
@@ -259,24 +258,24 @@ namespace Computer_Science_A_Level_NEA
             bool exit = false;
             while (!exit)
             {
-                MenuOption = ConsoleInteraction.Menu("",MenuOptions);
-                    switch (MenuOptions[MenuOption])
-                    {
-                        case "Back":
-                            exit = true;
-                            break;
-                        case "Set to 'Algorithm'":
-                            accountSettings.AutomaticArcive = "Algorithm";
-                            break;
-                        case "Set to 'All Emails'":
-                            accountSettings.AutomaticArcive = "All Emails";
-                            break;
-                        case "Set to 'Off'":
-                            accountSettings.AutomaticArcive = "Off";
-                            break;
-                    }
+                MenuOption = ConsoleInteraction.Menu("", MenuOptions);
+                switch (MenuOptions[MenuOption])
+                {
+                    case "Back":
+                        exit = true;
+                        break;
+                    case "Set to 'Algorithm'":
+                        accountSettings.AutomaticArcive = "Algorithm";
+                        break;
+                    case "Set to 'All Emails'":
+                        accountSettings.AutomaticArcive = "All Emails";
+                        break;
+                    case "Set to 'Off'":
+                        accountSettings.AutomaticArcive = "Off";
+                        break;
+                }
                 Console.Clear();
-                
+
                 accountSettings.UpdateSettingsFile();
             }
         }
@@ -292,6 +291,7 @@ namespace Computer_Science_A_Level_NEA
         }
         static bool CheckEmailAddressIsValid(string input)
         {
+            if (!Regex.IsMatch(input, "^(?(\")(\".+?(?<!\\\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`\\{\\}\\|~\\w])*)(?<=[0-9a-z])@))(?(\\[)(\\[(\\d{1,3}\\.){3}\\d{1,3}\\])|(([0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9]))$")) return false; // the regex epression was taken from https://emailregex.com/ on 27/11/2025
             List<string[]> AllEmailAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
             if (AllEmailAddresses == null) return true;
             foreach (string[] EmailAddress in AllEmailAddresses) if (EmailAddress[0] == input) return false;
@@ -313,23 +313,38 @@ namespace Computer_Science_A_Level_NEA
             }
             return EmaliAddreses;
         }
+        static bool CheckMailSever(string input)
+        {
+            return Regex.IsMatch(input, "^(\\w+\\.)?\\w+\\.\\w+\\.\\w+$");
+        }
         static void CreateEmail(string accountName)
         {
             Console.Write("Enter Emailaddress: ");
             string EmailAddress = Console.ReadLine();
-            while (!CheckEmailAddressIsValid(EmailAddress))
-            {
-                Console.Write("Email Address is not valid please ReEnter Usersame: ");
-                EmailAddress = Console.ReadLine();
-            }
             List<string> EmaliAddreses = GetEmailAddresses(accountName);
-            while (EmaliAddreses != null && EmaliAddreses.Contains(EmailAddress))
+            while (!CheckEmailAddressIsValid(EmailAddress) && EmaliAddreses != null && EmaliAddreses.Contains(EmailAddress))
             {
-                Console.Write("Email entered already exists\nPlease enter a diffrent email: ");
-                EmailAddress = Console.ReadLine();
+                while (!CheckEmailAddressIsValid(EmailAddress))
+                {
+                    Console.Write("Email Address is not valid please ReEnter Usersame: ");
+                    EmailAddress = Console.ReadLine();
+                }
+
+                while (EmaliAddreses != null && EmaliAddreses.Contains(EmailAddress))
+                {
+                    Console.Write("Email entered already exists\nPlease enter a diffrent email: ");
+                    EmailAddress = Console.ReadLine();
+                }
             }
             Console.Write("Enter the email's mail server: ");
             string MailServer = Console.ReadLine();
+            while (!CheckMailSever(MailServer))
+            {
+                Console.Write("Mail Sever is invalid\nPlease ReEnter Mail sever: ");
+                MailServer = Console.ReadLine();
+            }
+
+
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
             // TODO - validate password 
             string EmailPassword = Console.ReadLine();
@@ -411,7 +426,7 @@ namespace Computer_Science_A_Level_NEA
             bool exit = false;
             int menuOption = 0;
             Console.Clear();
-            while (!exit && EmailAddresses !=null)
+            while (!exit && EmailAddresses != null)
             {
                 if (menuOption == EmailAddresses.Count)
                 {
@@ -507,7 +522,7 @@ namespace Computer_Science_A_Level_NEA
             SW.Write(output);
             SW.Close();
         }
-        
+
     }
 
 }

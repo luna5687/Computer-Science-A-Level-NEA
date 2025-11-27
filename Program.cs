@@ -13,6 +13,7 @@ namespace NEA_protoype
         
         static void Main(string[] args)
         {
+            
             bool exit = false;
             while (!exit)
             {
@@ -79,7 +80,7 @@ namespace NEA_protoype
                 }
                 
             }
-
+            
         }
         static bool ChrashOptions()
         {

@@ -249,7 +249,7 @@ namespace Computer_Science_A_Level_NEA
             foreach (string s in FormatedString.Split(' '))
             {
 
-                if (s != "" || !Regex.IsMatch(s, "^$ *")) ;
+                if (s != "" || !Regex.IsMatch(s, "^\\s*$")) 
                 {
                     ToAdd = s;
                     ToAdd = ToAdd.ToLower();
