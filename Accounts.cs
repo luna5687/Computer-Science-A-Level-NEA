@@ -73,6 +73,7 @@ namespace Computer_Science_A_Level_NEA
                 int menuOption = 0;
                 while (!exit)
                 {
+                    
                     if (menuOption == Accounts.Count + 2)
                     {
                         for (int i = 0; i < Accounts.Count; i++)
@@ -102,6 +103,7 @@ namespace Computer_Science_A_Level_NEA
                         Console.Write(" > Manage Accounts\n");
                         Console.Write("   Manage Global settings\n");
                         Console.Write("   Exit");
+                        
                     }
                     else
                     {
@@ -151,6 +153,13 @@ namespace Computer_Science_A_Level_NEA
                         else if (menuOption == Accounts.Count)
                         {
                             ManageAccounts();
+                            temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+                            Accounts = new List<string>();
+                            foreach (string[] s in temp)
+                            {
+                                Accounts.Add(s[0].ToString());
+                            }
+                            temp = null;
                         }
                         else
                         {
@@ -203,6 +212,7 @@ namespace Computer_Science_A_Level_NEA
         }
         static void ManageAccounts()
         {
+            Console.Clear();
             string[] MenuOptions = { "Back", "Add account", "Delete account" };
             bool Exit = false;
             int menuOption = 0;
@@ -250,6 +260,7 @@ namespace Computer_Science_A_Level_NEA
 
                 }
             }
+            Console.Clear();
         }
         static void DeleteAccountsMenu()
         {
@@ -267,6 +278,7 @@ namespace Computer_Science_A_Level_NEA
                 menuOptions[0] = "Back";
                 while (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count != 1 && exit != false)
                 {
+                    menuOptions = GetAllAccountNames();
                     for (int i = 0; i < menuOptions.Length; i++)
                     {
                         if (i == menuOptions.Length) Console.Write(" > ");
@@ -299,6 +311,7 @@ namespace Computer_Science_A_Level_NEA
                             DeleteAccount((SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts"))[menuOption][0]);
                         }
                     }
+                    menuOptions = GetAllAccountNames();
                 }
             }
         }
@@ -376,14 +389,25 @@ namespace Computer_Science_A_Level_NEA
                             break;
                         case "Edit Max database size":
                             Console.WriteLine("Please enter the max database size in GB (Must be greater than or equal to 1 or -1 for unlimited)");
-                            int Size = int.Parse(Console.ReadLine());
+                            double Size = double.Parse(Console.ReadLine());
                             Console.Clear();
-                            while (Size <= 1 && Size != -1)
+                            while (Size < 0 && Size != -1)
                             {
                                 Console.WriteLine("Invalid Size");
-                                Console.WriteLine("Please enter the max database size in GB (Must be greater than or equal to 1)");
-                                Size = int.Parse(Console.ReadLine());
+                                Console.WriteLine("Please enter the max database size in GB (Must be greater than to 0)");
+                                Size = double.Parse(Console.ReadLine());
                             }
+                            StreamWriter SW = new StreamWriter("GlobalSettings.txt", false);
+                            if (Size == -1)
+                            {
+                                SW.Write($"-1,{SQLDataBase.GetOverFlowType()}");
+                            }
+                            else
+                            {
+                                SW.Write($"{Size},{SQLDataBase.GetOverFlowType()}");
+
+                            }
+                            SW.Close();
                             SQLDataBase.SetMaxSize(Size);
                             break;
                         case "Edit Overflow handaling":
@@ -405,7 +429,7 @@ namespace Computer_Science_A_Level_NEA
             StreamReader SR = new StreamReader("GlobalSettings.txt");
             string body = SR.ReadToEnd();
             Console.Write("Max database Size: ");
-            if (int.Parse(body.Split(',')[0]) == -1) Console.Write("Unlimited\n");
+            if (double.Parse(body.Split(',')[0]) == -1) Console.Write("Unlimited\n");
             else Console.Write($"{body.Split(',')[0]}GB\n");
             Console.WriteLine($"Overfolw handling: {body.Split(',')[1]}");
             Console.ReadKey();

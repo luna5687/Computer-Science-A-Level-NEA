@@ -32,7 +32,7 @@ namespace NEA_protoype
                                       "Subject varchar," +
                                      "TextBody varchar," +
                                       "Keywords varchar," +
-                                     "EmailAddress varchar," +
+                                     
                                      "DateRecived varchar)",
 
                                      "CREATE TABLE Tags(" +
@@ -140,7 +140,7 @@ namespace NEA_protoype
             {
                 StreamReader SR = new StreamReader("GlobalSettings.txt");
                 string body = SR.ReadToEnd();
-                SQLDataBase.SetMaxSize(int.Parse(body.Split(',')[0]));
+                SQLDataBase.SetMaxSize(double.Parse(body.Split(',')[0]));
                 SQLDataBase.SetOverFlowType(body.Split(',')[1]);
                 SR.Close();
             }

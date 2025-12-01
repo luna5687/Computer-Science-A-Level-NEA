@@ -154,7 +154,7 @@ namespace Computer_Science_A_Level_NEA
             }
             catch (DataBaseFullExeption ex)
             {
-
+                Console.Clear();
                 string[] MenuOptions = { "Set all accounts automatic archive settings to off", "Manualy Delete emails form archive", "Automaticaly Delete oldest" };
                 int menuOption = 0;
                 bool exit = false;
@@ -221,6 +221,7 @@ namespace Computer_Science_A_Level_NEA
         }
         static void ManageAccountSettings(string accountName)
         {
+            Console.Clear();
             bool exit = false;
             int MenuOption = 0;
             string[] MenOptions = { "View settings", "Update Automatic archive settings", "Reset To defualt", "Back" };
@@ -288,6 +289,7 @@ namespace Computer_Science_A_Level_NEA
             SR.Close();
             Console.WriteLine(settings);
             ConsoleInteraction.GetConsoleInput();
+            
         }
         static bool CheckEmailAddressIsValid(string input)
         {

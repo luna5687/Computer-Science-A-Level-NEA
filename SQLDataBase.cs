@@ -6,7 +6,7 @@ namespace Computer_Science_A_Level_NEA
     public static class SQLDataBase
     {
         static private SQLiteConnection connection;
-        static private int MaxMemory = -1;
+        static private double MaxMemory = -1;
         static private string OverFlowType = "Error";
         private struct Date
         {
@@ -39,10 +39,12 @@ namespace Computer_Science_A_Level_NEA
             }
 
         }
-        static public void SetMaxSize(int max)
+        static public void SetMaxSize(double max)
         {
             MaxMemory = max;
+
         }
+        static public string GetOverFlowType() { return OverFlowType; }
         static public void SetOverFlowType(string overflow)
         {
             OverFlowType = overflow;
@@ -54,6 +56,7 @@ namespace Computer_Science_A_Level_NEA
             int FileNumber = FileSystem.FreeFile();
             FileSystem.FileOpen(FileNumber, "TempFile", OpenMode.Input);
             bool full = FileSystem.LOF(FileNumber) > MaxMemory;
+            FileSystem.FileClose(FileNumber);
             File.Delete("TempFile");
             return full;
         }
@@ -73,7 +76,7 @@ namespace Computer_Science_A_Level_NEA
         }
         public static void ResolveOverFlow()
         {
-            List<string[]> AllDates = ExecuteQuery("SELECT EmailId,DateReviced FROM Emails");
+            List<string[]> AllDates = ExecuteQuery("SELECT EmailId,DateRecived FROM Emails");
             List<Date> Dates = new List<Date>();
             string SingleDate;
             Date TempDate;
