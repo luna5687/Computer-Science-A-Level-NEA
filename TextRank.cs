@@ -203,7 +203,15 @@ namespace Computer_Science_A_Level_NEA
 
     static public class TextRank
     {
-
+        static private bool IsStopWord(string word)
+        {
+            string[] StopWords = { "the", "and", "a", "an", "to", "is", "be", "because", "it", "its", "are", "was" ,"that","this","these","those"}; // a lis tof common words that are often not important to a text 
+            foreach (string s in StopWords)
+            {
+                if (s == word) return true;
+            }
+            return false;
+        }
         static public string KeywordExtraction(string input)
         {
             if (input == null) return "";
@@ -257,7 +265,7 @@ namespace Computer_Science_A_Level_NEA
             foreach (string s in FormatedString.Split(' '))
             {
 
-                if (s != "" || !Regex.IsMatch(s, "^\\s*$"))
+                if ((s != "" || !Regex.IsMatch(s, "^\\s*$") ) && !IsStopWord(s))
                 {
                     ToAdd = s;
                     ToAdd = ToAdd.ToLower();
