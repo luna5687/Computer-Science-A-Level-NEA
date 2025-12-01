@@ -22,8 +22,10 @@ namespace Computer_Science_A_Level_NEA
             List<Task> tasks = new List<Task>();
             var inbox = client.Inbox;
             inbox.Open(FolderAccess.ReadOnly);
+            int count = 0;  
             for (int i = 0; i < inbox.Count; i++)
             {
+                
                 var message = inbox.GetMessage(i);
 
                 list.Add(new Email());

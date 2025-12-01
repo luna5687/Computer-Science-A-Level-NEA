@@ -160,7 +160,7 @@ namespace Computer_Science_A_Level_NEA
         }
         private bool IsStopWord(string word)
         {
-            string[] StopWords = { "the", "and", "a", "an" };
+            string[] StopWords = { "the", "and", "a", "an" ,"to","is","be","because","it","its","are","was"}; // a lis tof common words that are often not important to a text 
             foreach (string s in StopWords)
             {
                 if (s == word) return true;
