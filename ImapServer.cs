@@ -5,7 +5,7 @@ using MailKit;
 using MimeKit;
 namespace Computer_Science_A_Level_NEA
 {
-    public class ImapServer
+    public class ImapServer // used to store date amount an imap sever
     {
         private ImapClient client;
 

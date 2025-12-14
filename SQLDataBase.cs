@@ -3,7 +3,7 @@ using Microsoft.VisualBasic;
 using System.Data.SQLite;
 namespace Computer_Science_A_Level_NEA
 {
-    public static class SQLDataBase
+    public static class SQLDataBase // used to manage all SQL commands 
     {
         static private SQLiteConnection connection;
         static private double MaxMemory = -1;

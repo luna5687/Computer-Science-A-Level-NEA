@@ -89,7 +89,7 @@ namespace Computer_Science_A_Level_NEA
                 Edges[Edges.Count - 1].SetIndex(Edges.Count - 1);
                 Nodes[GetNodeIndex(NodeToConnectTo)].AddEdgeIndex(Edges.Count - 1);
                 Nodes[GetNodeIndex(NodeToConnectFrom)].AddEdgeIndex(Edges.Count - 1);
-                //RecaculateAllNodes();
+                
             }
 
         }
@@ -118,38 +118,38 @@ namespace Computer_Science_A_Level_NEA
             bestIndex[1] = 1;
             bestIndex[2] = 2;
 
-            while (bestIndex[0] < Nodes.Count && IsStopWord(Nodes[bestIndex[0]].GetData()))
+            while (bestIndex[0] < Nodes.Count && TextRank.IsStopWord(Nodes[bestIndex[0]].GetData()))
             {
                 bestIndex[0] += 1;
                 bestIndex[1] += 1;
                 bestIndex[2] += 1;
             }
-            while (bestIndex[1] < Nodes.Count && IsStopWord(Nodes[bestIndex[1]].GetData()))
+            while (bestIndex[1] < Nodes.Count && TextRank.IsStopWord(Nodes[bestIndex[1]].GetData()))
             {
                 bestIndex[1] += 1;
                 bestIndex[2] += 1;
             }
-            while (bestIndex[2] < Nodes.Count && IsStopWord(Nodes[bestIndex[2]].GetData()))
+            while (bestIndex[2] < Nodes.Count && TextRank.IsStopWord(Nodes[bestIndex[2]].GetData()))
             {
                 bestIndex[2] += 1;
             }
 
             for (int i = 0; i < Nodes.Count; i++)
             {
-                if (Nodes[bestIndex[0]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData())) bestIndex[0] = i;
+                if (Nodes[bestIndex[0]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData())) bestIndex[0] = i;
             }
             if (Nodes.Count >= 2)
             {
                 for (int i = 0; i < Nodes.Count; i++)
                 {
-                    if (Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
+                    if (Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
                 }
             }
             if (Nodes.Count >= 3)
             {
                 for (int i = 0; i < Nodes.Count; i++)
                 {
-                    if (Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
+                    if (Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
                 }
             }
             threeBest[0] = Nodes[bestIndex[0]].GetData();
@@ -157,15 +157,6 @@ namespace Computer_Science_A_Level_NEA
             if (Nodes.Count >= 3) threeBest[2] = Nodes[bestIndex[2]].GetData();
 
             return threeBest;
-        }
-        private bool IsStopWord(string word)
-        {
-            string[] StopWords = { "the", "and", "a", "an" ,"to","is","be","because","it","its","are","was"}; // a lis tof common words that are often not important to a text 
-            foreach (string s in StopWords)
-            {
-                if (s == word) return true;
-            }
-            return false;
         }
         private double SumEdgeWeightsTimeScores(string StartNode)
         {
@@ -203,9 +194,9 @@ namespace Computer_Science_A_Level_NEA
 
     static public class TextRank
     {
-        static private bool IsStopWord(string word)
+        static public bool IsStopWord(string word)
         {
-            string[] StopWords = { "the", "and", "a", "an", "to", "is", "be", "because", "it", "its", "are", "was" ,"that","this","these","those","used","you","your","go","going","gone","of"}; // a lis tof common words that are often not important to a text 
+            string[] StopWords = { "the", "and", "a", "an", "to", "is", "be", "because", "it", "its", "are", "was" ,"that","this","these","those","used","you","your","go","going","gone","of"}; // a list of common words that are often not important to a text 
             foreach (string s in StopWords)
             {
                 if (s == word) return true;
