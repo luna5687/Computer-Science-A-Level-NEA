@@ -73,75 +73,17 @@ namespace Computer_Science_A_Level_NEA
                 int menuOption = 0;
                 while (!exit)
                 {
-                    
-                    if (menuOption == Accounts.Count + 2)
+                    string[] StringTempArray = new string[Accounts.Count+3];
+                    StringTempArray[StringTempArray.Length - 1] = "Exit";
+                    StringTempArray[StringTempArray.Length - 2] = "Manage Global settings";
+                    StringTempArray[StringTempArray.Length - 3] = "Manage Accounts";
+                    for (int i =0; i < Accounts.Count; i++)
                     {
-                        for (int i = 0; i < Accounts.Count; i++)
-                        {
-                            Console.Write("   " + Accounts[i] + "\n");
-                        }
-                        Console.Write("   Manage Accounts\n");
-                        Console.Write("   Manage Global settings\n");
-                        Console.Write(" > Exit");
+                        StringTempArray[i] = Accounts[i];
                     }
-                    else if (menuOption == Accounts.Count + 1)
-                    {
-                        for (int i = 0; i < Accounts.Count; i++)
-                        {
-                            Console.Write("   " + Accounts[i] + "\n");
-                        }
-                        Console.Write("   Manage Accounts\n");
-                        Console.Write(" > Manage Global settings\n");
-                        Console.Write("   Exit");
-                    }
-                    else if (menuOption == Accounts.Count)
-                    {
-                        for (int i = 0; i < Accounts.Count; i++)
-                        {
-                            Console.Write("   " + Accounts[i] + "\n");
-                        }
-                        Console.Write(" > Manage Accounts\n");
-                        Console.Write("   Manage Global settings\n");
-                        Console.Write("   Exit");
-                        
-                    }
-                    else
-                    {
-                        for (int i = 0; i < Accounts.Count; i++)
-                        {
-                            if (i == menuOption)
-                            {
-                                Console.Write(" > " + Accounts[i] + "\n");
-                            }
-                            else
-                            {
-                                Console.Write("   " + Accounts[i] + "\n");
-                            }
-                        }
-                        Console.Write("   Manage Accounts\n");
-                        Console.Write("   Manage Global settings\n");
-                        Console.Write("   Exit");
-                    }
-                    string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
 
-                    if (input == "W")
-                    {
-                        menuOption--;
-                        if (menuOption < 0)
-                        {
-                            menuOption = Accounts.Count + 2;
-                        }
-                    }
-                    else if (input == "S")
-                    {
-                        menuOption++;
-                        if (menuOption > Accounts.Count + 2)
-                        {
-                            menuOption = 0;
-                        }
-                    }
-                    else if (input == "\r" || input == "")
-                    {
+                    menuOption = ConsoleInteraction.Menu("", StringTempArray, menuOption);
+                    
                         if (menuOption == Accounts.Count + 2)
                         {
                             exit = true;
@@ -190,7 +132,7 @@ namespace Computer_Science_A_Level_NEA
                             Console.Clear();
                         }
 
-                    }
+                    
                     ConsoleInteraction.ResetCursor();
                 }
             }
@@ -216,35 +158,12 @@ namespace Computer_Science_A_Level_NEA
             string[] MenuOptions = { "Back", "Add account", "Delete account" };
             bool Exit = false;
             int menuOption = 0;
-            string input;
+            
             while (!Exit)
             {
-                for (int i = 0; i < MenuOptions.Length; i++)
-                {
-                    if (menuOption == i) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenuOptions[i]);
-                }
-                input = ConsoleInteraction.GetConsoleInput();
-                ConsoleInteraction.ResetCursor();
-                if (input.ToLower() == "w")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = MenuOptions.Length - 1;
-                    }
-                }
-                else if (input == "s")
-                {
-                    menuOption++;
-                    if (menuOption == MenuOptions.Length)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                
+                menuOption = ConsoleInteraction.Menu("", MenuOptions, menuOption);
+                
                     switch (MenuOptions[menuOption])
                     {
                         case "Back":
@@ -258,7 +177,7 @@ namespace Computer_Science_A_Level_NEA
                             break;
                     }
 
-                }
+                
             }
             Console.Clear();
         }
@@ -279,38 +198,15 @@ namespace Computer_Science_A_Level_NEA
                 while (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count != 1 && exit != false)
                 {
                     menuOptions = GetAllAccountNames();
-                    for (int i = 0; i < menuOptions.Length; i++)
-                    {
-                        if (i == menuOptions.Length) Console.Write(" > ");
-                        else Console.Write("   ");
-                        Console.WriteLine(menuOptions[i]);
-                    }
-                    input = ConsoleInteraction.GetConsoleInput();
-                    ConsoleInteraction.ResetCursor();
-                    if (input.ToLower() == "w")
-                    {
-                        menuOption--;
-                        if (menuOption < 0)
-                        {
-                            menuOption = menuOptions.Length - 1;
-                        }
-                    }
-                    else if (input == "s")
-                    {
-                        menuOption++;
-                        if (menuOption == menuOptions.Length)
-                        {
-                            menuOption = 0;
-                        }
-                    }
-                    else if (input == "\r" || input == "")
-                    {
+                    menuOptions[0] = "Back";
+                    menuOption = ConsoleInteraction.Menu("", menuOptions, menuOption);
+                    
                         if (menuOptions[menuOption] == "Back") exit = true;
                         else
                         {
                             DeleteAccount((SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts"))[menuOption][0]);
                         }
-                    }
+                    
                     menuOptions = GetAllAccountNames();
                 }
             }
@@ -353,31 +249,9 @@ namespace Computer_Science_A_Level_NEA
             while (!exit)
             {
                 ConsoleInteraction.ResetCursor();
-                for (int i = 0; i < MenuOptions.Length; i++)
-                {
-                    if (i == menuOption) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenuOptions[i]);
-                }
-                input = ConsoleInteraction.GetConsoleInput(true);
-                if (input.ToLower() == "w")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = MenuOptions.Length - 1;
-                    }
-                }
-                else if (input.ToLower() == "s")
-                {
-                    menuOption++;
-                    if (menuOption == MenuOptions.Length)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                
+                menuOption = ConsoleInteraction.Menu("", MenuOptions, menuOption);
+                
                     switch (MenuOptions[menuOption])
                     {
                         case "Back":
@@ -420,7 +294,7 @@ namespace Computer_Science_A_Level_NEA
                             Console.Write("                                        \n");
                             break;
                     }
-                }
+                
             }
             Console.Clear();
         }
@@ -447,31 +321,9 @@ namespace Computer_Science_A_Level_NEA
             while (!exit)
             {
                 ConsoleInteraction.ResetCursor();
-                for (int i = 0; i < MenuOptions.Length; i++)
-                {
-                    if (i == menuOption) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenuOptions[i]);
-                }
-                input = ConsoleInteraction.GetConsoleInput(true);
-                if (input.ToLower() == "w")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = MenuOptions.Length - 1;
-                    }
-                }
-                else if (input.ToLower() == "s")
-                {
-                    menuOption++;
-                    if (menuOption == MenuOptions.Length)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                
+                menuOption = ConsoleInteraction.Menu("", MenuOptions, menuOption);
+                
                     switch (MenuOptions[menuOption])
                     {
                         case "Back":
@@ -484,7 +336,7 @@ namespace Computer_Science_A_Level_NEA
                             SQLDataBase.SetOverFlowType("Delete Oldest");
                             break;
                     }
-                }
+               
             }
         }
     }

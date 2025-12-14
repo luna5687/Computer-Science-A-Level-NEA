@@ -19,7 +19,7 @@ namespace NEA_protoype
             {
                try
                 {
-                    string[] InitalTable = {"CREATE TABLE Users (" +
+                    string[] InitalTable = {"CREATE TABLE Users (" +             // This is the set of SQL commands used to create the inital database
                                     "EmailAddress varchar PRIMARY KEY," +
                                      "Password varchar," +
                                      "Mailserver varchar," +
@@ -57,7 +57,7 @@ namespace NEA_protoype
                                      "(CollisionAt int)",
 
                                      "INSERT INTO Collisions (CollisionAt)" + 
-                                     " VALUES (-1)" // it is -1 as an email can never have this tag
+                                     " VALUES (-1)" // it is -1 as an email can never have this  and collisions requres at least one entry in order to be able to check if an email is archived 
                                      };
 
                     SQLDataBase.CreateDataBase("Email_Archive", InitalTable);
@@ -91,31 +91,9 @@ namespace NEA_protoype
             {
                 ConsoleInteraction.ResetCursor();
                 Console.CursorTop += 10;
-                for (int i = 0; i < MenuOptions.Length; i++)
-                {
-                    if (i == menuOption) Console.Write(" > ");
-                    else Console.Write("   ");
-                    Console.WriteLine(MenuOptions[i]);
-                }
-                input = ConsoleInteraction.GetConsoleInput(true);
-                if (input.ToLower() == "w")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = MenuOptions.Length - 1;
-                    }
-                }
-                else if (input.ToLower() == "s")
-                {
-                    menuOption++;
-                    if (menuOption == MenuOptions.Length)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
+                
+                menuOption = ConsoleInteraction.Menu("", MenuOptions, menuOption);
+                
                     switch (MenuOptions[menuOption])
                     {
                         case "Restart Program":
@@ -123,9 +101,9 @@ namespace NEA_protoype
                         case "Exit Program":
                             return true;
                     }
-                }
+                
             }
-            return true;
+            
         }
         static void CheckForGlobalSettings()
         {

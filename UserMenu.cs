@@ -6,100 +6,7 @@ namespace Computer_Science_A_Level_NEA
     public class UserMenu
     {
 
-        static int EmailAddressesMennOptionSelect(List<string> EmaliAddreses)
-        {
-            bool exit = false;
-            int menuOption = 0;
-            while (!exit)
-            {
-                ConsoleInteraction.ResetCursor();
-                if (menuOption == EmaliAddreses.Count)
-                {
-                    for (int i = 0; i < EmaliAddreses.Count; i++)
-                    {
-                        Console.Write("   " + EmaliAddreses[i] + "\n");
-                    }
-                    Console.WriteLine(" > Manage Tags");
-                    Console.WriteLine("   Manage Emails");
-                    Console.WriteLine("   Manage Account Settings");
-                    Console.Write("   Exit");
-                }
-                else if (menuOption == EmaliAddreses.Count + 1)
-                {
-                    for (int i = 0; i < EmaliAddreses.Count; i++)
-                    {
-                        Console.Write("   " + EmaliAddreses[i] + "\n");
-                    }
-                    Console.WriteLine("   Manage Tags");
-                    Console.WriteLine(" > Manage Emails");
-                    Console.WriteLine("   Manage Account Settings");
-                    Console.Write("   Exit");
-                }
-                else if (menuOption == EmaliAddreses.Count + 2)
-                {
-                    for (int i = 0; i < EmaliAddreses.Count; i++)
-                    {
-                        Console.Write("   " + EmaliAddreses[i] + "\n");
-                    }
-                    Console.WriteLine("   Manage Tags");
-                    Console.WriteLine("   Manage Emails");
-                    Console.WriteLine(" > Manage Account Settings");
-                    Console.Write("   Exit");
-                }
-                else if (menuOption == EmaliAddreses.Count + 3)
-                {
-                    for (int i = 0; i < EmaliAddreses.Count; i++)
-                    {
-                        Console.Write("   " + EmaliAddreses[i] + "\n");
-                    }
-                    Console.WriteLine("   Manage Tags");
-                    Console.WriteLine("   Manage Emails");
-                    Console.WriteLine("   Manage Account Settings");
-                    Console.Write(" > Exit");
-                }
-                else
-                {
-                    for (int i = 0; i < EmaliAddreses.Count; i++)
-                    {
-                        if (i == menuOption)
-                        {
-                            Console.Write(" > " + EmaliAddreses[i] + "\n");
-                        }
-                        else
-                        {
-                            Console.Write("   " + EmaliAddreses[i] + "\n");
-                        }
-                    }
-                    Console.WriteLine("   Manage Tags");
-                    Console.WriteLine("   Manage Emails");
-                    Console.WriteLine("   Manage Account Settings");
-                    Console.Write("   Exit");
-                }
-                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
 
-                if (input == "W")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = EmaliAddreses.Count + 3;
-                    }
-                }
-                else if (input == "S")
-                {
-                    menuOption++;
-                    if (menuOption > EmaliAddreses.Count + 3)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
-                    exit = true;
-                }
-            }
-            return menuOption;
-        }
         public static void EmailAddressesMenu(string accountName)
         {
             try
@@ -117,7 +24,17 @@ namespace Computer_Science_A_Level_NEA
                 Console.Clear();
                 while (!exit)
                 {
-                    menuOption = EmailAddressesMennOptionSelect(EmaliAddreses);
+
+                    string[] StringArrayTemp = new string[EmaliAddreses.Count + 4];
+                    for (int i = 0; i < EmaliAddreses.Count; i++)
+                    {
+                        StringArrayTemp[i] = EmaliAddreses[i].ToString();
+                    }
+                    StringArrayTemp[StringArrayTemp.Length - 1] = "Exit";
+                    StringArrayTemp[StringArrayTemp.Length - 2] = "Manage Account Settings";
+                    StringArrayTemp[StringArrayTemp.Length - 3] = "Manage Emails";
+                    StringArrayTemp[StringArrayTemp.Length - 4] = "Manage Tags";
+                    menuOption = ConsoleInteraction.Menu("", StringArrayTemp, menuOption);
                     if (menuOption == EmaliAddreses.Count + 3)
                     {
                         exit = true;
@@ -162,7 +79,7 @@ namespace Computer_Science_A_Level_NEA
                 while (!exit)
                 {
 
-                    menuOption = ConsoleInteraction.Menu("The database is full Please select an option: ", MenuOptions);
+                    menuOption = ConsoleInteraction.Menu("The database is full Please select an option: ", MenuOptions, menuOption);
                     switch (MenuOptions[menuOption])
                     {
                         case "Set automatic archive settings to off":
@@ -199,7 +116,7 @@ namespace Computer_Science_A_Level_NEA
                     MenuOptions[i] = temp;
                 }
                 MenuOption = ConsoleInteraction.Menu($"ID{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 0) - 2)}|Sender{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 1) - 6)}|Recipient{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 2) - 9)}|Subject{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 3) - 7)}|Keywords{ConsoleInteraction.GetBuffer(GetLongestPart(AllEmails, 5) - 8)}|Date Recived",
-                                                       MenuOptions);
+                                                       MenuOptions, MenuOption);
                 if (MenuOption == MenuOptions.Length - 1)
                 {
                     exit = true;
@@ -227,7 +144,7 @@ namespace Computer_Science_A_Level_NEA
             string[] MenOptions = { "View settings", "Update Automatic archive settings", "Reset To defualt", "Back" };
             while (!exit)
             {
-                MenuOption = ConsoleInteraction.Menu("", MenOptions);
+                MenuOption = ConsoleInteraction.Menu("", MenOptions, MenuOption);
                 switch (MenOptions[MenuOption])
                 {
                     case "Back":
@@ -259,7 +176,7 @@ namespace Computer_Science_A_Level_NEA
             bool exit = false;
             while (!exit)
             {
-                MenuOption = ConsoleInteraction.Menu("", MenuOptions);
+                MenuOption = ConsoleInteraction.Menu("", MenuOptions, MenuOption);
                 switch (MenuOptions[MenuOption])
                 {
                     case "Back":
@@ -289,7 +206,7 @@ namespace Computer_Science_A_Level_NEA
             SR.Close();
             Console.WriteLine(settings);
             ConsoleInteraction.GetConsoleInput();
-            
+
         }
         static bool CheckEmailAddressIsValid(string input)
         {
@@ -347,7 +264,7 @@ namespace Computer_Science_A_Level_NEA
             }
 
             Console.Write("Enter EmailAddress Password (Please note it is not hidden): ");
-            
+
             string EmailPassword = Console.ReadLine();
 
             SQLDataBase.ExecuteNonQuery("INSERT INTO Users(EmailAddress,Password,Mailserver,Account)" +
@@ -366,59 +283,26 @@ namespace Computer_Science_A_Level_NEA
             Console.Clear();
             bool exit = false;
             int menuOption = 0;
+            string[] MenuOptions = { "Delete email", "Add email", "Exit" };
             while (!exit)
             {
+
+                menuOption = ConsoleInteraction.Menu("", MenuOptions, menuOption);
+
                 if (menuOption == 0)
                 {
-                    Console.WriteLine(" > Delete email");
-                    Console.WriteLine("   Add email");
-                    Console.Write("   Exit");
+                    DeleteEmails(EmaliAddreses, accountName);
+
                 }
                 else if (menuOption == 1)
                 {
-                    Console.WriteLine("   Delete email");
-                    Console.WriteLine(" > Add email");
-                    Console.Write("   Exit");
+                    AddEmail(EmaliAddreses, accountName);
                 }
                 else
                 {
-                    Console.WriteLine("   Delete email");
-                    Console.WriteLine("   Add email");
-                    Console.Write(" > Exit");
+                    exit = true;
                 }
-                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
-                if (input == "W")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = 2;
-                    }
-                }
-                else if (input == "S")
-                {
-                    menuOption++;
-                    if (menuOption > 2)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
-                    if (menuOption == 0)
-                    {
-                        DeleteEmails(EmaliAddreses, accountName);
 
-                    }
-                    else if (menuOption == 1)
-                    {
-                        AddEmail(EmaliAddreses, accountName);
-                    }
-                    else
-                    {
-                        exit = true;
-                    }
-                }
                 ConsoleInteraction.ResetCursor();
             }
         }
@@ -429,65 +313,27 @@ namespace Computer_Science_A_Level_NEA
             Console.Clear();
             while (!exit && EmailAddresses != null)
             {
+                string[] StringTempArray = new string[EmailAddresses.Count + 1];
+                StringTempArray[EmailAddresses.Count] = "Exit";
+                for (int i = 0; i < EmailAddresses.Count; i++)
+                {
+                    StringTempArray[i] = EmailAddresses[i];
+                }
+                menuOption = ConsoleInteraction.Menu("", StringTempArray, menuOption);
+
+
                 if (menuOption == EmailAddresses.Count)
                 {
-                    for (int i = 0; i < EmailAddresses.Count; i++)
-                    {
-                        Console.Write("   " + EmailAddresses[i] + "\n");
-                    }
-
-                    Console.Write(" > Exit");
+                    exit = true;
                 }
-
                 else
                 {
-                    for (int i = 0; i < EmailAddresses.Count; i++)
-                    {
-                        if (i == menuOption)
-                        {
-                            Console.Write(" > " + EmailAddresses[i] + "\n");
-                        }
-                        else
-                        {
-                            Console.Write("   " + EmailAddresses[i] + "\n");
-                        }
-                    }
 
-                    Console.Write("   Exit");
+                    SQLDataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddresses[menuOption]}'");
+                    Console.Clear();
                 }
-                string input = ConsoleInteraction.GetConsoleInput(true).ToUpper();
 
-                if (input == "W")
-                {
-                    menuOption--;
-                    if (menuOption < 0)
-                    {
-                        menuOption = EmailAddresses.Count;
-                    }
-                }
-                else if (input == "S")
-                {
-                    menuOption++;
-                    if (menuOption > EmailAddresses.Count)
-                    {
-                        menuOption = 0;
-                    }
-                }
-                else if (input == "\r" || input == "")
-                {
 
-                    if (menuOption == EmailAddresses.Count)
-                    {
-                        exit = true;
-                    }
-                    else
-                    {
-
-                        SQLDataBase.ExecuteNonQuery($"DELETE FROM Users WHERE EmailAddress == '{EmailAddresses[menuOption]}'");
-                        Console.Clear();
-                    }
-
-                }
                 ConsoleInteraction.ResetCursor();
                 EmailAddresses = GetEmailAddresses(accountName);
             }

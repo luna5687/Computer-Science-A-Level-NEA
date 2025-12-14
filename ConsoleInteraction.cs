@@ -62,10 +62,10 @@ namespace Computer_Science_A_Level_NEA
             for (int i = 0; i < value; i++) { output+=" "; }
             return output;
         }
-        public static int Menu(string message, string[] MenuOptions)
+        public static int Menu(string message, string[] MenuOptions,int currentMenuOption)
         {
             bool exit = false;
-            int menuOption = 0;
+            int menuOption = currentMenuOption;
             string input;
             while (!exit)
             {

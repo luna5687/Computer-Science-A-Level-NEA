@@ -70,7 +70,6 @@ namespace Computer_Science_A_Level_NEA
         }
         private void DisplaySearchParamters()
         {
-            
             Console.CursorTop = 1;
             Console.CursorLeft = 0;
             Console.Write("    " + SenderFilter);
@@ -83,8 +82,6 @@ namespace Computer_Science_A_Level_NEA
         private void SearchForEamils()
         {
             bool Exit = false;
-            
-            
             string input;
             int menuOption = 0;
             int MaxMenuOption = 3;
@@ -181,10 +178,9 @@ namespace Computer_Science_A_Level_NEA
             }
         }
         
-        private void DisplayEmails(int menuOption)
+        private void DisplayEmails(int menuOption) // doesn't use menu subroutine as emails need to be displayed without the cursor
         {
             Console.Clear();
-            
             DisplaySearchParamters();
             ConsoleInteraction.ResetCursor();
             int[] Buffers = { FindLongestSender(), FindLongestRecipient(), FindLongestSubject() };
