@@ -56,6 +56,7 @@ namespace Computer_Science_A_Level_NEA
                 foreach (var t in AllTags)
                 {
                     StringTempArray[count + 1] = t.Value;
+                    count++;
                 }
 
 
@@ -95,6 +96,7 @@ namespace Computer_Science_A_Level_NEA
                 foreach (var t in AllTags)
                 {
                     StringTempArray[count + 1] = t.Value;
+                    count++;
                 }
 
 
@@ -129,7 +131,7 @@ namespace Computer_Science_A_Level_NEA
             while (!exit)
             {
                 ConsoleInteraction.ResetCursor();
-                string TempString = "All Tags: ";
+                string TempString = "All Tags: \n";
                 
                 foreach (var t in AllTags) TempString+=" " + t.Value+"\n";
                 TempString += "\n";
