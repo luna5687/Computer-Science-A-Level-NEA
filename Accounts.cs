@@ -195,7 +195,7 @@ namespace Computer_Science_A_Level_NEA
                 int menuOption = 0;
                 string[] menuOptions = GetAllAccountNames();
                 menuOptions[0] = "Back";
-                while (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count != 1 && exit != false)
+                while (SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts").Count != 1 && !exit)
                 {
                     menuOptions = GetAllAccountNames();
                     menuOptions[0] = "Back";
@@ -204,7 +204,7 @@ namespace Computer_Science_A_Level_NEA
                         if (menuOptions[menuOption] == "Back") exit = true;
                         else
                         {
-                            DeleteAccount((SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts"))[menuOption][0]);
+                            DeleteAccount((SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts"))[menuOption-1][0]);
                         }
                     
                     menuOptions = GetAllAccountNames();
@@ -213,8 +213,8 @@ namespace Computer_Science_A_Level_NEA
         }
         static void DeleteAccount(string accountName)
         {
-            List<string[]> AllConnectedEmailAddresses = SQLDataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == {accountName}");
-            for (int i = 0; i < AllConnectedEmailAddresses.Count; i++)
+            List<string[]> AllConnectedEmailAddresses = SQLDataBase.ExecuteQuery($"SELECT EmailAddress FROM Users WHERE Account == '{accountName}'");
+            for (int i = 0; AllConnectedEmailAddresses!=null && i < AllConnectedEmailAddresses.Count; i++)
             {
                 List<string[]> AllEmailsIDs = SQLDataBase.ExecuteQuery($"SELECT EmailID FROM Emails WHERE Recipient == '{AllConnectedEmailAddresses[i][0]}'");
                 for (int j = 0; j < AllEmailsIDs.Count; j++)
