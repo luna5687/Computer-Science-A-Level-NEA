@@ -209,8 +209,8 @@ namespace Computer_Science_A_Level_NEA
 
         }
         static bool CheckEmailAddressIsValid(string input)
-        {
-            if (!Regex.IsMatch(input, "^(?(\")(\".+?(?<!\\\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`\\{\\}\\|~\\w])*)(?<=[0-9a-z])@))(?(\\[)(\\[(\\d{1,3}\\.){3}\\d{1,3}\\])|(([0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9]))$")) return false; // the regex epression was taken from https://emailregex.com/ on 27/11/2025
+        {          
+            if (!Regex.IsMatch(input, @"^(\w+)@(\w+)\.(\w+)(\.\w+)?$")) return false;
             List<string[]> AllEmailAddresses = SQLDataBase.ExecuteQuery("SELECT EmailAddress FROM Users");
             if (AllEmailAddresses == null) return true;
             foreach (string[] EmailAddress in AllEmailAddresses) if (EmailAddress[0] == input) return false;
