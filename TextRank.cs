@@ -136,25 +136,25 @@ namespace Computer_Science_A_Level_NEA
 
             for (int i = 0; i < Nodes.Count; i++)
             {
-                if (Nodes[bestIndex[0]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData())) bestIndex[0] = i;
+                if (bestIndex[0] < Nodes.Count && Nodes[bestIndex[0]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData())) bestIndex[0] = i;
             }
             if (Nodes.Count >= 2)
             {
                 for (int i = 0; i < Nodes.Count; i++)
                 {
-                    if (Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
+                    if (bestIndex[1] < Nodes.Count && Nodes[bestIndex[1]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0]) bestIndex[1] = i;
                 }
             }
             if (Nodes.Count >= 3)
             {
                 for (int i = 0; i < Nodes.Count; i++)
                 {
-                    if (Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
+                    if (bestIndex[2] < Nodes.Count && Nodes[bestIndex[2]].GetScore() < Nodes[i].GetScore() && !TextRank.IsStopWord(Nodes[i].GetData()) && i != bestIndex[0] && i != bestIndex[1]) bestIndex[2] = i;
                 }
             }
             threeBest[0] = Nodes[bestIndex[0]].GetData();
-            if (Nodes.Count >= 2) threeBest[1] = Nodes[bestIndex[1]].GetData();
-            if (Nodes.Count >= 3) threeBest[2] = Nodes[bestIndex[2]].GetData();
+            if (bestIndex[1] < Nodes.Count && Nodes.Count >= 2) threeBest[1] = Nodes[bestIndex[1]].GetData();
+            if (bestIndex[2] < Nodes.Count && Nodes.Count >= 3) threeBest[2] = Nodes[bestIndex[2]].GetData();
 
             return threeBest;
         }
