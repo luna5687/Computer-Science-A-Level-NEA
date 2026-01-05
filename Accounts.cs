@@ -61,6 +61,7 @@ namespace Computer_Science_A_Level_NEA
                     Console.ReadLine();
                     AddAccounts();
                     temp = SQLDataBase.ExecuteQuery("SELECT AccountName FROM Accounts");
+                    Console.Clear();
                 }
 
                 Accounts = new List<string>();
